@@ -361,10 +361,13 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
             background: var(--main-bg);
         }
 
         #header {
+            position: relative;
+            z-index: 20;
             min-height: 60px;
             flex-shrink: 0;
             padding: 0 24px 0 38px;
@@ -448,6 +451,7 @@
             align-items: center;
             justify-content: flex-start;
             background: #ffffff;
+            pointer-events: none;
         }
 
         #welcome {
@@ -478,6 +482,7 @@
         ========================= */
 
         #messages {
+            display: none;
             flex: 1;
             min-height: 0;
             padding: 30px 24px 150px;
@@ -486,6 +491,10 @@
             scroll-behavior: smooth;
             scrollbar-width: thin;
             scrollbar-color: #c3c3c3 transparent;
+        }
+
+        body.chat-started #messages {
+            display: block;
         }
 
         #messages::-webkit-scrollbar {
@@ -630,16 +639,24 @@
         ========================= */
 
         #inputArea {
-            width: 100%;
-            max-width: var(--composer-width);
-            flex-shrink: 0;
+            position: absolute;
+            z-index: 15;
+            top: clamp(235px, 45vh, 360px);
+            left: 24px;
+            right: 24px;
+            width: auto;
+            pointer-events: auto;
         }
 
         body.chat-started #inputArea {
             position: relative;
-            z-index: 10;
+            top: auto;
+            left: auto;
+            right: auto;
+            z-index: 15;
             width: 100%;
             max-width: none;
+            flex-shrink: 0;
             padding: 10px 24px 18px;
             background:
                 linear-gradient(
@@ -659,10 +676,12 @@
             border-radius: 34px;
             display: flex;
             align-items: center;
+            overflow: hidden;
             background: var(--composer-bg);
             box-shadow:
                 0 1px 2px rgba(0, 0, 0, 0.04),
                 0 8px 25px rgba(0, 0, 0, 0.06);
+            pointer-events: auto;
         }
 
         #inputContainer:focus-within {
@@ -690,6 +709,8 @@
         }
 
         #prompt {
+            position: relative;
+            z-index: 2;
             display: block;
             width: 100%;
             min-height: 56px;
@@ -704,6 +725,7 @@
             color: #111111;
             font-size: 16px;
             line-height: 1.4;
+            pointer-events: auto;
         }
 
         #prompt::placeholder {
@@ -712,6 +734,7 @@
 
         #composerActions {
             position: absolute;
+            z-index: 3;
             right: 9px;
             bottom: 8px;
             display: flex;
@@ -841,6 +864,14 @@
                 margin-bottom: 24px;
             }
 
+            #inputArea {
+                top: clamp(210px, 42vh, 320px);
+            }
+
+            body.chat-started #inputArea {
+                top: auto;
+            }
+
             #sidebarLoginPanel {
                 padding-top: 16px;
                 padding-bottom: 14px;
@@ -907,7 +938,16 @@
                 padding: 24px 13px 130px;
             }
 
+            #inputArea {
+                top: clamp(210px, 46vh, 320px);
+                left: 10px;
+                right: 10px;
+            }
+
             body.chat-started #inputArea {
+                top: auto;
+                left: auto;
+                right: auto;
                 padding: 9px 10px 13px;
             }
 
@@ -1174,7 +1214,12 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                     />
-                    <circle cx="14.5" cy="9" r="1.2" fill="currentColor" />
+                    <circle
+                        cx="14.5"
+                        cy="9"
+                        r="1.2"
+                        fill="currentColor"
+                    />
                     <path
                         d="M18 3.8h1.2A1.8 1.8 0 0 1 21 5.6v7.2"
                         stroke="currentColor"
@@ -1329,25 +1374,61 @@
         </header>
 
         <div id="startScreen">
-
             <div id="welcome">
                 <h1>¿Qué toca hoy?</h1>
                 <p>Pregunta lo que quieras</p>
             </div>
+        </div>
 
-            <div id="inputArea">
+        <div id="messages"></div>
 
-                <div id="inputContainer">
+        <div id="inputArea">
+
+            <div id="inputContainer">
+
+                <button
+                    id="addButton"
+                    type="button"
+                    aria-label="Añadir"
+                    title="Añadir"
+                >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path
+                            d="M12 5v14M5 12h14"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                        />
+                    </svg>
+                </button>
+
+                <textarea
+                    id="prompt"
+                    rows="1"
+                    placeholder="Pregunta lo que quieras"
+                    aria-label="Mensaje"
+                ></textarea>
+
+                <div id="composerActions">
 
                     <button
-                        id="addButton"
+                        id="microphoneButton"
                         type="button"
-                        aria-label="Añadir"
-                        title="Añadir"
+                        aria-label="Micrófono"
+                        title="Micrófono"
                     >
                         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <rect
+                                x="9"
+                                y="3"
+                                width="6"
+                                height="12"
+                                rx="3"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            />
                             <path
-                                d="M12 5v14M5 12h14"
+                                d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6"
                                 stroke="currentColor"
                                 stroke-width="1.8"
                                 stroke-linecap="round"
@@ -1355,92 +1436,54 @@
                         </svg>
                     </button>
 
-                    <textarea
-                        id="prompt"
-                        rows="1"
-                        placeholder="Pregunta lo que quieras"
-                        aria-label="Mensaje"
-                    ></textarea>
+                    <button
+                        id="voiceButton"
+                        type="button"
+                        aria-label="Voz"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path
+                                d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"
+                                stroke="currentColor"
+                                stroke-width="1.9"
+                                stroke-linecap="round"
+                            />
+                        </svg>
 
-                    <div id="composerActions">
+                        <span>Voz</span>
+                    </button>
 
-                        <button
-                            id="microphoneButton"
-                            type="button"
-                            aria-label="Micrófono"
-                            title="Micrófono"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <rect
-                                    x="9"
-                                    y="3"
-                                    width="6"
-                                    height="12"
-                                    rx="3"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                />
-                                <path
-                                    d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linecap="round"
-                                />
-                            </svg>
-                        </button>
+                    <button
+                        id="sendButton"
+                        type="button"
+                        disabled
+                        aria-label="Enviar mensaje"
+                        title="Enviar mensaje"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path
+                                d="M12 19V5"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                            />
+                            <path
+                                d="m6.5 10.5 5.5-5.5 5.5 5.5"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+                    </button>
 
-                        <button
-                            id="voiceButton"
-                            type="button"
-                            aria-label="Voz"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path
-                                    d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"
-                                    stroke="currentColor"
-                                    stroke-width="1.9"
-                                    stroke-linecap="round"
-                                />
-                            </svg>
-
-                            <span>Voz</span>
-                        </button>
-
-                        <button
-                            id="sendButton"
-                            type="button"
-                            disabled
-                            aria-label="Enviar mensaje"
-                            title="Enviar mensaje"
-                        >
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path
-                                    d="M12 19V5"
-                                    stroke="currentColor"
-                                    stroke-linecap="round"
-                                />
-                                <path
-                                    d="m6.5 10.5 5.5-5.5 5.5 5.5"
-                                    stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
-                            </svg>
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div id="inputDisclaimer">
-                    ChatGPT puede cometer errores. Considera verificar la información importante.
                 </div>
 
             </div>
 
-        </div>
+            <div id="inputDisclaimer">
+                ChatGPT puede cometer errores. Considera verificar la información importante.
+            </div>
 
-        <div id="messages"></div>
+        </div>
 
     </main>
 
@@ -1450,7 +1493,7 @@
         ========================= */
 
         const SIMULATOR_VERSION =
-            "AIChat_v1.1_forms";
+            "AIChat_v1.2_forms";
 
         const TIME_LIMIT_MS =
             10 * 60 * 1000;
@@ -1523,12 +1566,6 @@
            ELEMENTOS
         ========================= */
 
-        const main =
-            document.getElementById("main");
-
-        const inputArea =
-            document.getElementById("inputArea");
-
         const promptInput =
             document.getElementById("prompt");
 
@@ -1555,14 +1592,10 @@
             );
 
         const setupError =
-            document.getElementById(
-                "setupError"
-            );
+            document.getElementById("setupError");
 
         const endOverlay =
-            document.getElementById(
-                "endOverlay"
-            );
+            document.getElementById("endOverlay");
 
         const fullscreenCorner =
             document.getElementById(
@@ -1582,6 +1615,8 @@
 
         const Category = Object.freeze({
             GREETING: "GREETING",
+            THANKS: "THANKS",
+            FAREWELL: "FAREWELL",
             GENERAL: "GENERAL",
             RULE: "RULE",
             EXAMPLE_1: "EXAMPLE_1",
@@ -1593,6 +1628,12 @@
 
         const GREETING_RESPONSE =
             "¡Hola! 😊 ¿Cómo te puedo ayudar?";
+
+        const THANKS_RESPONSE =
+            "¡De nada! 😊";
+
+        const FAREWELL_RESPONSE =
+            "¡Chau! 👋";
 
         const OFF_TOPIC_RESPONSE =
             "Ahora estamos aprendiendo a jugar a SET. Hazme una pregunta sobre el juego y estaré encantado de ayudarte.";
@@ -1733,7 +1774,9 @@
             "quiero",
             "puedo",
             "podes",
-            "podrias"
+            "podrias",
+            "muchas",
+            "muchos"
         ]);
 
         /* =========================
@@ -1963,7 +2006,7 @@
         ========================= */
 
         function normalizeText(text) {
-            return text
+            return String(text)
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
@@ -1973,34 +2016,8 @@
         }
 
         function isManualEndCommand(text) {
-            const normalized =
-                normalizeText(text);
-
             return MANUAL_END_COMMANDS.has(
-                normalized
-            );
-        }
-
-        function isGreeting(text) {
-            const normalized =
-                normalizeText(text);
-
-            const greetingPatterns = [
-                /^hola+$/,
-                /^hola+ como estas$/,
-                /^hola+ que tal$/,
-                /^ola+$/,
-                /^buenas$/,
-                /^buen dia$/,
-                /^buenos dias$/,
-                /^buenas tardes$/,
-                /^buenas noches$/,
-                /^hey$/
-            ];
-
-            return greetingPatterns.some(
-                pattern =>
-                    pattern.test(normalized)
+                normalizeText(text)
             );
         }
 
@@ -2115,6 +2132,16 @@
                 return [
                     "set",
                     "zet"
+                ].includes(inputToken);
+            }
+
+            if (targetToken === "hola") {
+                return [
+                    "hola",
+                    "holaa",
+                    "ola",
+                    "hala",
+                    "hla"
                 ].includes(inputToken);
             }
 
@@ -2237,7 +2264,127 @@
             return totalMatches;
         }
 
-        function hasExampleMarker(tokens) {
+        function isGreeting(text) {
+            const normalized =
+                normalizeText(text);
+
+            const greetingPhrases = [
+                "hola",
+                "holaa",
+                "ola",
+                "hala",
+                "hla",
+                "buenas",
+                "buen dia",
+                "buenos dias",
+                "buenas tardes",
+                "buenas noches",
+                "hey"
+            ];
+
+            if (
+                greetingPhrases.includes(
+                    normalized
+                )
+            ) {
+                return true;
+            }
+
+            const tokens =
+                tokenize(text);
+
+            return (
+                tokens.length > 0 &&
+                tokens.length <= 3 &&
+                tokenListContains(
+                    tokens,
+                    "hola"
+                )
+            );
+        }
+
+        function isThanks(text) {
+            const normalized =
+                normalizeText(text);
+
+            const thanksPhrases = [
+                "gracias",
+                "muchas gracias",
+                "gracias chat",
+                "gracias chatgpt"
+            ];
+
+            if (
+                thanksPhrases.includes(
+                    normalized
+                )
+            ) {
+                return true;
+            }
+
+            const tokens =
+                tokenize(text);
+
+            return (
+                tokens.length > 0 &&
+                tokens.length <= 3 &&
+                tokenListContains(
+                    tokens,
+                    "gracias"
+                )
+            );
+        }
+
+        function isFarewell(text) {
+            const normalized =
+                normalizeText(text);
+
+            const farewellPhrases = [
+                "chau",
+                "chao",
+                "adios",
+                "nos vemos",
+                "hasta luego"
+            ];
+
+            if (
+                farewellPhrases.includes(
+                    normalized
+                )
+            ) {
+                return true;
+            }
+
+            const tokens =
+                tokenize(text);
+
+            return (
+                tokens.length > 0 &&
+                tokens.length <= 3 &&
+                tokenListContainsAny(
+                    tokens,
+                    [
+                        "chau",
+                        "chao",
+                        "adios"
+                    ]
+                )
+            );
+        }
+
+        function isSetOnly(text) {
+            const normalized =
+                normalizeText(text);
+
+            return (
+                normalized === "set" ||
+                normalized === "zet"
+            );
+        }
+
+        function hasExampleMarker(
+            tokens
+        ) {
             return tokenListContainsAny(
                 tokens,
                 TOKEN_GROUPS.EXAMPLE
@@ -2497,6 +2644,24 @@
                 return Category.GREETING;
             }
 
+            if (
+                isThanks(text)
+            ) {
+                return Category.THANKS;
+            }
+
+            if (
+                isFarewell(text)
+            ) {
+                return Category.FAREWELL;
+            }
+
+            if (
+                isSetOnly(text)
+            ) {
+                return Category.GENERAL;
+            }
+
             const tokens =
                 tokenize(text);
 
@@ -2562,7 +2727,7 @@
 
         function countWords(text) {
             const normalized =
-                text
+                String(text)
                     .trim()
                     .replace(/\s+/g, " ");
 
@@ -2578,7 +2743,7 @@
         function countCharactersWithoutSpaces(
             text
         ) {
-            return text
+            return String(text)
                 .replace(/\s/g, "")
                 .length;
         }
@@ -2598,6 +2763,8 @@
         ) {
             const counts = {
                 GREETING: 0,
+                THANKS: 0,
+                FAREWELL: 0,
                 GENERAL: 0,
                 RULE: 0,
                 EXAMPLE_1: 0,
@@ -2634,12 +2801,10 @@
                 return;
             }
 
-            session
-                .cantidad_mensajes_usuario =
+            session.cantidad_mensajes_usuario =
                 session.turnos.length;
 
-            session
-                .cantidad_palabras_usuario =
+            session.cantidad_palabras_usuario =
                 session.turnos.reduce(
                     (
                         total,
@@ -2658,8 +2823,7 @@
                         turn
                     ) =>
                         total +
-                        turn
-                            .caracteres_con_espacios,
+                        turn.caracteres_con_espacios,
                     0
                 );
 
@@ -2671,8 +2835,7 @@
                         turn
                     ) =>
                         total +
-                        turn
-                            .caracteres_sin_espacios,
+                        turn.caracteres_sin_espacios,
                     0
                 );
 
@@ -2712,8 +2875,7 @@
             const existingIndex =
                 archive.findIndex(
                     archivedSession =>
-                        archivedSession
-                            .session_id ===
+                        archivedSession.session_id ===
                         session.session_id
                 );
 
@@ -2741,8 +2903,7 @@
                 currentSession
             );
 
-            currentSession
-                .ultima_actualizacion_iso =
+            currentSession.ultima_actualizacion_iso =
                 new Date().toISOString();
 
             try {
@@ -2801,9 +2962,24 @@
             }
 
             if (
+                previousSession.estado ===
+                "interrumpida"
+            ) {
+                localStorage.removeItem(
+                    ACTIVE_SESSION_KEY
+                );
+
+                return;
+            }
+
+            if (
                 previousSession.estado !==
                 "en_curso"
             ) {
+                localStorage.removeItem(
+                    ACTIVE_SESSION_KEY
+                );
+
                 return;
             }
 
@@ -2817,31 +2993,24 @@
             previousSession.estado =
                 "interrumpida";
 
-            previousSession
-                .motivo_finalizacion =
+            previousSession.motivo_finalizacion =
                 "sesion_incompleta_detectada";
 
             previousSession.fin_iso =
-                new Date(now)
-                    .toISOString();
+                new Date(now).toISOString();
 
-            previousSession
-                .duracion_total_ms =
+            previousSession.duracion_total_ms =
                 Math.max(
                     0,
                     now -
-                    previousSession
-                        .inicio_timestamp
+                    previousSession.inicio_timestamp
                 );
 
-            previousSession
-                .ultimo_evento_guardado =
+            previousSession.ultimo_evento_guardado =
                 "sesion_incompleta_detectada";
 
-            previousSession
-                .ultima_actualizacion_iso =
-                new Date(now)
-                    .toISOString();
+            previousSession.ultima_actualizacion_iso =
+                new Date(now).toISOString();
 
             try {
                 saveSessionToArchive(
@@ -2915,23 +3084,19 @@
                     session.fin_iso || "",
 
                 duracion_total_ms:
-                    session
-                        .duracion_total_ms ?? "",
+                    session.duracion_total_ms ?? "",
 
                 estado:
                     session.estado,
 
                 motivo_finalizacion:
-                    session
-                        .motivo_finalizacion || "",
+                    session.motivo_finalizacion || "",
 
                 cantidad_mensajes_usuario:
-                    session
-                        .cantidad_mensajes_usuario,
+                    session.cantidad_mensajes_usuario,
 
                 cantidad_palabras_usuario:
-                    session
-                        .cantidad_palabras_usuario,
+                    session.cantidad_palabras_usuario,
 
                 caracteres_con_espacios:
                     session
@@ -2939,8 +3104,7 @@
 
                 conteos_categorias_json:
                     JSON.stringify(
-                        session
-                            .conteos_categorias
+                        session.conteos_categorias
                     ),
 
                 conversacion_json:
@@ -2949,12 +3113,10 @@
                     ),
 
                 ultimo_evento_guardado:
-                    session
-                        .ultimo_evento_guardado,
+                    session.ultimo_evento_guardado,
 
                 version_simulador:
-                    session
-                        .version_simulador
+                    session.version_simulador
             };
         }
 
@@ -3018,8 +3180,7 @@
                     );
 
                 await fetch(
-                    GOOGLE_FORM_CONFIG
-                        .formURL,
+                    GOOGLE_FORM_CONFIG.formURL,
                     {
                         method: "POST",
                         mode: "no-cors",
@@ -3061,17 +3222,14 @@
                 if (
                     navigator.sendBeacon
                 ) {
-                    return navigator
-                        .sendBeacon(
-                            GOOGLE_FORM_CONFIG
-                                .formURL,
-                            formData
-                        );
+                    return navigator.sendBeacon(
+                        GOOGLE_FORM_CONFIG.formURL,
+                        formData
+                    );
                 }
 
                 fetch(
-                    GOOGLE_FORM_CONFIG
-                        .formURL,
+                    GOOGLE_FORM_CONFIG.formURL,
                     {
                         method: "POST",
                         mode: "no-cors",
@@ -3106,7 +3264,7 @@
             rawId
         ) {
             const trimmed =
-                rawId.trim();
+                String(rawId).trim();
 
             if (!trimmed) {
                 return "";
@@ -3125,13 +3283,9 @@
         }
 
         async function startExperiment() {
-            const rawId =
-                participantIdInput
-                    .value;
-
             const participantId =
                 normalizeParticipantId(
-                    rawId
+                    participantIdInput.value
                 );
 
             if (!participantId) {
@@ -3143,9 +3297,7 @@
             }
 
             setupError.textContent = "";
-
-            startExperimentButton.disabled =
-                true;
+            startExperimentButton.disabled = true;
 
             try {
                 await markPreviousSessionAsInterrupted();
@@ -3181,8 +3333,7 @@
                         now,
 
                     inicio_iso:
-                        new Date(now)
-                            .toISOString(),
+                        new Date(now).toISOString(),
 
                     fin_iso:
                         null,
@@ -3215,8 +3366,7 @@
                         "sesion_iniciada",
 
                     ultima_actualizacion_iso:
-                        new Date(now)
-                            .toISOString(),
+                        new Date(now).toISOString(),
 
                     turnos: []
                 };
@@ -3271,6 +3421,22 @@
                         type: "text",
                         content:
                             GREETING_RESPONSE
+                    };
+
+                case Category.THANKS:
+                    return {
+                        id: "THANKS",
+                        type: "text",
+                        content:
+                            THANKS_RESPONSE
+                    };
+
+                case Category.FAREWELL:
+                    return {
+                        id: "FAREWELL",
+                        type: "text",
+                        content:
+                            FAREWELL_RESPONSE
                     };
 
                 case Category.GENERAL:
@@ -3338,21 +3504,17 @@
 
         function updateButton() {
             const hasText =
-                promptInput
-                    .value
-                    .trim() !== "";
+                promptInput.value.trim() !== "";
 
             sendButton.disabled =
                 !hasText ||
                 sessionFinished;
 
-            inputContainer
-                .classList
-                .toggle(
-                    "has-text",
-                    hasText &&
-                    !sessionFinished
-                );
+            inputContainer.classList.toggle(
+                "has-text",
+                hasText &&
+                !sessionFinished
+            );
         }
 
         function resizeTextarea() {
@@ -3369,8 +3531,7 @@
                 newHeight + "px";
 
             promptInput.style.overflowY =
-                promptInput.scrollHeight >
-                180
+                promptInput.scrollHeight > 180
                     ? "auto"
                     : "hidden";
         }
@@ -3443,7 +3604,9 @@
             return message;
         }
 
-        function addAssistantHTML(html) {
+        function addAssistantHTML(
+            html
+        ) {
             const message =
                 document.createElement(
                     "div"
@@ -3484,20 +3647,13 @@
         ) {
             requestAnimationFrame(
                 () => {
-                    userMessage
-                        .scrollIntoView({
-                            behavior:
-                                "smooth",
-                            block:
-                                "start"
-                        });
+                    userMessage.scrollIntoView({
+                        behavior:
+                            "smooth",
+                        block:
+                            "start"
+                    });
                 }
-            );
-        }
-
-        function moveInputToChat() {
-            main.appendChild(
-                inputArea
             );
         }
 
@@ -3514,9 +3670,7 @@
             }
 
             const text =
-                promptInput
-                    .value
-                    .trim();
+                promptInput.value.trim();
 
             if (!text) {
                 return;
@@ -3527,8 +3681,7 @@
                     text
                 )
             ) {
-                promptInput.value =
-                    "";
+                promptInput.value = "";
 
                 resizeTextarea();
                 updateButton();
@@ -3613,31 +3766,25 @@
                     null
             };
 
-            currentSession
-                .turnos
-                .push(turn);
+            currentSession.turnos.push(
+                turn
+            );
 
-            currentSession
-                .ultimo_evento_guardado =
+            currentSession.ultimo_evento_guardado =
                 "mensaje_usuario_enviado";
 
             saveSessionLocally();
 
-            document.body
-                .classList
-                .add(
-                    "chat-started"
-                );
-
-            moveInputToChat();
+            document.body.classList.add(
+                "chat-started"
+            );
 
             const userMessage =
                 addUserMessage(
                     text
                 );
 
-            promptInput.value =
-                "";
+            promptInput.value = "";
 
             resizeTextarea();
             updateButton();
@@ -3652,47 +3799,52 @@
                 userMessage
             );
 
+            window.clearTimeout(
+                responseTimeout
+            );
+
             responseTimeout =
                 window.setTimeout(
                     () => {
                         if (
                             sessionFinished
                         ) {
-                            thinkingMessage
-                                .remove();
-
+                            thinkingMessage.remove();
                             return;
                         }
 
                         const shownTimestamp =
                             Date.now();
 
-                        thinkingMessage
-                            .remove();
+                        thinkingMessage.remove();
 
                         displayAssistantResponse(
                             response
                         );
 
-                        turn
-                            .respuesta_mostrada_iso =
+                        turn.respuesta_mostrada_iso =
                             new Date(
                                 shownTimestamp
                             ).toISOString();
 
-                        turn
-                            .tiempo_respuesta_simulador_ms =
+                        turn.tiempo_respuesta_simulador_ms =
                             shownTimestamp -
                             sendTimestamp;
 
                         lastAssistantShownTimestamp =
                             shownTimestamp;
 
-                        currentSession
-                            .ultimo_evento_guardado =
+                        currentSession.ultimo_evento_guardado =
                             "respuesta_mostrada";
 
                         saveSessionLocally();
+
+                        window.setTimeout(
+                            () => {
+                                promptInput.focus();
+                            },
+                            20
+                        );
                     },
                     800
                 );
@@ -3737,11 +3889,9 @@
                 Date.now();
 
             currentSession.fin_iso =
-                new Date(now)
-                    .toISOString();
+                new Date(now).toISOString();
 
-            currentSession
-                .duracion_total_ms =
+            currentSession.duracion_total_ms =
                 Math.max(
                     0,
                     now -
@@ -3751,12 +3901,10 @@
             currentSession.estado =
                 "finalizada";
 
-            currentSession
-                .motivo_finalizacion =
+            currentSession.motivo_finalizacion =
                 reason;
 
-            currentSession
-                .ultimo_evento_guardado =
+            currentSession.ultimo_evento_guardado =
                 reason === "tiempo"
                     ? "tiempo_agotado"
                     : "finalizacion_por_comando";
@@ -3778,12 +3926,10 @@
                     currentSession
                 );
 
-            currentSession
-                .envio_online_intentado =
+            currentSession.envio_online_intentado =
                 true;
 
-            currentSession
-                .envio_online_aparente =
+            currentSession.envio_online_aparente =
                 sent;
 
             saveSessionLocally();
@@ -3811,24 +3957,20 @@
             currentSession.estado =
                 "interrumpida";
 
-            currentSession
-                .motivo_finalizacion =
+            currentSession.motivo_finalizacion =
                 reason;
 
             currentSession.fin_iso =
-                new Date(now)
-                    .toISOString();
+                new Date(now).toISOString();
 
-            currentSession
-                .duracion_total_ms =
+            currentSession.duracion_total_ms =
                 Math.max(
                     0,
                     now -
                     sessionStartTimestamp
                 );
 
-            currentSession
-                .ultimo_evento_guardado =
+            currentSession.ultimo_evento_guardado =
                 reason === "error"
                     ? "error"
                     : "cierre_o_recarga";
@@ -3844,80 +3986,66 @@
            PANTALLA COMPLETA
         ========================= */
 
-        let fullscreenClicks =
-            0;
+        let fullscreenClicks = 0;
+        let fullscreenTimer = null;
 
-        let fullscreenTimer =
-            null;
+        fullscreenCorner.addEventListener(
+            "click",
+            () => {
+                fullscreenClicks += 1;
 
-        fullscreenCorner
-            .addEventListener(
-                "click",
-                () => {
-                    fullscreenClicks += 1;
+                window.clearTimeout(
+                    fullscreenTimer
+                );
 
-                    window.clearTimeout(
-                        fullscreenTimer
+                fullscreenTimer =
+                    window.setTimeout(
+                        () => {
+                            fullscreenClicks = 0;
+                        },
+                        700
                     );
 
-                    fullscreenTimer =
-                        window.setTimeout(
-                            () => {
-                                fullscreenClicks =
-                                    0;
-                            },
-                            700
-                        );
-
-                    if (
-                        fullscreenClicks >= 3
-                    ) {
-                        fullscreenClicks =
-                            0;
-
-                        toggleFullscreen();
-                    }
+                if (
+                    fullscreenClicks >= 3
+                ) {
+                    fullscreenClicks = 0;
+                    toggleFullscreen();
                 }
-            );
+            }
+        );
 
         async function toggleFullscreen() {
             const element =
-                document
-                    .documentElement;
+                document.documentElement;
 
             const fullscreenElement =
-                document
-                    .fullscreenElement ||
-                document
-                    .webkitFullscreenElement;
+                document.fullscreenElement ||
+                document.webkitFullscreenElement;
 
             try {
                 if (
                     !fullscreenElement
                 ) {
                     if (
-                        element
-                            .requestFullscreen
+                        element.requestFullscreen
                     ) {
                         await element
                             .requestFullscreen();
                     } else if (
-                        element
-                            .webkitRequestFullscreen
+                        element.webkitRequestFullscreen
                     ) {
                         element
                             .webkitRequestFullscreen();
                     }
                 } else {
                     if (
-                        document
-                            .exitFullscreen
+                        document.exitFullscreen
                     ) {
                         await document
                             .exitFullscreen();
                     } else if (
-                        document
-                            .webkitExitFullscreen
+                        document.webkitExitFullscreen
                     ) {
                         document
                             .webkitExitFullscreen();
@@ -3935,55 +4063,67 @@
            EVENTOS
         ========================= */
 
-        startExperimentButton
-            .addEventListener(
-                "click",
-                startExperiment
-            );
+        startExperimentButton.addEventListener(
+            "click",
+            startExperiment
+        );
 
-        participantIdInput
-            .addEventListener(
-                "keydown",
-                event => {
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-                        startExperiment();
-                    }
+        participantIdInput.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+                    event.preventDefault();
+                    startExperiment();
                 }
-            );
+            }
+        );
 
-        promptInput
-            .addEventListener(
-                "input",
-                () => {
-                    updateButton();
-                    resizeTextarea();
+        promptInput.addEventListener(
+            "input",
+            () => {
+                updateButton();
+                resizeTextarea();
+            }
+        );
+
+        promptInput.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Enter" &&
+                    !event.shiftKey &&
+                    !event.isComposing
+                ) {
+                    event.preventDefault();
+                    sendMessage();
                 }
-            );
+            }
+        );
 
-        promptInput
-            .addEventListener(
-                "keydown",
-                event => {
-                    if (
-                        event.key ===
-                            "Enter" &&
-                        !event.shiftKey &&
-                        !event.isComposing
-                    ) {
-                        event.preventDefault();
-                        sendMessage();
-                    }
+        inputContainer.addEventListener(
+            "click",
+            event => {
+                const clickedButton =
+                    event.target.closest(
+                        "button"
+                    );
+
+                if (
+                    !clickedButton &&
+                    !promptInput.disabled
+                ) {
+                    promptInput.focus();
                 }
-            );
+            }
+        );
 
-        sendButton
-            .addEventListener(
-                "click",
-                sendMessage
-            );
+        sendButton.addEventListener(
+            "click",
+            sendMessage
+        );
 
         document
             .getElementById(
@@ -4006,8 +4146,7 @@
             "visibilitychange",
             () => {
                 if (
-                    document
-                        .visibilityState ===
+                    document.visibilityState ===
                         "visible" &&
                     currentSession &&
                     !sessionFinished &&
@@ -4038,12 +4177,10 @@
                     currentSession &&
                     !sessionFinished
                 ) {
-                    currentSession
-                        .ultimo_evento_guardado =
+                    currentSession.ultimo_evento_guardado =
                         "error_javascript";
 
-                    currentSession
-                        .ultimo_error =
+                    currentSession.ultimo_error =
                         event.message ||
                         "error_desconocido";
 
@@ -4059,12 +4196,10 @@
                     currentSession &&
                     !sessionFinished
                 ) {
-                    currentSession
-                        .ultimo_evento_guardado =
+                    currentSession.ultimo_evento_guardado =
                         "promesa_rechazada";
 
-                    currentSession
-                        .ultimo_error =
+                    currentSession.ultimo_error =
                         String(
                             event.reason ||
                             "error_desconocido"
@@ -4080,8 +4215,7 @@
 
         window.setTimeout(
             () => {
-                participantIdInput
-                    .focus();
+                participantIdInput.focus();
             },
             100
         );
