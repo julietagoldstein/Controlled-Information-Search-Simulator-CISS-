@@ -54,6 +54,7 @@
         }
 
         button,
+        input,
         textarea {
             font: inherit;
         }
@@ -63,9 +64,133 @@
         }
 
         button:focus-visible,
+        input:focus-visible,
         textarea:focus-visible {
             outline: 2px solid #0d0d0d;
             outline-offset: 2px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =========================
+           CONFIGURACIÓN INICIAL
+        ========================= */
+
+        #setupOverlay {
+            position: fixed;
+            z-index: 200000;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #ffffff;
+        }
+
+        #setupPanel {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        #setupPanel h1 {
+            margin-bottom: 28px;
+            color: #111111;
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        #participantIdInput {
+            width: 100%;
+            height: 58px;
+            padding: 0 18px;
+            border: 1px solid #cfcfcf;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #111111;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        #participantIdInput::placeholder {
+            color: #999999;
+        }
+
+        #startExperimentButton {
+            width: 100%;
+            min-height: 52px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 26px;
+            background: #111111;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+        #startExperimentButton:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        #setupError {
+            min-height: 22px;
+            margin-top: 12px;
+            color: #b42318;
+            font-size: 14px;
+        }
+
+        /* =========================
+           PANTALLA FINAL
+        ========================= */
+
+        #endOverlay {
+            position: fixed;
+            z-index: 210000;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: #ffffff;
+        }
+
+        #endPanel {
+            width: 100%;
+            max-width: 620px;
+            text-align: center;
+        }
+
+        #endPanel h1 {
+            margin-bottom: 14px;
+            color: #111111;
+            font-size: 34px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        #endPanel p {
+            color: #676767;
+            font-size: 22px;
+            line-height: 1.45;
+        }
+
+        /* =========================
+           ESQUINA PANTALLA COMPLETA
+        ========================= */
+
+        #fullscreenCorner {
+            position: fixed;
+            z-index: 220000;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: transparent;
         }
 
         /* =========================
@@ -144,13 +269,8 @@
             gap: 11px;
             background: transparent;
             color: #171717;
-            cursor: pointer;
+            cursor: default;
             text-align: left;
-            transition: background 0.15s ease;
-        }
-
-        .sidebar-nav-button:hover {
-            background: var(--hover-bg);
         }
 
         .sidebar-nav-button.active {
@@ -315,7 +435,7 @@
         }
 
         /* =========================
-           PANTALLA INICIAL
+           PANTALLA INICIAL DEL CHAT
         ========================= */
 
         #startScreen {
@@ -354,7 +474,7 @@
         }
 
         /* =========================
-           ZONA DE MENSAJES
+           MENSAJES
         ========================= */
 
         #messages {
@@ -451,7 +571,7 @@
         }
 
         /* =========================
-           CONTENIDO DEL GUION
+           GUION
         ========================= */
 
         .assistant-content {
@@ -895,11 +1015,49 @@
             #inputDisclaimer {
                 display: none !important;
             }
+
+            #endPanel h1 {
+                font-size: 29px;
+            }
+
+            #endPanel p {
+                font-size: 19px;
+            }
         }
     </style>
 </head>
 
 <body>
+
+    <div id="fullscreenCorner" aria-hidden="true"></div>
+
+    <div id="setupOverlay">
+        <div id="setupPanel">
+            <h1>Configuración del experimento</h1>
+
+            <input
+                id="participantIdInput"
+                type="text"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="ID participante"
+                aria-label="ID participante"
+            >
+
+            <button id="startExperimentButton" type="button">
+                Comenzar experimento
+            </button>
+
+            <div id="setupError" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <div id="endOverlay" class="hidden">
+        <div id="endPanel">
+            <h1>Se terminó el tiempo</h1>
+            <p>¡Es hora de jugar!</p>
+        </div>
+    </div>
 
     <aside id="sidebar">
 
@@ -920,12 +1078,7 @@
                     aria-label="Buscar"
                     title="Buscar"
                 >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <circle
                             cx="11"
                             cy="11"
@@ -948,12 +1101,7 @@
                     aria-label="Ocultar barra lateral"
                     title="Ocultar barra lateral"
                 >
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                    >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <rect
                             x="3"
                             y="4"
@@ -982,12 +1130,7 @@
                 class="sidebar-nav-button active"
                 type="button"
             >
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
                         d="M14 5H6.8A2.8 2.8 0 0 0 4 7.8v9.4A2.8 2.8 0 0 0 6.8 20h9.4a2.8 2.8 0 0 0 2.8-2.8V10"
                         stroke="currentColor"
@@ -1013,17 +1156,8 @@
                 <span>Nuevo chat</span>
             </button>
 
-            <button
-                class="sidebar-nav-button"
-                type="button"
-                tabindex="-1"
-            >
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+            <button class="sidebar-nav-button" type="button" tabindex="-1">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <rect
                         x="4"
                         y="5"
@@ -1040,12 +1174,7 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                     />
-                    <circle
-                        cx="14.5"
-                        cy="9"
-                        r="1.2"
-                        fill="currentColor"
-                    />
+                    <circle cx="14.5" cy="9" r="1.2" fill="currentColor" />
                     <path
                         d="M18 3.8h1.2A1.8 1.8 0 0 1 21 5.6v7.2"
                         stroke="currentColor"
@@ -1064,12 +1193,7 @@
         <div id="sidebarUtilities">
 
             <div class="sidebar-utility">
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
                         d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"
                         stroke="currentColor"
@@ -1088,12 +1212,7 @@
             </div>
 
             <div class="sidebar-utility">
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
                         d="M9.5 3.7 10 2h4l.5 1.7 1.6.7 1.6-.8 2.8 2.8-.8 1.6.7 1.6 1.6.5v4l-1.6.5-.7 1.6.8 1.6-2.8 2.8-1.6-.8-1.6.7L14 22h-4l-.5-1.7-1.6-.7-1.6.8-2.8-2.8.8-1.6-.7-1.6L2 14v-4l1.6-.5.7-1.6-.8-1.6 2.8-2.8 1.6.8 1.6-.6Z"
                         stroke="currentColor"
@@ -1113,12 +1232,7 @@
             </div>
 
             <div class="sidebar-utility">
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <circle
                         cx="12"
                         cy="12"
@@ -1170,12 +1284,7 @@
                 type="button"
                 aria-label="Abrir menú"
             >
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
                         d="M4 7h16M4 12h16M4 17h16"
                         stroke="currentColor"
@@ -1188,12 +1297,7 @@
             <div id="headerTitle">
                 <span>ChatGPT</span>
 
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
                         d="m8 10 4 4 4-4"
                         stroke="currentColor"
@@ -1241,12 +1345,7 @@
                         aria-label="Añadir"
                         title="Añadir"
                     >
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                        >
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <path
                                 d="M12 5v14M5 12h14"
                                 stroke="currentColor"
@@ -1271,12 +1370,7 @@
                             aria-label="Micrófono"
                             title="Micrófono"
                         >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                            >
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <rect
                                     x="9"
                                     y="3"
@@ -1300,12 +1394,7 @@
                             type="button"
                             aria-label="Voz"
                         >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                            >
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path
                                     d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"
                                     stroke="currentColor"
@@ -1324,12 +1413,7 @@
                             aria-label="Enviar mensaje"
                             title="Enviar mensaje"
                         >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                            >
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path
                                     d="M12 19V5"
                                     stroke="currentColor"
@@ -1361,14 +1445,140 @@
     </main>
 
     <script>
-        const main = document.getElementById("main");
-        const startScreen = document.getElementById("startScreen");
-        const inputArea = document.getElementById("inputArea");
-        const promptInput = document.getElementById("prompt");
-        const sendButton = document.getElementById("sendButton");
-        const messages = document.getElementById("messages");
-        const newChatButton = document.getElementById("newChatButton");
-        const inputContainer = document.getElementById("inputContainer");
+        /* =========================
+           CONFIGURACIÓN
+        ========================= */
+
+        const SIMULATOR_VERSION =
+            "AIChat_v1.1_forms";
+
+        const TIME_LIMIT_MS =
+            10 * 60 * 1000;
+
+        const MANUAL_END_COMMANDS =
+            new Set([
+                "fin",
+                "/fin"
+            ]);
+
+        const ACTIVE_SESSION_KEY =
+            "aiChatActiveSession";
+
+        const SESSION_ARCHIVE_KEY =
+            "aiChatExperimentSessions";
+
+        const GOOGLE_FORM_CONFIG =
+            Object.freeze({
+                enabled: true,
+
+                formURL:
+                    "https://docs.google.com/forms/d/e/1FAIpQLSd-jC8jc_UwiMOW3Y2g92AoNm9WSy4buENDWDYqTDAvHr0hqQ/formResponse",
+
+                entries: {
+                    id:
+                        "entry.734956938",
+
+                    session_id:
+                        "entry.881696520",
+
+                    inicio:
+                        "entry.1221449566",
+
+                    fin:
+                        "entry.262053977",
+
+                    duracion_total_ms:
+                        "entry.1019970391",
+
+                    estado:
+                        "entry.1253557311",
+
+                    motivo_finalizacion:
+                        "entry.421581979",
+
+                    cantidad_mensajes_usuario:
+                        "entry.1728551874",
+
+                    cantidad_palabras_usuario:
+                        "entry.670694487",
+
+                    caracteres_con_espacios:
+                        "entry.144925831",
+
+                    conteos_categorias_json:
+                        "entry.587160584",
+
+                    conversacion_json:
+                        "entry.1906092020",
+
+                    ultimo_evento_guardado:
+                        "entry.2078020150",
+
+                    version_simulador:
+                        "entry.427391662"
+                }
+            });
+
+        /* =========================
+           ELEMENTOS
+        ========================= */
+
+        const main =
+            document.getElementById("main");
+
+        const inputArea =
+            document.getElementById("inputArea");
+
+        const promptInput =
+            document.getElementById("prompt");
+
+        const sendButton =
+            document.getElementById("sendButton");
+
+        const messages =
+            document.getElementById("messages");
+
+        const inputContainer =
+            document.getElementById("inputContainer");
+
+        const setupOverlay =
+            document.getElementById("setupOverlay");
+
+        const participantIdInput =
+            document.getElementById(
+                "participantIdInput"
+            );
+
+        const startExperimentButton =
+            document.getElementById(
+                "startExperimentButton"
+            );
+
+        const setupError =
+            document.getElementById(
+                "setupError"
+            );
+
+        const endOverlay =
+            document.getElementById(
+                "endOverlay"
+            );
+
+        const fullscreenCorner =
+            document.getElementById(
+                "fullscreenCorner"
+            );
+
+        /* =========================
+           ESTADO
+        ========================= */
+
+        let currentSession = null;
+        let sessionStartTimestamp = 0;
+        let lastAssistantShownTimestamp = 0;
+        let sessionTimeout = null;
+        let responseTimeout = null;
+        let sessionFinished = false;
 
         const Category = Object.freeze({
             GREETING: "GREETING",
@@ -1525,6 +1735,10 @@
             "podes",
             "podrias"
         ]);
+
+        /* =========================
+           RESPUESTAS FIJAS
+        ========================= */
 
         const fullSetScript = `
             <div class="assistant-content">
@@ -1744,18 +1958,32 @@
             </div>
         `;
 
+        /* =========================
+           TEXTO Y CLASIFICACIÓN
+        ========================= */
+
         function normalizeText(text) {
             return text
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9ñ\s]/g, " ")
+                .replace(/[^a-z0-9ñ\s/]/g, " ")
                 .replace(/\s+/g, " ")
                 .trim();
         }
 
+        function isManualEndCommand(text) {
+            const normalized =
+                normalizeText(text);
+
+            return MANUAL_END_COMMANDS.has(
+                normalized
+            );
+        }
+
         function isGreeting(text) {
-            const normalized = normalizeText(text);
+            const normalized =
+                normalizeText(text);
 
             const greetingPatterns = [
                 /^hola+$/,
@@ -1770,13 +1998,15 @@
                 /^hey$/
             ];
 
-            return greetingPatterns.some(pattern =>
-                pattern.test(normalized)
+            return greetingPatterns.some(
+                pattern =>
+                    pattern.test(normalized)
             );
         }
 
         function tokenize(text) {
-            const normalized = normalizeText(text);
+            const normalized =
+                normalizeText(text);
 
             if (!normalized) {
                 return [];
@@ -1784,52 +2014,87 @@
 
             return normalized
                 .split(" ")
-                .filter(token =>
-                    token && !STOP_WORDS.has(token)
+                .filter(
+                    token =>
+                        token &&
+                        !STOP_WORDS.has(token)
                 );
         }
 
-        function levenshteinDistance(firstWord, secondWord) {
-            const first = String(firstWord);
-            const second = String(secondWord);
+        function levenshteinDistance(
+            firstWord,
+            secondWord
+        ) {
+            const first =
+                String(firstWord);
 
-            const rows = first.length + 1;
-            const columns = second.length + 1;
+            const second =
+                String(secondWord);
 
-            const matrix = Array.from(
-                { length: rows },
-                () => Array(columns).fill(0)
-            );
+            const rows =
+                first.length + 1;
 
-            for (let row = 0; row < rows; row += 1) {
+            const columns =
+                second.length + 1;
+
+            const matrix =
+                Array.from(
+                    { length: rows },
+                    () =>
+                        Array(columns).fill(0)
+                );
+
+            for (
+                let row = 0;
+                row < rows;
+                row += 1
+            ) {
                 matrix[row][0] = row;
             }
 
-            for (let column = 0; column < columns; column += 1) {
-                matrix[0][column] = column;
+            for (
+                let column = 0;
+                column < columns;
+                column += 1
+            ) {
+                matrix[0][column] =
+                    column;
             }
 
-            for (let row = 1; row < rows; row += 1) {
-                for (let column = 1; column < columns; column += 1) {
+            for (
+                let row = 1;
+                row < rows;
+                row += 1
+            ) {
+                for (
+                    let column = 1;
+                    column < columns;
+                    column += 1
+                ) {
                     const substitutionCost =
-                        first[row - 1] === second[column - 1]
+                        first[row - 1] ===
+                        second[column - 1]
                             ? 0
                             : 1;
 
-                    matrix[row][column] = Math.min(
-                        matrix[row - 1][column] + 1,
-                        matrix[row][column - 1] + 1,
-                        matrix[row - 1][column - 1] +
-                            substitutionCost
-                    );
+                    matrix[row][column] =
+                        Math.min(
+                            matrix[row - 1][column] + 1,
+                            matrix[row][column - 1] + 1,
+                            matrix[row - 1][column - 1] +
+                                substitutionCost
+                        );
                 }
             }
 
             return matrix[rows - 1][columns - 1];
         }
 
-        function getAllowedDistance(targetWord) {
-            const length = targetWord.length;
+        function getAllowedDistance(
+            targetWord
+        ) {
+            const length =
+                targetWord.length;
 
             if (length <= 3) {
                 return 0;
@@ -1860,7 +2125,9 @@
             inputToken,
             targetToken
         ) {
-            if (inputToken === targetToken) {
+            if (
+                inputToken === targetToken
+            ) {
                 return true;
             }
 
@@ -1874,16 +2141,21 @@
             }
 
             const allowedDistance =
-                getAllowedDistance(targetToken);
+                getAllowedDistance(
+                    targetToken
+                );
 
-            if (allowedDistance === 0) {
+            if (
+                allowedDistance === 0
+            ) {
                 return false;
             }
 
-            const lengthDifference = Math.abs(
-                inputToken.length -
-                targetToken.length
-            );
+            const lengthDifference =
+                Math.abs(
+                    inputToken.length -
+                    targetToken.length
+                );
 
             if (
                 lengthDifference >
@@ -1902,11 +2174,12 @@
             tokens,
             targetWord
         ) {
-            return tokens.some(token =>
-                tokensAreSimilar(
-                    token,
-                    targetWord
-                )
+            return tokens.some(
+                token =>
+                    tokensAreSimilar(
+                        token,
+                        targetWord
+                    )
             );
         }
 
@@ -1914,11 +2187,12 @@
             tokens,
             targetWords
         ) {
-            return targetWords.some(targetWord =>
-                tokenListContains(
-                    tokens,
-                    targetWord
-                )
+            return targetWords.some(
+                targetWord =>
+                    tokenListContains(
+                        tokens,
+                        targetWord
+                    )
             );
         }
 
@@ -1926,27 +2200,41 @@
             tokens,
             targetWords
         ) {
-            const matchedInputTokens =
+            const matchedInputIndexes =
                 new Set();
 
-            targetWords.forEach(targetWord => {
-                const matchingToken =
-                    tokens.find(token =>
-                        !matchedInputTokens.has(token) &&
-                        tokensAreSimilar(
-                            token,
-                            targetWord
-                        )
-                    );
+            let totalMatches = 0;
 
-                if (matchingToken) {
-                    matchedInputTokens.add(
-                        matchingToken
-                    );
+            targetWords.forEach(
+                targetWord => {
+                    const matchingIndex =
+                        tokens.findIndex(
+                            (
+                                token,
+                                index
+                            ) =>
+                                !matchedInputIndexes.has(
+                                    index
+                                ) &&
+                                tokensAreSimilar(
+                                    token,
+                                    targetWord
+                                )
+                        );
+
+                    if (
+                        matchingIndex !== -1
+                    ) {
+                        matchedInputIndexes.add(
+                            matchingIndex
+                        );
+
+                        totalMatches += 1;
+                    }
                 }
-            });
+            );
 
-            return matchedInputTokens.size;
+            return totalMatches;
         }
 
         function hasExampleMarker(tokens) {
@@ -1961,11 +2249,18 @@
             number,
             word
         ) {
-            return tokens.includes(number) ||
-                tokenListContains(tokens, word);
+            return (
+                tokens.includes(number) ||
+                tokenListContains(
+                    tokens,
+                    word
+                )
+            );
         }
 
-        function classifySpecificExample(tokens) {
+        function classifySpecificExample(
+            tokens
+        ) {
             const exampleMarker =
                 hasExampleMarker(tokens);
 
@@ -1977,7 +2272,10 @@
                 ) ||
                 tokenListContainsAny(
                     tokens,
-                    ["primer", "primero"]
+                    [
+                        "primer",
+                        "primero"
+                    ]
                 );
 
             const hasTwo =
@@ -1988,7 +2286,10 @@
                 ) ||
                 tokenListContainsAny(
                     tokens,
-                    ["segundo", "segunda"]
+                    [
+                        "segundo",
+                        "segunda"
+                    ]
                 );
 
             const hasThree =
@@ -1999,7 +2300,10 @@
                 ) ||
                 tokenListContainsAny(
                     tokens,
-                    ["tercer", "tercero"]
+                    [
+                        "tercer",
+                        "tercero"
+                    ]
                 );
 
             const hasFour =
@@ -2016,7 +2320,10 @@
             const hasGreenAndBlue =
                 tokenListContainsAny(
                     tokens,
-                    ["verde", "verdes"]
+                    [
+                        "verde",
+                        "verdes"
+                    ]
                 ) &&
                 tokenListContains(
                     tokens,
@@ -2026,17 +2333,26 @@
             const hasBrokenRule =
                 tokenListContainsAny(
                     tokens,
-                    ["rompe", "romper"]
+                    [
+                        "rompe",
+                        "romper"
+                    ]
                 );
 
             const hasMixture =
                 tokenListContainsAny(
                     tokens,
-                    ["mezcla", "combinacion"]
+                    [
+                        "mezcla",
+                        "combinacion"
+                    ]
                 );
 
             if (
-                (exampleMarker && hasFour) ||
+                (
+                    exampleMarker &&
+                    hasFour
+                ) ||
                 hasGreenAndBlue ||
                 hasBrokenRule
             ) {
@@ -2044,7 +2360,10 @@
             }
 
             if (
-                (exampleMarker && hasThree) ||
+                (
+                    exampleMarker &&
+                    hasThree
+                ) ||
                 hasMixture
             ) {
                 return Category.EXAMPLE_3;
@@ -2067,7 +2386,9 @@
             return null;
         }
 
-        function calculateCategoryScores(tokens) {
+        function calculateCategoryScores(
+            tokens
+        ) {
             const scores = {
                 [Category.GENERAL]: 0,
                 [Category.RULE]: 0,
@@ -2119,7 +2440,9 @@
                     TOKEN_GROUPS.EXAMPLE_4
                 ) * 2;
 
-            if (setContextScore > 0) {
+            if (
+                setContextScore > 0
+            ) {
                 scores[Category.GENERAL] += 1;
                 scores[Category.RULE] += 1;
             }
@@ -2127,7 +2450,9 @@
             return scores;
         }
 
-        function getHighestScoringCategory(scores) {
+        function getHighestScoringCategory(
+            scores
+        ) {
             const categoryPriority = [
                 Category.EXAMPLE_4,
                 Category.EXAMPLE_3,
@@ -2142,14 +2467,22 @@
 
             let bestScore = 0;
 
-            categoryPriority.forEach(category => {
-                const score = scores[category];
+            categoryPriority.forEach(
+                category => {
+                    const score =
+                        scores[category];
 
-                if (score > bestScore) {
-                    bestCategory = category;
-                    bestScore = score;
+                    if (
+                        score > bestScore
+                    ) {
+                        bestCategory =
+                            category;
+
+                        bestScore =
+                            score;
+                    }
                 }
-            });
+            );
 
             return {
                 category: bestCategory,
@@ -2158,28 +2491,41 @@
         }
 
         function classifyQuestion(text) {
-            if (isGreeting(text)) {
+            if (
+                isGreeting(text)
+            ) {
                 return Category.GREETING;
             }
 
-            const tokens = tokenize(text);
+            const tokens =
+                tokenize(text);
 
-            if (tokens.length === 0) {
+            if (
+                tokens.length === 0
+            ) {
                 return Category.OFF_TOPIC;
             }
 
             const specificExample =
-                classifySpecificExample(tokens);
+                classifySpecificExample(
+                    tokens
+                );
 
-            if (specificExample) {
+            if (
+                specificExample
+            ) {
                 return specificExample;
             }
 
             const scores =
-                calculateCategoryScores(tokens);
+                calculateCategoryScores(
+                    tokens
+                );
 
             const result =
-                getHighestScoringCategory(scores);
+                getHighestScoringCategory(
+                    scores
+                );
 
             const hasRuleContrast =
                 tokenListContains(
@@ -2201,59 +2547,861 @@
                 return Category.RULE;
             }
 
-            if (result.score < 2) {
+            if (
+                result.score < 2
+            ) {
                 return Category.OFF_TOPIC;
             }
 
             return result.category;
         }
 
-        function updateButton() {
-            const hasText =
-                promptInput.value.trim() !== "";
+        /* =========================
+           MÉTRICAS
+        ========================= */
 
-            sendButton.disabled = !hasText;
+        function countWords(text) {
+            const normalized =
+                text
+                    .trim()
+                    .replace(/\s+/g, " ");
 
-            inputContainer.classList.toggle(
-                "has-text",
-                hasText
+            if (!normalized) {
+                return 0;
+            }
+
+            return normalized
+                .split(" ")
+                .length;
+        }
+
+        function countCharactersWithoutSpaces(
+            text
+        ) {
+            return text
+                .replace(/\s/g, "")
+                .length;
+        }
+
+        function createSessionId(
+            participantId
+        ) {
+            return (
+                participantId +
+                "_" +
+                Date.now()
             );
         }
 
-        function resizeTextarea() {
-            promptInput.style.height = "auto";
+        function getCategoryCounts(
+            turns
+        ) {
+            const counts = {
+                GREETING: 0,
+                GENERAL: 0,
+                RULE: 0,
+                EXAMPLE_1: 0,
+                EXAMPLE_2: 0,
+                EXAMPLE_3: 0,
+                EXAMPLE_4: 0,
+                OFF_TOPIC: 0
+            };
 
-            const newHeight = Math.min(
-                promptInput.scrollHeight,
-                180
+            turns.forEach(
+                turn => {
+                    if (
+                        Object.prototype
+                            .hasOwnProperty
+                            .call(
+                                counts,
+                                turn.categoria_asignada
+                            )
+                    ) {
+                        counts[
+                            turn.categoria_asignada
+                        ] += 1;
+                    }
+                }
             );
+
+            return counts;
+        }
+
+        function updateSessionTotals(
+            session = currentSession
+        ) {
+            if (!session) {
+                return;
+            }
+
+            session
+                .cantidad_mensajes_usuario =
+                session.turnos.length;
+
+            session
+                .cantidad_palabras_usuario =
+                session.turnos.reduce(
+                    (
+                        total,
+                        turn
+                    ) =>
+                        total +
+                        turn.cantidad_palabras,
+                    0
+                );
+
+            session
+                .cantidad_caracteres_con_espacios =
+                session.turnos.reduce(
+                    (
+                        total,
+                        turn
+                    ) =>
+                        total +
+                        turn
+                            .caracteres_con_espacios,
+                    0
+                );
+
+            session
+                .cantidad_caracteres_sin_espacios =
+                session.turnos.reduce(
+                    (
+                        total,
+                        turn
+                    ) =>
+                        total +
+                        turn
+                            .caracteres_sin_espacios,
+                    0
+                );
+
+            session.conteos_categorias =
+                getCategoryCounts(
+                    session.turnos
+                );
+        }
+
+        /* =========================
+           GUARDADO LOCAL
+        ========================= */
+
+        function getSessionArchive() {
+            try {
+                return JSON.parse(
+                    localStorage.getItem(
+                        SESSION_ARCHIVE_KEY
+                    ) || "[]"
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudo leer el archivo local:",
+                    error
+                );
+
+                return [];
+            }
+        }
+
+        function saveSessionToArchive(
+            session
+        ) {
+            const archive =
+                getSessionArchive();
+
+            const existingIndex =
+                archive.findIndex(
+                    archivedSession =>
+                        archivedSession
+                            .session_id ===
+                        session.session_id
+                );
+
+            if (
+                existingIndex >= 0
+            ) {
+                archive[existingIndex] =
+                    session;
+            } else {
+                archive.push(session);
+            }
+
+            localStorage.setItem(
+                SESSION_ARCHIVE_KEY,
+                JSON.stringify(archive)
+            );
+        }
+
+        function saveSessionLocally() {
+            if (!currentSession) {
+                return;
+            }
+
+            updateSessionTotals(
+                currentSession
+            );
+
+            currentSession
+                .ultima_actualizacion_iso =
+                new Date().toISOString();
+
+            try {
+                localStorage.setItem(
+                    ACTIVE_SESSION_KEY,
+                    JSON.stringify(
+                        currentSession
+                    )
+                );
+
+                saveSessionToArchive(
+                    currentSession
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudieron guardar los datos localmente:",
+                    error
+                );
+            }
+        }
+
+        function readActiveSession() {
+            try {
+                return JSON.parse(
+                    localStorage.getItem(
+                        ACTIVE_SESSION_KEY
+                    ) || "null"
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudo leer la sesión activa:",
+                    error
+                );
+
+                return null;
+            }
+        }
+
+        async function markPreviousSessionAsInterrupted() {
+            const previousSession =
+                readActiveSession();
+
+            if (!previousSession) {
+                return;
+            }
+
+            if (
+                previousSession.estado ===
+                "finalizada"
+            ) {
+                localStorage.removeItem(
+                    ACTIVE_SESSION_KEY
+                );
+
+                return;
+            }
+
+            if (
+                previousSession.estado !==
+                "en_curso"
+            ) {
+                return;
+            }
+
+            const now =
+                Date.now();
+
+            updateSessionTotals(
+                previousSession
+            );
+
+            previousSession.estado =
+                "interrumpida";
+
+            previousSession
+                .motivo_finalizacion =
+                "sesion_incompleta_detectada";
+
+            previousSession.fin_iso =
+                new Date(now)
+                    .toISOString();
+
+            previousSession
+                .duracion_total_ms =
+                Math.max(
+                    0,
+                    now -
+                    previousSession
+                        .inicio_timestamp
+                );
+
+            previousSession
+                .ultimo_evento_guardado =
+                "sesion_incompleta_detectada";
+
+            previousSession
+                .ultima_actualizacion_iso =
+                new Date(now)
+                    .toISOString();
+
+            try {
+                saveSessionToArchive(
+                    previousSession
+                );
+
+                await saveOnline(
+                    previousSession
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudo cerrar la sesión anterior:",
+                    error
+                );
+            } finally {
+                localStorage.removeItem(
+                    ACTIVE_SESSION_KEY
+                );
+            }
+        }
+
+        /* =========================
+           GOOGLE FORMS
+        ========================= */
+
+        function isGoogleFormConfigured() {
+            if (
+                !GOOGLE_FORM_CONFIG.enabled
+            ) {
+                return false;
+            }
+
+            if (
+                !GOOGLE_FORM_CONFIG.formURL ||
+                GOOGLE_FORM_CONFIG
+                    .formURL
+                    .includes("REEMPLAZAR")
+            ) {
+                return false;
+            }
+
+            return Object.values(
+                GOOGLE_FORM_CONFIG.entries
+            ).every(
+                entry =>
+                    entry &&
+                    !entry.includes(
+                        "REEMPLAZAR"
+                    )
+            );
+        }
+
+        function createOnlinePayload(
+            session
+        ) {
+            updateSessionTotals(
+                session
+            );
+
+            return {
+                id:
+                    session.id,
+
+                session_id:
+                    session.session_id,
+
+                inicio:
+                    session.inicio_iso,
+
+                fin:
+                    session.fin_iso || "",
+
+                duracion_total_ms:
+                    session
+                        .duracion_total_ms ?? "",
+
+                estado:
+                    session.estado,
+
+                motivo_finalizacion:
+                    session
+                        .motivo_finalizacion || "",
+
+                cantidad_mensajes_usuario:
+                    session
+                        .cantidad_mensajes_usuario,
+
+                cantidad_palabras_usuario:
+                    session
+                        .cantidad_palabras_usuario,
+
+                caracteres_con_espacios:
+                    session
+                        .cantidad_caracteres_con_espacios,
+
+                conteos_categorias_json:
+                    JSON.stringify(
+                        session
+                            .conteos_categorias
+                    ),
+
+                conversacion_json:
+                    JSON.stringify(
+                        session.turnos
+                    ),
+
+                ultimo_evento_guardado:
+                    session
+                        .ultimo_evento_guardado,
+
+                version_simulador:
+                    session
+                        .version_simulador
+            };
+        }
+
+        function createGoogleFormData(
+            session
+        ) {
+            const payload =
+                createOnlinePayload(
+                    session
+                );
+
+            const formData =
+                new FormData();
+
+            Object.entries(
+                payload
+            ).forEach(
+                (
+                    [
+                        fieldName,
+                        value
+                    ]
+                ) => {
+                    const entryCode =
+                        GOOGLE_FORM_CONFIG
+                            .entries[
+                                fieldName
+                            ];
+
+                    if (!entryCode) {
+                        return;
+                    }
+
+                    formData.append(
+                        entryCode,
+                        String(value)
+                    );
+                }
+            );
+
+            return formData;
+        }
+
+        async function saveOnline(
+            session
+        ) {
+            if (
+                !isGoogleFormConfigured()
+            ) {
+                console.info(
+                    "Google Forms no está configurado. Los datos quedaron guardados localmente."
+                );
+
+                return false;
+            }
+
+            try {
+                const formData =
+                    createGoogleFormData(
+                        session
+                    );
+
+                await fetch(
+                    GOOGLE_FORM_CONFIG
+                        .formURL,
+                    {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: formData,
+                        keepalive: true
+                    }
+                );
+
+                console.info(
+                    "Se realizó el envío al formulario."
+                );
+
+                return true;
+            } catch (error) {
+                console.error(
+                    "No se pudieron enviar los datos:",
+                    error
+                );
+
+                return false;
+            }
+        }
+
+        function saveEmergencyOnline(
+            session
+        ) {
+            if (
+                !isGoogleFormConfigured()
+            ) {
+                return false;
+            }
+
+            try {
+                const formData =
+                    createGoogleFormData(
+                        session
+                    );
+
+                if (
+                    navigator.sendBeacon
+                ) {
+                    return navigator
+                        .sendBeacon(
+                            GOOGLE_FORM_CONFIG
+                                .formURL,
+                            formData
+                        );
+                }
+
+                fetch(
+                    GOOGLE_FORM_CONFIG
+                        .formURL,
+                    {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: formData,
+                        keepalive: true
+                    }
+                ).catch(
+                    error => {
+                        console.error(
+                            "Falló el envío de emergencia:",
+                            error
+                        );
+                    }
+                );
+
+                return true;
+            } catch (error) {
+                console.error(
+                    "No se pudo realizar el envío de emergencia:",
+                    error
+                );
+
+                return false;
+            }
+        }
+
+        /* =========================
+           INICIO
+        ========================= */
+
+        function normalizeParticipantId(
+            rawId
+        ) {
+            const trimmed =
+                rawId.trim();
+
+            if (!trimmed) {
+                return "";
+            }
+
+            if (
+                /^\d+$/.test(trimmed)
+            ) {
+                return trimmed.padStart(
+                    3,
+                    "0"
+                );
+            }
+
+            return trimmed;
+        }
+
+        async function startExperiment() {
+            const rawId =
+                participantIdInput
+                    .value;
+
+            const participantId =
+                normalizeParticipantId(
+                    rawId
+                );
+
+            if (!participantId) {
+                setupError.textContent =
+                    "Ingresá el ID del participante.";
+
+                participantIdInput.focus();
+                return;
+            }
+
+            setupError.textContent = "";
+
+            startExperimentButton.disabled =
+                true;
+
+            try {
+                await markPreviousSessionAsInterrupted();
+
+                const now =
+                    Date.now();
+
+                sessionStartTimestamp =
+                    now;
+
+                lastAssistantShownTimestamp =
+                    now;
+
+                sessionFinished =
+                    false;
+
+                currentSession = {
+                    id:
+                        participantId,
+
+                    session_id:
+                        createSessionId(
+                            participantId
+                        ),
+
+                    version_simulador:
+                        SIMULATOR_VERSION,
+
+                    tiempo_limite_ms:
+                        TIME_LIMIT_MS,
+
+                    inicio_timestamp:
+                        now,
+
+                    inicio_iso:
+                        new Date(now)
+                            .toISOString(),
+
+                    fin_iso:
+                        null,
+
+                    duracion_total_ms:
+                        null,
+
+                    estado:
+                        "en_curso",
+
+                    motivo_finalizacion:
+                        null,
+
+                    cantidad_mensajes_usuario:
+                        0,
+
+                    cantidad_palabras_usuario:
+                        0,
+
+                    cantidad_caracteres_con_espacios:
+                        0,
+
+                    cantidad_caracteres_sin_espacios:
+                        0,
+
+                    conteos_categorias:
+                        getCategoryCounts([]),
+
+                    ultimo_evento_guardado:
+                        "sesion_iniciada",
+
+                    ultima_actualizacion_iso:
+                        new Date(now)
+                            .toISOString(),
+
+                    turnos: []
+                };
+
+                saveSessionLocally();
+
+                setupOverlay.classList.add(
+                    "hidden"
+                );
+
+                sessionTimeout =
+                    window.setTimeout(
+                        () => {
+                            finishSession(
+                                "tiempo"
+                            );
+                        },
+                        TIME_LIMIT_MS
+                    );
+
+                window.setTimeout(
+                    () => {
+                        promptInput.focus();
+                    },
+                    200
+                );
+            } catch (error) {
+                console.error(
+                    "No se pudo iniciar el experimento:",
+                    error
+                );
+
+                setupError.textContent =
+                    "No se pudo iniciar. Volvé a intentarlo.";
+
+                startExperimentButton.disabled =
+                    false;
+            }
+        }
+
+        /* =========================
+           RESPUESTAS
+        ========================= */
+
+        function getAssistantResponse(
+            category
+        ) {
+            switch (category) {
+                case Category.GREETING:
+                    return {
+                        id: "GREETING",
+                        type: "text",
+                        content:
+                            GREETING_RESPONSE
+                    };
+
+                case Category.GENERAL:
+                    return {
+                        id: "GENERAL",
+                        type: "html",
+                        content:
+                            fullSetScript
+                    };
+
+                case Category.RULE:
+                    return {
+                        id: "RULE",
+                        type: "html",
+                        content:
+                            ruleScript
+                    };
+
+                case Category.EXAMPLE_1:
+                    return {
+                        id: "EXAMPLE_1",
+                        type: "html",
+                        content:
+                            example1Script
+                    };
+
+                case Category.EXAMPLE_2:
+                    return {
+                        id: "EXAMPLE_2",
+                        type: "html",
+                        content:
+                            example2Script
+                    };
+
+                case Category.EXAMPLE_3:
+                    return {
+                        id: "EXAMPLE_3",
+                        type: "html",
+                        content:
+                            example3Script
+                    };
+
+                case Category.EXAMPLE_4:
+                    return {
+                        id: "EXAMPLE_4",
+                        type: "html",
+                        content:
+                            example4Script
+                    };
+
+                case Category.OFF_TOPIC:
+                default:
+                    return {
+                        id: "OFF_TOPIC",
+                        type: "text",
+                        content:
+                            OFF_TOPIC_RESPONSE
+                    };
+            }
+        }
+
+        /* =========================
+           INTERFAZ
+        ========================= */
+
+        function updateButton() {
+            const hasText =
+                promptInput
+                    .value
+                    .trim() !== "";
+
+            sendButton.disabled =
+                !hasText ||
+                sessionFinished;
+
+            inputContainer
+                .classList
+                .toggle(
+                    "has-text",
+                    hasText &&
+                    !sessionFinished
+                );
+        }
+
+        function resizeTextarea() {
+            promptInput.style.height =
+                "auto";
+
+            const newHeight =
+                Math.min(
+                    promptInput.scrollHeight,
+                    180
+                );
 
             promptInput.style.height =
                 newHeight + "px";
 
             promptInput.style.overflowY =
-                promptInput.scrollHeight > 180
+                promptInput.scrollHeight >
+                180
                     ? "auto"
                     : "hidden";
         }
 
         function addUserMessage(text) {
             const wrapper =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             wrapper.className =
                 "message user-message";
 
             const bubble =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             bubble.className =
                 "user-bubble";
 
-            bubble.textContent = text;
+            bubble.textContent =
+                text;
 
-            wrapper.appendChild(bubble);
-            messages.appendChild(wrapper);
+            wrapper.appendChild(
+                bubble
+            );
+
+            messages.appendChild(
+                wrapper
+            );
 
             return wrapper;
         }
@@ -2263,102 +3411,64 @@
             extraClass = ""
         ) {
             const message =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             message.className =
-                `message assistant-message ${extraClass}`.trim();
+                (
+                    "message assistant-message " +
+                    extraClass
+                ).trim();
 
             const content =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             content.className =
                 "assistant-text";
 
-            content.textContent = text;
+            content.textContent =
+                text;
 
-            message.appendChild(content);
-            messages.appendChild(message);
+            message.appendChild(
+                content
+            );
+
+            messages.appendChild(
+                message
+            );
 
             return message;
         }
 
         function addAssistantHTML(html) {
             const message =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             message.className =
                 "message assistant-message";
 
-            message.innerHTML = html;
-            messages.appendChild(message);
+            message.innerHTML =
+                html;
+
+            messages.appendChild(
+                message
+            );
 
             return message;
         }
 
-        function positionAtUserMessage(userMessage) {
-            requestAnimationFrame(() => {
-                userMessage.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            });
-        }
-
-        function getAssistantResponse(category) {
-            switch (category) {
-                case Category.GREETING:
-                    return {
-                        type: "text",
-                        content: GREETING_RESPONSE
-                    };
-
-                case Category.GENERAL:
-                    return {
-                        type: "html",
-                        content: fullSetScript
-                    };
-
-                case Category.RULE:
-                    return {
-                        type: "html",
-                        content: ruleScript
-                    };
-
-                case Category.EXAMPLE_1:
-                    return {
-                        type: "html",
-                        content: example1Script
-                    };
-
-                case Category.EXAMPLE_2:
-                    return {
-                        type: "html",
-                        content: example2Script
-                    };
-
-                case Category.EXAMPLE_3:
-                    return {
-                        type: "html",
-                        content: example3Script
-                    };
-
-                case Category.EXAMPLE_4:
-                    return {
-                        type: "html",
-                        content: example4Script
-                    };
-
-                case Category.OFF_TOPIC:
-                default:
-                    return {
-                        type: "text",
-                        content: OFF_TOPIC_RESPONSE
-                    };
-            }
-        }
-
-        function displayAssistantResponse(response) {
-            if (response.type === "html") {
+        function displayAssistantResponse(
+            response
+        ) {
+            if (
+                response.type ===
+                "html"
+            ) {
                 return addAssistantHTML(
                     response.content
                 );
@@ -2369,32 +3479,166 @@
             );
         }
 
-        function moveInputToChat() {
-            main.appendChild(inputArea);
+        function positionAtUserMessage(
+            userMessage
+        ) {
+            requestAnimationFrame(
+                () => {
+                    userMessage
+                        .scrollIntoView({
+                            behavior:
+                                "smooth",
+                            block:
+                                "start"
+                        });
+                }
+            );
         }
 
-        function moveInputToStartScreen() {
-            startScreen.appendChild(inputArea);
+        function moveInputToChat() {
+            main.appendChild(
+                inputArea
+            );
         }
+
+        /* =========================
+           ENVÍO DE MENSAJES
+        ========================= */
 
         function sendMessage() {
+            if (
+                sessionFinished ||
+                !currentSession
+            ) {
+                return;
+            }
+
             const text =
-                promptInput.value.trim();
+                promptInput
+                    .value
+                    .trim();
 
             if (!text) {
                 return;
             }
 
-            document.body.classList.add(
-                "chat-started"
-            );
+            if (
+                isManualEndCommand(
+                    text
+                )
+            ) {
+                promptInput.value =
+                    "";
+
+                resizeTextarea();
+                updateButton();
+
+                finishSession(
+                    "comando"
+                );
+
+                return;
+            }
+
+            const sendTimestamp =
+                Date.now();
+
+            if (
+                sendTimestamp -
+                sessionStartTimestamp >=
+                TIME_LIMIT_MS
+            ) {
+                finishSession(
+                    "tiempo"
+                );
+
+                return;
+            }
+
+            const category =
+                classifyQuestion(
+                    text
+                );
+
+            const response =
+                getAssistantResponse(
+                    category
+                );
+
+            const turn = {
+                turno:
+                    currentSession
+                        .turnos
+                        .length + 1,
+
+                texto_original:
+                    text,
+
+                texto_normalizado:
+                    normalizeText(text),
+
+                categoria_asignada:
+                    category,
+
+                respuesta_id:
+                    response.id,
+
+                tiempo_previo_ms:
+                    Math.max(
+                        0,
+                        sendTimestamp -
+                        lastAssistantShownTimestamp
+                    ),
+
+                cantidad_palabras:
+                    countWords(text),
+
+                caracteres_con_espacios:
+                    text.length,
+
+                caracteres_sin_espacios:
+                    countCharactersWithoutSpaces(
+                        text
+                    ),
+
+                hora_envio_iso:
+                    new Date(
+                        sendTimestamp
+                    ).toISOString(),
+
+                respuesta_mostrada_iso:
+                    null,
+
+                tiempo_respuesta_simulador_ms:
+                    null
+            };
+
+            currentSession
+                .turnos
+                .push(turn);
+
+            currentSession
+                .ultimo_evento_guardado =
+                "mensaje_usuario_enviado";
+
+            saveSessionLocally();
+
+            document.body
+                .classList
+                .add(
+                    "chat-started"
+                );
 
             moveInputToChat();
 
             const userMessage =
-                addUserMessage(text);
+                addUserMessage(
+                    text
+                );
 
-            promptInput.value = "";
+            promptInput.value =
+                "";
+
             resizeTextarea();
             updateButton();
 
@@ -2404,78 +3648,443 @@
                     "thinking"
                 );
 
-            positionAtUserMessage(userMessage);
-
-            window.setTimeout(() => {
-                const category =
-                    classifyQuestion(text);
-
-                const response =
-                    getAssistantResponse(category);
-
-                thinkingMessage.remove();
-                displayAssistantResponse(response);
-            }, 800);
-        }
-
-        function resetChat() {
-            const existingMessages =
-                messages.querySelectorAll(
-                    ".message"
-                );
-
-            existingMessages.forEach(message => {
-                message.remove();
-            });
-
-            document.body.classList.remove(
-                "chat-started"
+            positionAtUserMessage(
+                userMessage
             );
 
-            moveInputToStartScreen();
+            responseTimeout =
+                window.setTimeout(
+                    () => {
+                        if (
+                            sessionFinished
+                        ) {
+                            thinkingMessage
+                                .remove();
 
-            promptInput.value = "";
-            resizeTextarea();
-            updateButton();
+                            return;
+                        }
 
-            messages.scrollTop = 0;
-            promptInput.focus();
+                        const shownTimestamp =
+                            Date.now();
+
+                        thinkingMessage
+                            .remove();
+
+                        displayAssistantResponse(
+                            response
+                        );
+
+                        turn
+                            .respuesta_mostrada_iso =
+                            new Date(
+                                shownTimestamp
+                            ).toISOString();
+
+                        turn
+                            .tiempo_respuesta_simulador_ms =
+                            shownTimestamp -
+                            sendTimestamp;
+
+                        lastAssistantShownTimestamp =
+                            shownTimestamp;
+
+                        currentSession
+                            .ultimo_evento_guardado =
+                            "respuesta_mostrada";
+
+                        saveSessionLocally();
+                    },
+                    800
+                );
         }
 
-        promptInput.addEventListener(
-            "input",
-            () => {
-                updateButton();
-                resizeTextarea();
-            }
-        );
+        /* =========================
+           FINALIZACIÓN
+        ========================= */
 
-        promptInput.addEventListener(
-            "keydown",
-            event => {
+        async function finishSession(
+            reason
+        ) {
+            if (
+                sessionFinished ||
+                !currentSession
+            ) {
+                return;
+            }
+
+            sessionFinished =
+                true;
+
+            window.clearTimeout(
+                sessionTimeout
+            );
+
+            window.clearTimeout(
+                responseTimeout
+            );
+
+            document
+                .querySelectorAll(
+                    ".thinking"
+                )
+                .forEach(
+                    element => {
+                        element.remove();
+                    }
+                );
+
+            const now =
+                Date.now();
+
+            currentSession.fin_iso =
+                new Date(now)
+                    .toISOString();
+
+            currentSession
+                .duracion_total_ms =
+                Math.max(
+                    0,
+                    now -
+                    sessionStartTimestamp
+                );
+
+            currentSession.estado =
+                "finalizada";
+
+            currentSession
+                .motivo_finalizacion =
+                reason;
+
+            currentSession
+                .ultimo_evento_guardado =
+                reason === "tiempo"
+                    ? "tiempo_agotado"
+                    : "finalizacion_por_comando";
+
+            saveSessionLocally();
+
+            promptInput.disabled =
+                true;
+
+            sendButton.disabled =
+                true;
+
+            endOverlay.classList.remove(
+                "hidden"
+            );
+
+            const sent =
+                await saveOnline(
+                    currentSession
+                );
+
+            currentSession
+                .envio_online_intentado =
+                true;
+
+            currentSession
+                .envio_online_aparente =
+                sent;
+
+            saveSessionLocally();
+
+            localStorage.removeItem(
+                ACTIVE_SESSION_KEY
+            );
+        }
+
+        function preserveInterruptedSession(
+            reason
+        ) {
+            if (
+                !currentSession ||
+                sessionFinished ||
+                currentSession.estado !==
+                    "en_curso"
+            ) {
+                return;
+            }
+
+            const now =
+                Date.now();
+
+            currentSession.estado =
+                "interrumpida";
+
+            currentSession
+                .motivo_finalizacion =
+                reason;
+
+            currentSession.fin_iso =
+                new Date(now)
+                    .toISOString();
+
+            currentSession
+                .duracion_total_ms =
+                Math.max(
+                    0,
+                    now -
+                    sessionStartTimestamp
+                );
+
+            currentSession
+                .ultimo_evento_guardado =
+                reason === "error"
+                    ? "error"
+                    : "cierre_o_recarga";
+
+            saveSessionLocally();
+
+            saveEmergencyOnline(
+                currentSession
+            );
+        }
+
+        /* =========================
+           PANTALLA COMPLETA
+        ========================= */
+
+        let fullscreenClicks =
+            0;
+
+        let fullscreenTimer =
+            null;
+
+        fullscreenCorner
+            .addEventListener(
+                "click",
+                () => {
+                    fullscreenClicks += 1;
+
+                    window.clearTimeout(
+                        fullscreenTimer
+                    );
+
+                    fullscreenTimer =
+                        window.setTimeout(
+                            () => {
+                                fullscreenClicks =
+                                    0;
+                            },
+                            700
+                        );
+
+                    if (
+                        fullscreenClicks >= 3
+                    ) {
+                        fullscreenClicks =
+                            0;
+
+                        toggleFullscreen();
+                    }
+                }
+            );
+
+        async function toggleFullscreen() {
+            const element =
+                document
+                    .documentElement;
+
+            const fullscreenElement =
+                document
+                    .fullscreenElement ||
+                document
+                    .webkitFullscreenElement;
+
+            try {
                 if (
-                    event.key === "Enter" &&
-                    !event.shiftKey &&
-                    !event.isComposing
+                    !fullscreenElement
                 ) {
+                    if (
+                        element
+                            .requestFullscreen
+                    ) {
+                        await element
+                            .requestFullscreen();
+                    } else if (
+                        element
+                            .webkitRequestFullscreen
+                    ) {
+                        element
+                            .webkitRequestFullscreen();
+                    }
+                } else {
+                    if (
+                        document
+                            .exitFullscreen
+                    ) {
+                        await document
+                            .exitFullscreen();
+                    } else if (
+                        document
+                            .webkitExitFullscreen
+                    ) {
+                        document
+                            .webkitExitFullscreen();
+                    }
+                }
+            } catch (error) {
+                console.error(
+                    "No se pudo cambiar el modo de pantalla completa:",
+                    error
+                );
+            }
+        }
+
+        /* =========================
+           EVENTOS
+        ========================= */
+
+        startExperimentButton
+            .addEventListener(
+                "click",
+                startExperiment
+            );
+
+        participantIdInput
+            .addEventListener(
+                "keydown",
+                event => {
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+                        startExperiment();
+                    }
+                }
+            );
+
+        promptInput
+            .addEventListener(
+                "input",
+                () => {
+                    updateButton();
+                    resizeTextarea();
+                }
+            );
+
+        promptInput
+            .addEventListener(
+                "keydown",
+                event => {
+                    if (
+                        event.key ===
+                            "Enter" &&
+                        !event.shiftKey &&
+                        !event.isComposing
+                    ) {
+                        event.preventDefault();
+                        sendMessage();
+                    }
+                }
+            );
+
+        sendButton
+            .addEventListener(
+                "click",
+                sendMessage
+            );
+
+        document
+            .getElementById(
+                "newChatButton"
+            )
+            .addEventListener(
+                "click",
+                event => {
                     event.preventDefault();
-                    sendMessage();
+
+                    if (
+                        !sessionFinished
+                    ) {
+                        promptInput.focus();
+                    }
+                }
+            );
+
+        document.addEventListener(
+            "visibilitychange",
+            () => {
+                if (
+                    document
+                        .visibilityState ===
+                        "visible" &&
+                    currentSession &&
+                    !sessionFinished &&
+                    Date.now() -
+                        sessionStartTimestamp >=
+                        TIME_LIMIT_MS
+                ) {
+                    finishSession(
+                        "tiempo"
+                    );
                 }
             }
         );
 
-        sendButton.addEventListener(
-            "click",
-            sendMessage
+        window.addEventListener(
+            "pagehide",
+            () => {
+                preserveInterruptedSession(
+                    "cierre_o_recarga"
+                );
+            }
         );
 
-        newChatButton.addEventListener(
-            "click",
-            resetChat
+        window.addEventListener(
+            "error",
+            event => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    currentSession
+                        .ultimo_evento_guardado =
+                        "error_javascript";
+
+                    currentSession
+                        .ultimo_error =
+                        event.message ||
+                        "error_desconocido";
+
+                    saveSessionLocally();
+                }
+            }
+        );
+
+        window.addEventListener(
+            "unhandledrejection",
+            event => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    currentSession
+                        .ultimo_evento_guardado =
+                        "promesa_rechazada";
+
+                    currentSession
+                        .ultimo_error =
+                        String(
+                            event.reason ||
+                            "error_desconocido"
+                        );
+
+                    saveSessionLocally();
+                }
+            }
         );
 
         resizeTextarea();
         updateButton();
+
+        window.setTimeout(
+            () => {
+                participantIdInput
+                    .focus();
+            },
+            100
+        );
     </script>
 
 </body>
