@@ -438,7 +438,7 @@
         }
 
         /* =========================
-           PANTALLA INICIAL DEL CHAT
+           PANTALLA INICIAL
         ========================= */
 
         #startScreen {
@@ -860,34 +860,12 @@
                 padding-top: 115px;
             }
 
-            #welcome {
-                margin-bottom: 24px;
-            }
-
             #inputArea {
                 top: clamp(210px, 42vh, 320px);
             }
 
             body.chat-started #inputArea {
                 top: auto;
-            }
-
-            #sidebarLoginPanel {
-                padding-top: 16px;
-                padding-bottom: 14px;
-            }
-
-            #sidebarLoginPanel h2 {
-                margin-bottom: 10px;
-            }
-
-            #sidebarLoginPanel p {
-                margin-bottom: 15px;
-                line-height: 1.4;
-            }
-
-            #sidebarLoginButton {
-                min-height: 43px;
             }
         }
 
@@ -926,10 +904,6 @@
                 padding: clamp(125px, 23vh, 190px) 12px 0;
             }
 
-            #welcome {
-                margin-bottom: 25px;
-            }
-
             #welcome h1 {
                 font-size: 26px;
             }
@@ -962,15 +936,9 @@
                 margin-left: 7px;
             }
 
-            #addButton svg {
-                width: 24px;
-                height: 24px;
-            }
-
             #prompt {
                 min-height: 54px;
                 padding: 15px 112px 14px 2px;
-                font-size: 16px;
             }
 
             #composerActions {
@@ -984,20 +952,6 @@
                 height: 45px;
                 padding: 0 12px;
                 font-size: 14px;
-            }
-
-            #voiceButton svg {
-                width: 21px;
-                height: 21px;
-            }
-
-            #microphoneButton {
-                width: 36px;
-                height: 36px;
-            }
-
-            .message {
-                margin-bottom: 28px;
             }
 
             .user-bubble {
@@ -1018,24 +972,12 @@
                 font-size: 18px;
             }
 
-            #startScreen {
-                padding-top: 120px;
-            }
-
             #welcome h1 {
                 font-size: 24px;
             }
 
             .message {
                 font-size: 15px;
-            }
-
-            .assistant-content h2 {
-                font-size: 20px;
-            }
-
-            .assistant-content h3 {
-                font-size: 17px;
             }
 
             #voiceButton span {
@@ -1102,7 +1044,6 @@
     <aside id="sidebar">
 
         <div id="sidebarTop">
-
             <div id="sidebarLogo">
                 <img
                     src="Images/ChatGPT/chatgpt-logo.png"
@@ -1111,66 +1052,34 @@
             </div>
 
             <div id="sidebarTopActions">
-
-                <button
-                    class="sidebar-icon-button"
-                    type="button"
-                    aria-label="Buscar"
-                    title="Buscar"
-                >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle
-                            cx="11"
-                            cy="11"
-                            r="7"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                        />
-                        <path
-                            d="m16.5 16.5 4 4"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
+                <button class="sidebar-icon-button" type="button">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7"
+                            stroke="currentColor" stroke-width="1.8"/>
+                        <path d="m16.5 16.5 4 4"
+                            stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round"/>
                     </svg>
                 </button>
 
-                <button
-                    class="sidebar-icon-button"
-                    type="button"
-                    aria-label="Ocultar barra lateral"
-                    title="Ocultar barra lateral"
-                >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect
-                            x="3"
-                            y="4"
-                            width="18"
-                            height="16"
-                            rx="4"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
-                        <path
-                            d="M9 4v16"
-                            stroke="currentColor"
-                            stroke-width="1.7"
-                        />
+                <button class="sidebar-icon-button" type="button">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="4" width="18" height="16" rx="4"
+                            stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M9 4v16"
+                            stroke="currentColor" stroke-width="1.7"/>
                     </svg>
                 </button>
-
             </div>
-
         </div>
 
         <nav id="sidebarNavigation">
-
             <button
                 id="newChatButton"
                 class="sidebar-nav-button active"
                 type="button"
             >
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
                     <path
                         d="M14 5H6.8A2.8 2.8 0 0 0 4 7.8v9.4A2.8 2.8 0 0 0 6.8 20h9.4a2.8 2.8 0 0 0 2.8-2.8V10"
                         stroke="currentColor"
@@ -1178,131 +1087,46 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                     />
-                    <path
-                        d="m13 11 7-7"
-                        stroke="currentColor"
-                        stroke-width="1.7"
+                    <path d="m13 11 7-7"
+                        stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round"/>
+                    <path d="M16 4h4v4"
+                        stroke="currentColor" stroke-width="1.7"
                         stroke-linecap="round"
-                    />
-                    <path
-                        d="M16 4h4v4"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
+                        stroke-linejoin="round"/>
                 </svg>
 
                 <span>Nuevo chat</span>
             </button>
 
-            <button class="sidebar-nav-button" type="button" tabindex="-1">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <rect
-                        x="4"
-                        y="5"
-                        width="14"
-                        height="14"
-                        rx="3"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-                    <path
-                        d="m6.5 16 3.2-3.5 2.5 2.5 1.9-2 3.4 3"
-                        stroke="currentColor"
-                        stroke-width="1.7"
+            <button class="sidebar-nav-button" type="button">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="5" width="14" height="14" rx="3"
+                        stroke="currentColor" stroke-width="1.7"/>
+                    <path d="m6.5 16 3.2-3.5 2.5 2.5 1.9-2 3.4 3"
+                        stroke="currentColor" stroke-width="1.7"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                    <circle
-                        cx="14.5"
-                        cy="9"
-                        r="1.2"
-                        fill="currentColor"
-                    />
-                    <path
-                        d="M18 3.8h1.2A1.8 1.8 0 0 1 21 5.6v7.2"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
+                        stroke-linejoin="round"/>
                 </svg>
 
                 <span>Imágenes</span>
             </button>
-
         </nav>
 
         <div id="sidebarSpacer"></div>
 
         <div id="sidebarUtilities">
-
             <div class="sidebar-utility">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                        d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linejoin="round"
-                    />
-                    <path
-                        d="M12 8v8M8 12h8"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-                </svg>
-
                 <span>Ver planes y precios</span>
             </div>
 
             <div class="sidebar-utility">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                        d="M9.5 3.7 10 2h4l.5 1.7 1.6.7 1.6-.8 2.8 2.8-.8 1.6.7 1.6 1.6.5v4l-1.6.5-.7 1.6.8 1.6-2.8 2.8-1.6-.8-1.6.7L14 22h-4l-.5-1.7-1.6-.7-1.6.8-2.8-2.8.8-1.6-.7-1.6L2 14v-4l1.6-.5.7-1.6-.8-1.6 2.8-2.8 1.6.8 1.6-.6Z"
-                        stroke="currentColor"
-                        stroke-width="1.4"
-                        stroke-linejoin="round"
-                    />
-                    <circle
-                        cx="12"
-                        cy="12"
-                        r="3"
-                        stroke="currentColor"
-                        stroke-width="1.6"
-                    />
-                </svg>
-
                 <span>Configuración</span>
             </div>
 
             <div class="sidebar-utility">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <circle
-                        cx="12"
-                        cy="12"
-                        r="9"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-                    <circle
-                        cx="12"
-                        cy="12"
-                        r="4"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                    />
-                    <path
-                        d="m5.7 5.7 3.5 3.5M14.8 14.8l3.5 3.5M18.3 5.7l-3.5 3.5M9.2 14.8l-3.5 3.5"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                    />
-                </svg>
-
                 <span>Ayuda</span>
             </div>
-
         </div>
 
         <div id="sidebarLoginPanel">
@@ -1323,33 +1147,22 @@
     <main id="main">
 
         <header id="header">
-
-            <button
-                id="mobileMenuButton"
-                type="button"
-                aria-label="Abrir menú"
-            >
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                        d="M4 7h16M4 12h16M4 17h16"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                    />
+            <button id="mobileMenuButton" type="button">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 7h16M4 12h16M4 17h16"
+                        stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round"/>
                 </svg>
             </button>
 
             <div id="headerTitle">
                 <span>ChatGPT</span>
 
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                        d="m8 10 4 4 4-4"
-                        stroke="currentColor"
-                        stroke-width="2"
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="m8 10 4 4 4-4"
+                        stroke="currentColor" stroke-width="2"
                         stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
+                        stroke-linejoin="round"/>
                 </svg>
             </div>
 
@@ -1370,35 +1183,24 @@
                     Registrarse gratis
                 </button>
             </div>
-
         </header>
 
         <div id="startScreen">
             <div id="welcome">
                 <h1>¿Qué toca hoy?</h1>
-                <p>Pregunta lo que quieras</p>
             </div>
         </div>
 
         <div id="messages"></div>
 
         <div id="inputArea">
-
             <div id="inputContainer">
 
-                <button
-                    id="addButton"
-                    type="button"
-                    aria-label="Añadir"
-                    title="Añadir"
-                >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path
-                            d="M12 5v14M5 12h14"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                        />
+                <button id="addButton" type="button">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5v14M5 12h14"
+                            stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round"/>
                     </svg>
                 </button>
 
@@ -1410,23 +1212,10 @@
                 ></textarea>
 
                 <div id="composerActions">
-
-                    <button
-                        id="microphoneButton"
-                        type="button"
-                        aria-label="Micrófono"
-                        title="Micrófono"
-                    >
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <rect
-                                x="9"
-                                y="3"
-                                width="6"
-                                height="12"
-                                rx="3"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                            />
+                    <button id="microphoneButton" type="button">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect x="9" y="3" width="6" height="12" rx="3"
+                                stroke="currentColor" stroke-width="1.8"/>
                             <path
                                 d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6"
                                 stroke="currentColor"
@@ -1436,12 +1225,8 @@
                         </svg>
                     </button>
 
-                    <button
-                        id="voiceButton"
-                        type="button"
-                        aria-label="Voz"
-                    >
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <button id="voiceButton" type="button">
+                        <svg viewBox="0 0 24 24" fill="none">
                             <path
                                 d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"
                                 stroke="currentColor"
@@ -1458,31 +1243,23 @@
                         type="button"
                         disabled
                         aria-label="Enviar mensaje"
-                        title="Enviar mensaje"
                     >
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path
-                                d="M12 19V5"
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 19V5"
+                                stroke="currentColor"
+                                stroke-linecap="round"/>
+                            <path d="m6.5 10.5 5.5-5.5 5.5 5.5"
                                 stroke="currentColor"
                                 stroke-linecap="round"
-                            />
-                            <path
-                                d="m6.5 10.5 5.5-5.5 5.5 5.5"
-                                stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
+                                stroke-linejoin="round"/>
                         </svg>
                     </button>
-
                 </div>
-
             </div>
 
             <div id="inputDisclaimer">
                 ChatGPT puede cometer errores. Considera verificar la información importante.
             </div>
-
         </div>
 
     </main>
@@ -1493,10 +1270,13 @@
         ========================= */
 
         const SIMULATOR_VERSION =
-            "AIChat_v1.2_forms";
+            "AIChat_v1.3_recovery";
 
         const TIME_LIMIT_MS =
             10 * 60 * 1000;
+
+        const LOCAL_SAVE_INTERVAL_MS =
+            5000;
 
         const MANUAL_END_COMMANDS =
             new Set([
@@ -1608,9 +1388,16 @@
 
         let currentSession = null;
         let sessionStartTimestamp = 0;
+        let sessionDeadlineTimestamp = 0;
         let lastAssistantShownTimestamp = 0;
+
         let sessionTimeout = null;
-        let responseTimeout = null;
+        let heartbeatInterval = null;
+        let draftSaveTimeout = null;
+
+        const pendingResponseTimeouts =
+            new Set();
+
         let sessionFinished = false;
 
         const Category = Object.freeze({
@@ -1618,6 +1405,11 @@
             THANKS: "THANKS",
             FAREWELL: "FAREWELL",
             GENERAL: "GENERAL",
+            CLARIFICATION: "CLARIFICATION",
+
+            TWO_SAME_ONE_DIFFERENT:
+                "TWO_SAME_ONE_DIFFERENT",
+
             RULE: "RULE",
             EXAMPLE_1: "EXAMPLE_1",
             EXAMPLE_2: "EXAMPLE_2",
@@ -1638,149 +1430,8 @@
         const OFF_TOPIC_RESPONSE =
             "Ahora estamos aprendiendo a jugar a SET. Hazme una pregunta sobre el juego y estaré encantado de ayudarte.";
 
-        const TOKEN_GROUPS = Object.freeze({
-            SET_CONTEXT: [
-                "set",
-                "cartas",
-                "carta",
-                "juego"
-            ],
-
-            GENERAL: [
-                "jugar",
-                "juega",
-                "jugamos",
-                "aprender",
-                "aprendo",
-                "ensenar",
-                "ensename",
-                "ensenarme",
-                "explicar",
-                "explicame",
-                "instrucciones",
-                "empezar",
-                "comenzar"
-            ],
-
-            RULE: [
-                "regla",
-                "reglas",
-                "formar",
-                "forman",
-                "forma",
-                "cumplir",
-                "cumple",
-                "caracteristica",
-                "caracteristicas",
-                "iguales",
-                "distintas",
-                "diferentes",
-                "saber",
-                "descubrir"
-            ],
-
-            EXAMPLE: [
-                "ejemplo",
-                "ejemplos",
-                "mostrar",
-                "mostrame",
-                "muestrame",
-                "explicar",
-                "explicame",
-                "entender"
-            ],
-
-            EXAMPLE_1: [
-                "1",
-                "uno",
-                "primer",
-                "primero",
-                "iguales"
-            ],
-
-            EXAMPLE_2: [
-                "2",
-                "dos",
-                "segundo",
-                "segunda",
-                "distintas",
-                "diferentes"
-            ],
-
-            EXAMPLE_3: [
-                "3",
-                "tres",
-                "tercer",
-                "tercero",
-                "mezcla",
-                "combinacion"
-            ],
-
-            EXAMPLE_4: [
-                "4",
-                "cuatro",
-                "cuarto",
-                "rompe",
-                "romper",
-                "verdes",
-                "verde",
-                "azul"
-            ]
-        });
-
-        const STOP_WORDS = new Set([
-            "a",
-            "al",
-            "algo",
-            "como",
-            "con",
-            "cual",
-            "cuales",
-            "de",
-            "del",
-            "el",
-            "en",
-            "es",
-            "esa",
-            "ese",
-            "esta",
-            "este",
-            "esto",
-            "hay",
-            "la",
-            "las",
-            "lo",
-            "los",
-            "me",
-            "mi",
-            "no",
-            "o",
-            "para",
-            "por",
-            "porque",
-            "que",
-            "se",
-            "si",
-            "son",
-            "su",
-            "te",
-            "tiene",
-            "un",
-            "una",
-            "unas",
-            "unos",
-            "y",
-            "yo",
-            "quiero",
-            "puedo",
-            "podes",
-            "podrias",
-            "muchas",
-            "muchos"
-        ]);
-
         /* =========================
-           RESPUESTAS FIJAS
+           GUIONES
         ========================= */
 
         const fullSetScript = `
@@ -1799,7 +1450,7 @@
 
                 <h2>Regla para formar un SET</h2>
 
-                <p>Para formar un “set”, cada característica (forma, color, relleno, y cantidad) tiene que cumplir una regla.</p>
+                <p>Para formar un “set”, cada característica (forma, color, relleno y cantidad) tiene que cumplir una regla.</p>
 
                 <p>Esa regla dice que tienen que ser: o todas iguales, o todas distintas en esa característica.</p>
 
@@ -1811,7 +1462,7 @@
                     alt="Ejemplo de cartas que forman un SET"
                 >
 
-                <p>Pero, si alguna característica no cumple la regla: o sea, si en alguna característica no son ni todas iguales ni todas distintas, entonces las cartas ya NO forman un SET.</p>
+                <p>Pero, si alguna característica no cumple la regla, entonces las cartas ya NO forman un SET.</p>
 
                 <img
                     class="set-image"
@@ -1828,8 +1479,6 @@
                     src="Images/ejemplo1.png"
                     alt="Ejemplo de cartas con características iguales"
                 >
-
-                <p>¿Se cumple la regla “todas iguales o todas distintas”?</p>
 
                 <ol>
                     <li>Todas tienen la misma forma.</li>
@@ -1884,22 +1533,30 @@
 
                 <ol>
                     <li>Las formas sí cumplen la regla.</li>
-                    <li>El color NO cumple la regla: Hay dos verdes iguales y una azul distinta.</li>
+                    <li>El color NO cumple la regla: hay dos verdes iguales y una azul distinta.</li>
                 </ol>
 
                 <p>Entonces, estas cartas NO forman un SET.</p>
             </div>
         `;
 
+        const greetingGeneralScript = `
+            <div class="assistant-content">
+                <p>¡Hola! 😊</p>
+            </div>
+
+            ${fullSetScript}
+        `;
+
         const ruleScript = `
             <div class="assistant-content">
                 <h2>Regla para formar un SET</h2>
 
-                <p>Para formar un “set”, cada característica (forma, color, relleno, y cantidad) tiene que cumplir una regla.</p>
+                <p>Para formar un SET, cada característica —forma, color, relleno y cantidad— tiene que cumplir una regla.</p>
 
-                <p>Esa regla dice que tienen que ser: o todas iguales, o todas distintas en esa característica.</p>
+                <p>Las tres cartas tienen que ser todas iguales o todas distintas en esa característica.</p>
 
-                <p>Si las cuatro características cumplen la regla, entonces las cartas forman un SET.</p>
+                <p>Si las cuatro características cumplen la regla, forman un SET.</p>
 
                 <img
                     class="set-image"
@@ -1907,12 +1564,44 @@
                     alt="Ejemplo de cartas que forman un SET"
                 >
 
-                <p>Pero, si alguna característica no cumple la regla: o sea, si en alguna característica no son ni todas iguales ni todas distintas, entonces las cartas ya NO forman un SET.</p>
+                <p>Si alguna característica no cumple la regla, no forman un SET.</p>
 
                 <img
                     class="set-image"
                     src="Images/noSet.png"
                     alt="Ejemplo de cartas que no forman un SET"
+                >
+            </div>
+        `;
+
+        const clarificationScript = `
+            <div class="assistant-content">
+                <h3>Vamos de nuevo</h3>
+
+                <p>No hay problema. La regla más importante es esta:</p>
+
+                <p>En cada característica —forma, color, relleno y cantidad— las tres cartas tienen que ser <strong>todas iguales o todas distintas</strong>.</p>
+
+                <p>Si en alguna característica hay dos iguales y una distinta, no forman un SET.</p>
+
+                <img
+                    class="set-image"
+                    src="Images/noSet.png"
+                    alt="Ejemplo de cartas que no forman un SET"
+                >
+            </div>
+        `;
+
+        const twoSameOneDifferentScript = `
+            <div class="assistant-content">
+                <p>Si en una característica hay dos cartas iguales y una distinta, las cartas <strong>no forman un SET</strong>.</p>
+
+                <p>Para formar un SET, en cada característica tienen que ser todas iguales o todas distintas.</p>
+
+                <img
+                    class="set-image"
+                    src="Images/noSet.png"
+                    alt="Ejemplo de dos cartas iguales y una distinta"
                 >
             </div>
         `;
@@ -1926,8 +1615,6 @@
                     src="Images/ejemplo1.png"
                     alt="Ejemplo de cartas con características iguales"
                 >
-
-                <p>¿Se cumple la regla “todas iguales o todas distintas”?</p>
 
                 <ol>
                     <li>Todas tienen la misma forma.</li>
@@ -1994,7 +1681,7 @@
 
                 <ol>
                     <li>Las formas sí cumplen la regla.</li>
-                    <li>El color NO cumple la regla: Hay dos verdes iguales y una azul distinta.</li>
+                    <li>El color no cumple la regla: hay dos verdes iguales y una azul distinta.</li>
                 </ol>
 
                 <p>Entonces, estas cartas NO forman un SET.</p>
@@ -2002,8 +1689,76 @@
         `;
 
         /* =========================
-           TEXTO Y CLASIFICACIÓN
+           TEXTO
         ========================= */
+
+        const STOP_WORDS = new Set([
+            "a", "al", "algo", "como", "con",
+            "cual", "cuales", "de", "del",
+            "el", "en", "es", "esa", "ese",
+            "esta", "este", "esto", "hay",
+            "la", "las", "lo", "los", "me",
+            "mi", "no", "o", "para", "por",
+            "porque", "que", "se", "si",
+            "son", "su", "te", "tiene",
+            "un", "una", "unas", "unos",
+            "y", "yo", "quiero", "puedo",
+            "podes", "podrias", "muchas",
+            "muchos"
+        ]);
+
+        const TOKEN_GROUPS = Object.freeze({
+            SET_CONTEXT: [
+                "set",
+                "carta",
+                "cartas",
+                "juego"
+            ],
+
+            GENERAL: [
+                "jugar",
+                "juega",
+                "jugamos",
+                "aprender",
+                "aprendo",
+                "ensenar",
+                "ensename",
+                "ensenarme",
+                "explicar",
+                "explicame",
+                "instrucciones",
+                "empezar",
+                "comenzar"
+            ],
+
+            RULE: [
+                "regla",
+                "reglas",
+                "formar",
+                "forman",
+                "forma",
+                "cumplir",
+                "cumple",
+                "caracteristica",
+                "caracteristicas",
+                "iguales",
+                "distintas",
+                "diferentes",
+                "saber",
+                "descubrir"
+            ],
+
+            EXAMPLE: [
+                "ejemplo",
+                "ejemplos",
+                "mostrar",
+                "mostrame",
+                "muestrame",
+                "explicar",
+                "explicame",
+                "entender"
+            ]
+        });
 
         function normalizeText(text) {
             return String(text)
@@ -2013,12 +1768,6 @@
                 .replace(/[^a-z0-9ñ\s/]/g, " ")
                 .replace(/\s+/g, " ")
                 .trim();
-        }
-
-        function isManualEndCommand(text) {
-            return MANUAL_END_COMMANDS.has(
-                normalizeText(text)
-            );
         }
 
         function tokenize(text) {
@@ -2107,45 +1856,46 @@
             return matrix[rows - 1][columns - 1];
         }
 
-        function getAllowedDistance(
-            targetWord
-        ) {
-            const length =
-                targetWord.length;
-
-            if (length <= 3) {
+        function getAllowedDistance(word) {
+            if (word.length <= 3) {
                 return 0;
             }
 
-            if (length <= 6) {
+            if (word.length <= 6) {
                 return 1;
             }
 
             return 2;
         }
 
-        function isKnownShortVariant(
+        function isKnownVariant(
             inputToken,
             targetToken
         ) {
-            if (targetToken === "set") {
-                return [
+            const variants = {
+                set: [
                     "set",
                     "zet"
-                ].includes(inputToken);
-            }
+                ],
 
-            if (targetToken === "hola") {
-                return [
+                hola: [
                     "hola",
                     "holaa",
                     "ola",
                     "hala",
                     "hla"
-                ].includes(inputToken);
-            }
+                ],
 
-            return false;
+                regla: [
+                    "regla",
+                    "relga"
+                ]
+            };
+
+            return (
+                variants[targetToken] ||
+                []
+            ).includes(inputToken);
         }
 
         function tokensAreSimilar(
@@ -2159,7 +1909,7 @@
             }
 
             if (
-                isKnownShortVariant(
+                isKnownVariant(
                     inputToken,
                     targetToken
                 )
@@ -2178,23 +1928,21 @@
                 return false;
             }
 
-            const lengthDifference =
+            if (
                 Math.abs(
                     inputToken.length -
                     targetToken.length
-                );
-
-            if (
-                lengthDifference >
-                allowedDistance
+                ) > allowedDistance
             ) {
                 return false;
             }
 
-            return levenshteinDistance(
-                inputToken,
-                targetToken
-            ) <= allowedDistance;
+            return (
+                levenshteinDistance(
+                    inputToken,
+                    targetToken
+                ) <= allowedDistance
+            );
         }
 
         function tokenListContains(
@@ -2227,20 +1975,20 @@
             tokens,
             targetWords
         ) {
-            const matchedInputIndexes =
+            const usedIndexes =
                 new Set();
 
-            let totalMatches = 0;
+            let count = 0;
 
             targetWords.forEach(
                 targetWord => {
-                    const matchingIndex =
+                    const matchIndex =
                         tokens.findIndex(
                             (
                                 token,
                                 index
                             ) =>
-                                !matchedInputIndexes.has(
+                                !usedIndexes.has(
                                     index
                                 ) &&
                                 tokensAreSimilar(
@@ -2250,125 +1998,154 @@
                         );
 
                     if (
-                        matchingIndex !== -1
+                        matchIndex !== -1
                     ) {
-                        matchedInputIndexes.add(
-                            matchingIndex
+                        usedIndexes.add(
+                            matchIndex
                         );
 
-                        totalMatches += 1;
+                        count += 1;
                     }
                 }
             );
 
-            return totalMatches;
+            return count;
         }
 
-        function isGreeting(text) {
+        function containsGreeting(text) {
             const normalized =
                 normalizeText(text);
 
-            const greetingPhrases = [
+            const firstToken =
+                normalized.split(" ")[0] || "";
+
+            return [
                 "hola",
                 "holaa",
                 "ola",
                 "hala",
                 "hla",
                 "buenas",
+                "hey"
+            ].includes(firstToken) ||
+                normalized.startsWith(
+                    "buen dia"
+                ) ||
+                normalized.startsWith(
+                    "buenos dias"
+                ) ||
+                normalized.startsWith(
+                    "buenas tardes"
+                ) ||
+                normalized.startsWith(
+                    "buenas noches"
+                );
+        }
+
+        function isGreetingOnly(text) {
+            const normalized =
+                normalizeText(text);
+
+            return [
+                "hola",
+                "holaa",
+                "ola",
+                "hala",
+                "hla",
+                "buenas",
+                "hey",
                 "buen dia",
                 "buenos dias",
                 "buenas tardes",
-                "buenas noches",
-                "hey"
-            ];
-
-            if (
-                greetingPhrases.includes(
-                    normalized
-                )
-            ) {
-                return true;
-            }
-
-            const tokens =
-                tokenize(text);
-
-            return (
-                tokens.length > 0 &&
-                tokens.length <= 3 &&
-                tokenListContains(
-                    tokens,
-                    "hola"
-                )
-            );
+                "buenas noches"
+            ].includes(normalized);
         }
 
         function isThanks(text) {
             const normalized =
                 normalizeText(text);
 
-            const thanksPhrases = [
+            return [
                 "gracias",
                 "muchas gracias",
                 "gracias chat",
                 "gracias chatgpt"
-            ];
-
-            if (
-                thanksPhrases.includes(
-                    normalized
-                )
-            ) {
-                return true;
-            }
-
-            const tokens =
-                tokenize(text);
-
-            return (
-                tokens.length > 0 &&
-                tokens.length <= 3 &&
-                tokenListContains(
-                    tokens,
-                    "gracias"
-                )
-            );
+            ].includes(normalized);
         }
 
         function isFarewell(text) {
             const normalized =
                 normalizeText(text);
 
-            const farewellPhrases = [
+            return [
                 "chau",
                 "chao",
                 "adios",
                 "nos vemos",
                 "hasta luego"
+            ].includes(normalized);
+        }
+
+        function isClarificationRequest(
+            text
+        ) {
+            const normalized =
+                normalizeText(text);
+
+            const phrases = [
+                "no entendi",
+                "no entiendo",
+                "no comprendi",
+                "no me quedo claro",
+                "no me queda claro",
+                "me explicas de nuevo",
+                "explicame de nuevo",
+                "otra vez",
+                "de nuevo",
+                "no lo entendi",
+                "no lo entiendo"
             ];
 
-            if (
-                farewellPhrases.includes(
-                    normalized
-                )
-            ) {
-                return true;
-            }
+            return phrases.some(
+                phrase =>
+                    normalized === phrase ||
+                    normalized.includes(
+                        phrase
+                    )
+            );
+        }
 
-            const tokens =
-                tokenize(text);
+        function isTwoSameOneDifferent(
+            text
+        ) {
+            const normalized =
+                normalizeText(text);
+
+            const hasTwo =
+                /\b2\b/.test(normalized) ||
+                normalized.includes("dos");
+
+            const hasOne =
+                /\b1\b/.test(normalized) ||
+                normalized.includes("una") ||
+                normalized.includes("uno");
+
+            const hasSame =
+                normalized.includes("igual") ||
+                normalized.includes("iguales") ||
+                normalized.includes("mismo") ||
+                normalized.includes("misma");
+
+            const hasDifferent =
+                normalized.includes("distinta") ||
+                normalized.includes("distinto") ||
+                normalized.includes("diferente");
 
             return (
-                tokens.length > 0 &&
-                tokens.length <= 3 &&
-                tokenListContainsAny(
-                    tokens,
-                    [
-                        "chau",
-                        "chao",
-                        "adios"
-                    ]
-                )
+                hasTwo &&
+                hasOne &&
+                hasSame &&
+                hasDifferent
             );
         }
 
@@ -2382,149 +2159,81 @@
             );
         }
 
-        function hasExampleMarker(
-            tokens
-        ) {
-            return tokenListContainsAny(
-                tokens,
-                TOKEN_GROUPS.EXAMPLE
-            );
-        }
-
-        function hasExactNumber(
-            tokens,
-            number,
-            word
-        ) {
-            return (
-                tokens.includes(number) ||
-                tokenListContains(
-                    tokens,
-                    word
-                )
-            );
-        }
-
         function classifySpecificExample(
             tokens
         ) {
-            const exampleMarker =
-                hasExampleMarker(tokens);
+            const hasExampleMarker =
+                tokenListContainsAny(
+                    tokens,
+                    TOKEN_GROUPS.EXAMPLE
+                );
 
             const hasOne =
-                hasExactNumber(
-                    tokens,
-                    "1",
-                    "uno"
-                ) ||
+                tokens.includes("1") ||
                 tokenListContainsAny(
                     tokens,
                     [
+                        "uno",
                         "primer",
                         "primero"
                     ]
                 );
 
             const hasTwo =
-                hasExactNumber(
-                    tokens,
-                    "2",
-                    "dos"
-                ) ||
+                tokens.includes("2") ||
                 tokenListContainsAny(
                     tokens,
                     [
+                        "dos",
                         "segundo",
                         "segunda"
                     ]
                 );
 
             const hasThree =
-                hasExactNumber(
-                    tokens,
-                    "3",
-                    "tres"
-                ) ||
+                tokens.includes("3") ||
                 tokenListContainsAny(
                     tokens,
                     [
+                        "tres",
                         "tercer",
                         "tercero"
                     ]
                 );
 
             const hasFour =
-                hasExactNumber(
-                    tokens,
-                    "4",
-                    "cuatro"
-                ) ||
-                tokenListContains(
-                    tokens,
-                    "cuarto"
-                );
-
-            const hasGreenAndBlue =
+                tokens.includes("4") ||
                 tokenListContainsAny(
                     tokens,
                     [
-                        "verde",
-                        "verdes"
-                    ]
-                ) &&
-                tokenListContains(
-                    tokens,
-                    "azul"
-                );
-
-            const hasBrokenRule =
-                tokenListContainsAny(
-                    tokens,
-                    [
-                        "rompe",
-                        "romper"
-                    ]
-                );
-
-            const hasMixture =
-                tokenListContainsAny(
-                    tokens,
-                    [
-                        "mezcla",
-                        "combinacion"
+                        "cuatro",
+                        "cuarto"
                     ]
                 );
 
             if (
-                (
-                    exampleMarker &&
-                    hasFour
-                ) ||
-                hasGreenAndBlue ||
-                hasBrokenRule
+                hasExampleMarker &&
+                hasFour
             ) {
                 return Category.EXAMPLE_4;
             }
 
             if (
-                (
-                    exampleMarker &&
-                    hasThree
-                ) ||
-                hasMixture
+                hasExampleMarker &&
+                hasThree
             ) {
                 return Category.EXAMPLE_3;
             }
 
             if (
-                exampleMarker &&
+                hasExampleMarker &&
                 hasTwo
             ) {
                 return Category.EXAMPLE_2;
             }
 
             if (
-                exampleMarker &&
+                hasExampleMarker &&
                 hasOne
             ) {
                 return Category.EXAMPLE_1;
@@ -2533,143 +2242,88 @@
             return null;
         }
 
-        function calculateCategoryScores(
-            tokens
+        function classifyQuestionDetailed(
+            text
         ) {
-            const scores = {
-                [Category.GENERAL]: 0,
-                [Category.RULE]: 0,
-                [Category.EXAMPLE_1]: 0,
-                [Category.EXAMPLE_2]: 0,
-                [Category.EXAMPLE_3]: 0,
-                [Category.EXAMPLE_4]: 0
-            };
-
-            const setContextScore =
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.SET_CONTEXT
-                );
-
-            scores[Category.GENERAL] +=
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.GENERAL
-                ) * 2;
-
-            scores[Category.RULE] +=
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.RULE
-                ) * 2;
-
-            scores[Category.EXAMPLE_1] +=
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.EXAMPLE_1
-                );
-
-            scores[Category.EXAMPLE_2] +=
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.EXAMPLE_2
-                );
-
-            scores[Category.EXAMPLE_3] +=
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.EXAMPLE_3
-                ) * 2;
-
-            scores[Category.EXAMPLE_4] +=
-                countMatches(
-                    tokens,
-                    TOKEN_GROUPS.EXAMPLE_4
-                ) * 2;
+            const greetingDetected =
+                containsGreeting(text);
 
             if (
-                setContextScore > 0
+                isGreetingOnly(text)
             ) {
-                scores[Category.GENERAL] += 1;
-                scores[Category.RULE] += 1;
-            }
+                return {
+                    category:
+                        Category.GREETING,
 
-            return scores;
-        }
-
-        function getHighestScoringCategory(
-            scores
-        ) {
-            const categoryPriority = [
-                Category.EXAMPLE_4,
-                Category.EXAMPLE_3,
-                Category.EXAMPLE_2,
-                Category.EXAMPLE_1,
-                Category.RULE,
-                Category.GENERAL
-            ];
-
-            let bestCategory =
-                Category.OFF_TOPIC;
-
-            let bestScore = 0;
-
-            categoryPriority.forEach(
-                category => {
-                    const score =
-                        scores[category];
-
-                    if (
-                        score > bestScore
-                    ) {
-                        bestCategory =
-                            category;
-
-                        bestScore =
-                            score;
-                    }
-                }
-            );
-
-            return {
-                category: bestCategory,
-                score: bestScore
-            };
-        }
-
-        function classifyQuestion(text) {
-            if (
-                isGreeting(text)
-            ) {
-                return Category.GREETING;
+                    greetingDetected:
+                        true
+                };
             }
 
             if (
                 isThanks(text)
             ) {
-                return Category.THANKS;
+                return {
+                    category:
+                        Category.THANKS,
+
+                    greetingDetected:
+                        false
+                };
             }
 
             if (
                 isFarewell(text)
             ) {
-                return Category.FAREWELL;
+                return {
+                    category:
+                        Category.FAREWELL,
+
+                    greetingDetected:
+                        false
+                };
+            }
+
+            if (
+                isClarificationRequest(
+                    text
+                )
+            ) {
+                return {
+                    category:
+                        Category.CLARIFICATION,
+
+                    greetingDetected
+                };
+            }
+
+            if (
+                isTwoSameOneDifferent(
+                    text
+                )
+            ) {
+                return {
+                    category:
+                        Category
+                            .TWO_SAME_ONE_DIFFERENT,
+
+                    greetingDetected
+                };
             }
 
             if (
                 isSetOnly(text)
             ) {
-                return Category.GENERAL;
+                return {
+                    category:
+                        Category.GENERAL,
+
+                    greetingDetected
+                };
             }
 
             const tokens =
                 tokenize(text);
-
-            if (
-                tokens.length === 0
-            ) {
-                return Category.OFF_TOPIC;
-            }
 
             const specificExample =
                 classifySpecificExample(
@@ -2679,46 +2333,185 @@
             if (
                 specificExample
             ) {
-                return specificExample;
+                return {
+                    category:
+                        specificExample,
+
+                    greetingDetected
+                };
             }
 
-            const scores =
-                calculateCategoryScores(
-                    tokens
+            const generalScore =
+                countMatches(
+                    tokens,
+                    TOKEN_GROUPS.GENERAL
+                ) * 2 +
+                countMatches(
+                    tokens,
+                    TOKEN_GROUPS.SET_CONTEXT
                 );
 
-            const result =
-                getHighestScoringCategory(
-                    scores
-                );
-
-            const hasRuleContrast =
-                tokenListContains(
+            const ruleScore =
+                countMatches(
                     tokens,
-                    "iguales"
-                ) ||
-                tokenListContainsAny(
+                    TOKEN_GROUPS.RULE
+                ) * 2 +
+                countMatches(
                     tokens,
-                    [
-                        "distintas",
-                        "diferentes"
-                    ]
+                    TOKEN_GROUPS.SET_CONTEXT
                 );
 
             if (
-                hasRuleContrast &&
-                !hasExampleMarker(tokens)
+                generalScore >= 2 &&
+                generalScore >= ruleScore
             ) {
-                return Category.RULE;
+                return {
+                    category:
+                        Category.GENERAL,
+
+                    greetingDetected
+                };
             }
 
             if (
-                result.score < 2
+                ruleScore >= 2
             ) {
-                return Category.OFF_TOPIC;
+                return {
+                    category:
+                        Category.RULE,
+
+                    greetingDetected
+                };
             }
 
-            return result.category;
+            return {
+                category:
+                    Category.OFF_TOPIC,
+
+                greetingDetected
+            };
+        }
+
+        /* =========================
+           RESPUESTAS
+        ========================= */
+
+        function getAssistantResponse(
+            classification
+        ) {
+            const category =
+                classification.category;
+
+            switch (category) {
+                case Category.GREETING:
+                    return {
+                        id: "GREETING",
+                        type: "text",
+                        content:
+                            GREETING_RESPONSE
+                    };
+
+                case Category.THANKS:
+                    return {
+                        id: "THANKS",
+                        type: "text",
+                        content:
+                            THANKS_RESPONSE
+                    };
+
+                case Category.FAREWELL:
+                    return {
+                        id: "FAREWELL",
+                        type: "text",
+                        content:
+                            FAREWELL_RESPONSE
+                    };
+
+                case Category.GENERAL:
+                    return {
+                        id:
+                            classification
+                                .greetingDetected
+                                ? "GREETING_GENERAL"
+                                : "GENERAL",
+
+                        type: "html",
+
+                        content:
+                            classification
+                                .greetingDetected
+                                ? greetingGeneralScript
+                                : fullSetScript
+                    };
+
+                case Category.CLARIFICATION:
+                    return {
+                        id: "CLARIFICATION",
+                        type: "html",
+                        content:
+                            clarificationScript
+                    };
+
+                case Category
+                    .TWO_SAME_ONE_DIFFERENT:
+                    return {
+                        id:
+                            "TWO_SAME_ONE_DIFFERENT",
+
+                        type: "html",
+
+                        content:
+                            twoSameOneDifferentScript
+                    };
+
+                case Category.RULE:
+                    return {
+                        id: "RULE",
+                        type: "html",
+                        content:
+                            ruleScript
+                    };
+
+                case Category.EXAMPLE_1:
+                    return {
+                        id: "EXAMPLE_1",
+                        type: "html",
+                        content:
+                            example1Script
+                    };
+
+                case Category.EXAMPLE_2:
+                    return {
+                        id: "EXAMPLE_2",
+                        type: "html",
+                        content:
+                            example2Script
+                    };
+
+                case Category.EXAMPLE_3:
+                    return {
+                        id: "EXAMPLE_3",
+                        type: "html",
+                        content:
+                            example3Script
+                    };
+
+                case Category.EXAMPLE_4:
+                    return {
+                        id: "EXAMPLE_4",
+                        type: "html",
+                        content:
+                            example4Script
+                    };
+
+                default:
+                    return {
+                        id: "OFF_TOPIC",
+                        type: "text",
+                        content:
+                            OFF_TOPIC_RESPONSE
+                    };
+            }
         }
 
         /* =========================
@@ -2766,6 +2559,11 @@
                 THANKS: 0,
                 FAREWELL: 0,
                 GENERAL: 0,
+                CLARIFICATION: 0,
+
+                TWO_SAME_ONE_DIFFERENT:
+                    0,
+
                 RULE: 0,
                 EXAMPLE_1: 0,
                 EXAMPLE_2: 0,
@@ -2781,11 +2579,13 @@
                             .hasOwnProperty
                             .call(
                                 counts,
-                                turn.categoria_asignada
+                                turn
+                                    .categoria_asignada
                             )
                     ) {
                         counts[
-                            turn.categoria_asignada
+                            turn
+                                .categoria_asignada
                         ] += 1;
                     }
                 }
@@ -2823,7 +2623,8 @@
                         turn
                     ) =>
                         total +
-                        turn.caracteres_con_espacios,
+                        turn
+                            .caracteres_con_espacios,
                     0
                 );
 
@@ -2835,7 +2636,8 @@
                         turn
                     ) =>
                         total +
-                        turn.caracteres_sin_espacios,
+                        turn
+                            .caracteres_sin_espacios,
                     0
                 );
 
@@ -2857,11 +2659,6 @@
                     ) || "[]"
                 );
             } catch (error) {
-                console.error(
-                    "No se pudo leer el archivo local:",
-                    error
-                );
-
                 return [];
             }
         }
@@ -2872,20 +2669,22 @@
             const archive =
                 getSessionArchive();
 
-            const existingIndex =
+            const index =
                 archive.findIndex(
-                    archivedSession =>
-                        archivedSession.session_id ===
+                    item =>
+                        item.session_id ===
                         session.session_id
                 );
 
             if (
-                existingIndex >= 0
+                index >= 0
             ) {
-                archive[existingIndex] =
+                archive[index] =
                     session;
             } else {
-                archive.push(session);
+                archive.push(
+                    session
+                );
             }
 
             localStorage.setItem(
@@ -2894,17 +2693,29 @@
             );
         }
 
-        function saveSessionLocally() {
+        function saveSessionLocally(
+            eventName = null
+        ) {
             if (!currentSession) {
                 return;
             }
 
+            if (eventName) {
+                currentSession
+                    .ultimo_evento_guardado =
+                    eventName;
+            }
+
+            currentSession.borrador_actual =
+                promptInput.value;
+
+            currentSession
+                .ultima_actualizacion_iso =
+                new Date().toISOString();
+
             updateSessionTotals(
                 currentSession
             );
-
-            currentSession.ultima_actualizacion_iso =
-                new Date().toISOString();
 
             try {
                 localStorage.setItem(
@@ -2919,10 +2730,26 @@
                 );
             } catch (error) {
                 console.error(
-                    "No se pudieron guardar los datos localmente:",
+                    "No se pudo guardar localmente:",
                     error
                 );
             }
+        }
+
+        function scheduleDraftSave() {
+            window.clearTimeout(
+                draftSaveTimeout
+            );
+
+            draftSaveTimeout =
+                window.setTimeout(
+                    () => {
+                        saveSessionLocally(
+                            "borrador_actualizado"
+                        );
+                    },
+                    150
+                );
         }
 
         function readActiveSession() {
@@ -2933,53 +2760,19 @@
                     ) || "null"
                 );
             } catch (error) {
-                console.error(
-                    "No se pudo leer la sesión activa:",
-                    error
-                );
-
                 return null;
             }
         }
 
-        async function markPreviousSessionAsInterrupted() {
+        async function closePreviousIncompleteSession() {
             const previousSession =
                 readActiveSession();
 
-            if (!previousSession) {
-                return;
-            }
-
             if (
-                previousSession.estado ===
-                "finalizada"
-            ) {
-                localStorage.removeItem(
-                    ACTIVE_SESSION_KEY
-                );
-
-                return;
-            }
-
-            if (
-                previousSession.estado ===
-                "interrumpida"
-            ) {
-                localStorage.removeItem(
-                    ACTIVE_SESSION_KEY
-                );
-
-                return;
-            }
-
-            if (
+                !previousSession ||
                 previousSession.estado !==
-                "en_curso"
+                    "en_curso"
             ) {
-                localStorage.removeItem(
-                    ACTIVE_SESSION_KEY
-                );
-
                 return;
             }
 
@@ -2993,75 +2786,53 @@
             previousSession.estado =
                 "interrumpida";
 
-            previousSession.motivo_finalizacion =
+            previousSession
+                .motivo_finalizacion =
                 "sesion_incompleta_detectada";
 
             previousSession.fin_iso =
-                new Date(now).toISOString();
+                new Date(now)
+                    .toISOString();
 
-            previousSession.duracion_total_ms =
+            previousSession
+                .duracion_total_ms =
                 Math.max(
                     0,
-                    now -
-                    previousSession.inicio_timestamp
+                    Math.min(
+                        now,
+                        previousSession
+                            .deadline_timestamp ||
+                            now
+                    ) -
+                    previousSession
+                        .inicio_timestamp
                 );
 
-            previousSession.ultimo_evento_guardado =
+            previousSession
+                .ultimo_evento_guardado =
                 "sesion_incompleta_detectada";
 
-            previousSession.ultima_actualizacion_iso =
-                new Date(now).toISOString();
+            previousSession
+                .ultima_actualizacion_iso =
+                new Date(now)
+                    .toISOString();
 
-            try {
-                saveSessionToArchive(
-                    previousSession
-                );
+            saveSessionToArchive(
+                previousSession
+            );
 
-                await saveOnline(
-                    previousSession
-                );
-            } catch (error) {
-                console.error(
-                    "No se pudo cerrar la sesión anterior:",
-                    error
-                );
-            } finally {
-                localStorage.removeItem(
-                    ACTIVE_SESSION_KEY
-                );
-            }
+            await saveOnline(
+                previousSession
+            );
+
+            localStorage.removeItem(
+                ACTIVE_SESSION_KEY
+            );
         }
 
         /* =========================
            GOOGLE FORMS
         ========================= */
-
-        function isGoogleFormConfigured() {
-            if (
-                !GOOGLE_FORM_CONFIG.enabled
-            ) {
-                return false;
-            }
-
-            if (
-                !GOOGLE_FORM_CONFIG.formURL ||
-                GOOGLE_FORM_CONFIG
-                    .formURL
-                    .includes("REEMPLAZAR")
-            ) {
-                return false;
-            }
-
-            return Object.values(
-                GOOGLE_FORM_CONFIG.entries
-            ).every(
-                entry =>
-                    entry &&
-                    !entry.includes(
-                        "REEMPLAZAR"
-                    )
-            );
-        }
 
         function createOnlinePayload(
             session
@@ -3069,6 +2840,32 @@
             updateSessionTotals(
                 session
             );
+
+            const conversationData = {
+                turnos:
+                    session.turnos,
+
+                borrador_actual:
+                    session
+                        .borrador_actual || "",
+
+                actividad_input:
+                    session
+                        .actividad_input || {},
+
+                inicio_iso:
+                    session.inicio_iso,
+
+                deadline_iso:
+                    session.deadline_iso,
+
+                estado:
+                    session.estado,
+
+                motivo_finalizacion:
+                    session
+                        .motivo_finalizacion
+            };
 
             return {
                 id:
@@ -3084,19 +2881,23 @@
                     session.fin_iso || "",
 
                 duracion_total_ms:
-                    session.duracion_total_ms ?? "",
+                    session
+                        .duracion_total_ms ?? "",
 
                 estado:
                     session.estado,
 
                 motivo_finalizacion:
-                    session.motivo_finalizacion || "",
+                    session
+                        .motivo_finalizacion || "",
 
                 cantidad_mensajes_usuario:
-                    session.cantidad_mensajes_usuario,
+                    session
+                        .cantidad_mensajes_usuario,
 
                 cantidad_palabras_usuario:
-                    session.cantidad_palabras_usuario,
+                    session
+                        .cantidad_palabras_usuario,
 
                 caracteres_con_espacios:
                     session
@@ -3104,19 +2905,22 @@
 
                 conteos_categorias_json:
                     JSON.stringify(
-                        session.conteos_categorias
+                        session
+                            .conteos_categorias
                     ),
 
                 conversacion_json:
                     JSON.stringify(
-                        session.turnos
+                        conversationData
                     ),
 
                 ultimo_evento_guardado:
-                    session.ultimo_evento_guardado,
+                    session
+                        .ultimo_evento_guardado,
 
                 version_simulador:
-                    session.version_simulador
+                    session
+                        .version_simulador
             };
         }
 
@@ -3146,14 +2950,12 @@
                                 fieldName
                             ];
 
-                    if (!entryCode) {
-                        return;
+                    if (entryCode) {
+                        formData.append(
+                            entryCode,
+                            String(value)
+                        );
                     }
-
-                    formData.append(
-                        entryCode,
-                        String(value)
-                    );
                 }
             );
 
@@ -3164,39 +2966,29 @@
             session
         ) {
             if (
-                !isGoogleFormConfigured()
+                !GOOGLE_FORM_CONFIG.enabled
             ) {
-                console.info(
-                    "Google Forms no está configurado. Los datos quedaron guardados localmente."
-                );
-
                 return false;
             }
 
             try {
-                const formData =
-                    createGoogleFormData(
-                        session
-                    );
-
                 await fetch(
                     GOOGLE_FORM_CONFIG.formURL,
                     {
                         method: "POST",
                         mode: "no-cors",
-                        body: formData,
+                        body:
+                            createGoogleFormData(
+                                session
+                            ),
                         keepalive: true
                     }
-                );
-
-                console.info(
-                    "Se realizó el envío al formulario."
                 );
 
                 return true;
             } catch (error) {
                 console.error(
-                    "No se pudieron enviar los datos:",
+                    "No se pudo enviar al formulario:",
                     error
                 );
 
@@ -3207,12 +2999,6 @@
         function saveEmergencyOnline(
             session
         ) {
-            if (
-                !isGoogleFormConfigured()
-            ) {
-                return false;
-            }
-
             try {
                 const formData =
                     createGoogleFormData(
@@ -3222,10 +3008,12 @@
                 if (
                     navigator.sendBeacon
                 ) {
-                    return navigator.sendBeacon(
-                        GOOGLE_FORM_CONFIG.formURL,
-                        formData
-                    );
+                    return navigator
+                        .sendBeacon(
+                            GOOGLE_FORM_CONFIG
+                                .formURL,
+                            formData
+                        );
                 }
 
                 fetch(
@@ -3236,28 +3024,16 @@
                         body: formData,
                         keepalive: true
                     }
-                ).catch(
-                    error => {
-                        console.error(
-                            "Falló el envío de emergencia:",
-                            error
-                        );
-                    }
                 );
 
                 return true;
             } catch (error) {
-                console.error(
-                    "No se pudo realizar el envío de emergencia:",
-                    error
-                );
-
                 return false;
             }
         }
 
         /* =========================
-           INICIO
+           INICIO Y TIEMPO
         ========================= */
 
         function normalizeParticipantId(
@@ -3282,6 +3058,37 @@
             return trimmed;
         }
 
+        function hasDeadlinePassed() {
+            return (
+                currentSession &&
+                Date.now() >=
+                    sessionDeadlineTimestamp
+            );
+        }
+
+        function scheduleDeadline() {
+            window.clearTimeout(
+                sessionTimeout
+            );
+
+            const remaining =
+                Math.max(
+                    0,
+                    sessionDeadlineTimestamp -
+                    Date.now()
+                );
+
+            sessionTimeout =
+                window.setTimeout(
+                    () => {
+                        finishSession(
+                            "tiempo"
+                        );
+                    },
+                    remaining
+                );
+        }
+
         async function startExperiment() {
             const participantId =
                 normalizeParticipantId(
@@ -3297,16 +3104,20 @@
             }
 
             setupError.textContent = "";
-            startExperimentButton.disabled = true;
+            startExperimentButton.disabled =
+                true;
 
             try {
-                await markPreviousSessionAsInterrupted();
+                await closePreviousIncompleteSession();
 
                 const now =
                     Date.now();
 
                 sessionStartTimestamp =
                     now;
+
+                sessionDeadlineTimestamp =
+                    now + TIME_LIMIT_MS;
 
                 lastAssistantShownTimestamp =
                     now;
@@ -3333,7 +3144,16 @@
                         now,
 
                     inicio_iso:
-                        new Date(now).toISOString(),
+                        new Date(now)
+                            .toISOString(),
+
+                    deadline_timestamp:
+                        sessionDeadlineTimestamp,
+
+                    deadline_iso:
+                        new Date(
+                            sessionDeadlineTimestamp
+                        ).toISOString(),
 
                     fin_iso:
                         null,
@@ -3362,29 +3182,73 @@
                     conteos_categorias:
                         getCategoryCounts([]),
 
+                    borrador_actual:
+                        "",
+
+                    actividad_input: {
+                        cantidad_eventos_input:
+                            0,
+
+                        primer_input_iso:
+                            null,
+
+                        ultimo_input_iso:
+                            null,
+
+                        cantidad_focos:
+                            0,
+
+                        ultimo_foco_iso:
+                            null,
+
+                        cantidad_blurs:
+                            0,
+
+                        ultimo_blur_iso:
+                            null
+                    },
+
                     ultimo_evento_guardado:
                         "sesion_iniciada",
 
                     ultima_actualizacion_iso:
-                        new Date(now).toISOString(),
+                        new Date(now)
+                            .toISOString(),
 
                     turnos: []
                 };
 
-                saveSessionLocally();
+                saveSessionLocally(
+                    "sesion_iniciada"
+                );
 
                 setupOverlay.classList.add(
                     "hidden"
                 );
 
-                sessionTimeout =
-                    window.setTimeout(
+                scheduleDeadline();
+
+                heartbeatInterval =
+                    window.setInterval(
                         () => {
-                            finishSession(
-                                "tiempo"
-                            );
+                            if (
+                                currentSession &&
+                                !sessionFinished
+                            ) {
+                                saveSessionLocally(
+                                    "guardado_periodico"
+                                );
+
+                                if (
+                                    hasDeadlinePassed()
+                                ) {
+                                    finishSession(
+                                        "tiempo"
+                                    );
+                                }
+                            }
                         },
-                        TIME_LIMIT_MS
+                        LOCAL_SAVE_INTERVAL_MS
                     );
 
                 window.setTimeout(
@@ -3394,107 +3258,11 @@
                     200
                 );
             } catch (error) {
-                console.error(
-                    "No se pudo iniciar el experimento:",
-                    error
-                );
-
                 setupError.textContent =
                     "No se pudo iniciar. Volvé a intentarlo.";
 
                 startExperimentButton.disabled =
                     false;
-            }
-        }
-
-        /* =========================
-           RESPUESTAS
-        ========================= */
-
-        function getAssistantResponse(
-            category
-        ) {
-            switch (category) {
-                case Category.GREETING:
-                    return {
-                        id: "GREETING",
-                        type: "text",
-                        content:
-                            GREETING_RESPONSE
-                    };
-
-                case Category.THANKS:
-                    return {
-                        id: "THANKS",
-                        type: "text",
-                        content:
-                            THANKS_RESPONSE
-                    };
-
-                case Category.FAREWELL:
-                    return {
-                        id: "FAREWELL",
-                        type: "text",
-                        content:
-                            FAREWELL_RESPONSE
-                    };
-
-                case Category.GENERAL:
-                    return {
-                        id: "GENERAL",
-                        type: "html",
-                        content:
-                            fullSetScript
-                    };
-
-                case Category.RULE:
-                    return {
-                        id: "RULE",
-                        type: "html",
-                        content:
-                            ruleScript
-                    };
-
-                case Category.EXAMPLE_1:
-                    return {
-                        id: "EXAMPLE_1",
-                        type: "html",
-                        content:
-                            example1Script
-                    };
-
-                case Category.EXAMPLE_2:
-                    return {
-                        id: "EXAMPLE_2",
-                        type: "html",
-                        content:
-                            example2Script
-                    };
-
-                case Category.EXAMPLE_3:
-                    return {
-                        id: "EXAMPLE_3",
-                        type: "html",
-                        content:
-                            example3Script
-                    };
-
-                case Category.EXAMPLE_4:
-                    return {
-                        id: "EXAMPLE_4",
-                        type: "html",
-                        content:
-                            example4Script
-                    };
-
-                case Category.OFF_TOPIC:
-                default:
-                    return {
-                        id: "OFF_TOPIC",
-                        type: "text",
-                        content:
-                            OFF_TOPIC_RESPONSE
-                    };
             }
         }
 
@@ -3521,17 +3289,18 @@
             promptInput.style.height =
                 "auto";
 
-            const newHeight =
+            const height =
                 Math.min(
                     promptInput.scrollHeight,
                     180
                 );
 
             promptInput.style.height =
-                newHeight + "px";
+                height + "px";
 
             promptInput.style.overflowY =
-                promptInput.scrollHeight > 180
+                promptInput.scrollHeight >
+                180
                     ? "auto"
                     : "hidden";
         }
@@ -3604,9 +3373,7 @@
             return message;
         }
 
-        function addAssistantHTML(
-            html
-        ) {
+        function addAssistantHTML(html) {
             const message =
                 document.createElement(
                     "div"
@@ -3658,7 +3425,7 @@
         }
 
         /* =========================
-           ENVÍO DE MENSAJES
+           ENVÍO
         ========================= */
 
         function sendMessage() {
@@ -3666,6 +3433,16 @@
                 sessionFinished ||
                 !currentSession
             ) {
+                return;
+            }
+
+            if (
+                hasDeadlinePassed()
+            ) {
+                finishSession(
+                    "tiempo"
+                );
+
                 return;
             }
 
@@ -3677,14 +3454,19 @@
             }
 
             if (
-                isManualEndCommand(
-                    text
+                MANUAL_END_COMMANDS.has(
+                    normalizeText(text)
                 )
             ) {
-                promptInput.value = "";
+                promptInput.value =
+                    "";
 
                 resizeTextarea();
                 updateButton();
+
+                saveSessionLocally(
+                    "comando_finalizacion_ingresado"
+                );
 
                 finishSession(
                     "comando"
@@ -3696,26 +3478,14 @@
             const sendTimestamp =
                 Date.now();
 
-            if (
-                sendTimestamp -
-                sessionStartTimestamp >=
-                TIME_LIMIT_MS
-            ) {
-                finishSession(
-                    "tiempo"
-                );
-
-                return;
-            }
-
-            const category =
-                classifyQuestion(
+            const classification =
+                classifyQuestionDetailed(
                     text
                 );
 
             const response =
                 getAssistantResponse(
-                    category
+                    classification
                 );
 
             const turn = {
@@ -3731,7 +3501,24 @@
                     normalizeText(text),
 
                 categoria_asignada:
-                    category,
+                    classification.category,
+
+                saludo_detectado:
+                    classification
+                        .greetingDetected,
+
+                categorias_detectadas:
+                    classification
+                        .greetingDetected &&
+                    classification.category !==
+                        Category.GREETING
+                        ? [
+                            Category.GREETING,
+                            classification.category
+                        ]
+                        : [
+                            classification.category
+                        ],
 
                 respuesta_id:
                     response.id,
@@ -3770,10 +3557,12 @@
                 turn
             );
 
-            currentSession.ultimo_evento_guardado =
-                "mensaje_usuario_enviado";
+            currentSession.borrador_actual =
+                "";
 
-            saveSessionLocally();
+            saveSessionLocally(
+                "mensaje_usuario_enviado"
+            );
 
             document.body.classList.add(
                 "chat-started"
@@ -3784,7 +3573,8 @@
                     text
                 );
 
-            promptInput.value = "";
+            promptInput.value =
+                "";
 
             resizeTextarea();
             updateButton();
@@ -3799,13 +3589,14 @@
                 userMessage
             );
 
-            window.clearTimeout(
-                responseTimeout
-            );
-
-            responseTimeout =
+            const timeoutId =
                 window.setTimeout(
                     () => {
+                        pendingResponseTimeouts
+                            .delete(
+                                timeoutId
+                            );
+
                         if (
                             sessionFinished
                         ) {
@@ -3822,32 +3613,32 @@
                             response
                         );
 
-                        turn.respuesta_mostrada_iso =
+                        turn
+                            .respuesta_mostrada_iso =
                             new Date(
                                 shownTimestamp
                             ).toISOString();
 
-                        turn.tiempo_respuesta_simulador_ms =
+                        turn
+                            .tiempo_respuesta_simulador_ms =
                             shownTimestamp -
                             sendTimestamp;
 
                         lastAssistantShownTimestamp =
                             shownTimestamp;
 
-                        currentSession.ultimo_evento_guardado =
-                            "respuesta_mostrada";
-
-                        saveSessionLocally();
-
-                        window.setTimeout(
-                            () => {
-                                promptInput.focus();
-                            },
-                            20
+                        saveSessionLocally(
+                            "respuesta_mostrada"
                         );
+
+                        promptInput.focus();
                     },
                     800
                 );
+
+            pendingResponseTimeouts.add(
+                timeoutId
+            );
         }
 
         /* =========================
@@ -3871,9 +3662,24 @@
                 sessionTimeout
             );
 
-            window.clearTimeout(
-                responseTimeout
+            window.clearInterval(
+                heartbeatInterval
             );
+
+            window.clearTimeout(
+                draftSaveTimeout
+            );
+
+            pendingResponseTimeouts
+                .forEach(
+                    timeoutId => {
+                        window.clearTimeout(
+                            timeoutId
+                        );
+                    }
+                );
+
+            pendingResponseTimeouts.clear();
 
             document
                 .querySelectorAll(
@@ -3885,26 +3691,39 @@
                     }
                 );
 
-            const now =
+            const actualNow =
                 Date.now();
 
-            currentSession.fin_iso =
-                new Date(now).toISOString();
+            const finalTimestamp =
+                reason === "tiempo"
+                    ? sessionDeadlineTimestamp
+                    : actualNow;
 
-            currentSession.duracion_total_ms =
+            currentSession.fin_iso =
+                new Date(
+                    finalTimestamp
+                ).toISOString();
+
+            currentSession
+                .duracion_total_ms =
                 Math.max(
                     0,
-                    now -
+                    finalTimestamp -
                     sessionStartTimestamp
                 );
 
             currentSession.estado =
                 "finalizada";
 
-            currentSession.motivo_finalizacion =
+            currentSession
+                .motivo_finalizacion =
                 reason;
 
-            currentSession.ultimo_evento_guardado =
+            currentSession.borrador_actual =
+                promptInput.value;
+
+            currentSession
+                .ultimo_evento_guardado =
                 reason === "tiempo"
                     ? "tiempo_agotado"
                     : "finalizacion_por_comando";
@@ -3921,18 +3740,9 @@
                 "hidden"
             );
 
-            const sent =
-                await saveOnline(
-                    currentSession
-                );
-
-            currentSession.envio_online_intentado =
-                true;
-
-            currentSession.envio_online_aparente =
-                sent;
-
-            saveSessionLocally();
+            await saveOnline(
+                currentSession
+            );
 
             localStorage.removeItem(
                 ACTIVE_SESSION_KEY
@@ -3957,25 +3767,35 @@
             currentSession.estado =
                 "interrumpida";
 
-            currentSession.motivo_finalizacion =
+            currentSession
+                .motivo_finalizacion =
                 reason;
 
             currentSession.fin_iso =
-                new Date(now).toISOString();
+                new Date(
+                    Math.min(
+                        now,
+                        sessionDeadlineTimestamp
+                    )
+                ).toISOString();
 
-            currentSession.duracion_total_ms =
+            currentSession
+                .duracion_total_ms =
                 Math.max(
                     0,
-                    now -
+                    Math.min(
+                        now,
+                        sessionDeadlineTimestamp
+                    ) -
                     sessionStartTimestamp
                 );
 
-            currentSession.ultimo_evento_guardado =
-                reason === "error"
-                    ? "error"
-                    : "cierre_o_recarga";
+            currentSession.borrador_actual =
+                promptInput.value;
 
-            saveSessionLocally();
+            saveSessionLocally(
+                "cierre_o_recarga"
+            );
 
             saveEmergencyOnline(
                 currentSession
@@ -4010,54 +3830,19 @@
                     fullscreenClicks >= 3
                 ) {
                     fullscreenClicks = 0;
-                    toggleFullscreen();
+
+                    if (
+                        !document.fullscreenElement
+                    ) {
+                        document.documentElement
+                            .requestFullscreen?.();
+                    } else {
+                        document
+                            .exitFullscreen?.();
+                    }
                 }
             }
         );
-
-        async function toggleFullscreen() {
-            const element =
-                document.documentElement;
-
-            const fullscreenElement =
-                document.fullscreenElement ||
-                document.webkitFullscreenElement;
-
-            try {
-                if (
-                    !fullscreenElement
-                ) {
-                    if (
-                        element.requestFullscreen
-                    ) {
-                        await element
-                            .requestFullscreen();
-                    } else if (
-                        element.webkitRequestFullscreen
-                    ) {
-                        element
-                            .webkitRequestFullscreen();
-                    }
-                } else {
-                    if (
-                        document.exitFullscreen
-                    ) {
-                        await document
-                            .exitFullscreen();
-                    } else if (
-                        document.webkitExitFullscreen
-                    ) {
-                        document
-                            .webkitExitFullscreen();
-                    }
-                }
-            } catch (error) {
-                console.error(
-                    "No se pudo cambiar el modo de pantalla completa:",
-                    error
-                );
-            }
-        }
 
         /* =========================
            EVENTOS
@@ -4072,11 +3857,64 @@
             "keydown",
             event => {
                 if (
-                    event.key ===
-                    "Enter"
+                    event.key === "Enter"
                 ) {
                     event.preventDefault();
                     startExperiment();
+                }
+            }
+        );
+
+        promptInput.addEventListener(
+            "focus",
+            () => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    const nowIso =
+                        new Date()
+                            .toISOString();
+
+                    currentSession
+                        .actividad_input
+                        .cantidad_focos += 1;
+
+                    currentSession
+                        .actividad_input
+                        .ultimo_foco_iso =
+                        nowIso;
+
+                    saveSessionLocally(
+                        "input_enfocado"
+                    );
+                }
+            }
+        );
+
+        promptInput.addEventListener(
+            "blur",
+            () => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    const nowIso =
+                        new Date()
+                            .toISOString();
+
+                    currentSession
+                        .actividad_input
+                        .cantidad_blurs += 1;
+
+                    currentSession
+                        .actividad_input
+                        .ultimo_blur_iso =
+                        nowIso;
+
+                    saveSessionLocally(
+                        "input_desenfocado"
+                    );
                 }
             }
         );
@@ -4086,6 +3924,42 @@
             () => {
                 updateButton();
                 resizeTextarea();
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    const nowIso =
+                        new Date()
+                            .toISOString();
+
+                    currentSession
+                        .actividad_input
+                        .cantidad_eventos_input +=
+                        1;
+
+                    if (
+                        !currentSession
+                            .actividad_input
+                            .primer_input_iso
+                    ) {
+                        currentSession
+                            .actividad_input
+                            .primer_input_iso =
+                            nowIso;
+                    }
+
+                    currentSession
+                        .actividad_input
+                        .ultimo_input_iso =
+                        nowIso;
+
+                    currentSession
+                        .borrador_actual =
+                        promptInput.value;
+
+                    scheduleDraftSave();
+                }
             }
         );
 
@@ -4125,6 +3999,104 @@
             sendMessage
         );
 
+        document.addEventListener(
+            "visibilitychange",
+            () => {
+                if (
+                    !currentSession ||
+                    sessionFinished
+                ) {
+                    return;
+                }
+
+                if (
+                    document.visibilityState ===
+                    "hidden"
+                ) {
+                    saveSessionLocally(
+                        "pagina_en_segundo_plano"
+                    );
+
+                    return;
+                }
+
+                saveSessionLocally(
+                    "pagina_nuevamente_visible"
+                );
+
+                if (
+                    hasDeadlinePassed()
+                ) {
+                    finishSession(
+                        "tiempo"
+                    );
+                } else {
+                    scheduleDeadline();
+                }
+            }
+        );
+
+        window.addEventListener(
+            "pagehide",
+            () => {
+                preserveInterruptedSession(
+                    "cierre_o_recarga"
+                );
+            }
+        );
+
+        window.addEventListener(
+            "beforeunload",
+            () => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    saveSessionLocally(
+                        "beforeunload"
+                    );
+                }
+            }
+        );
+
+        window.addEventListener(
+            "error",
+            event => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    currentSession.ultimo_error =
+                        event.message ||
+                        "error_desconocido";
+
+                    saveSessionLocally(
+                        "error_javascript"
+                    );
+                }
+            }
+        );
+
+        window.addEventListener(
+            "unhandledrejection",
+            event => {
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+                    currentSession.ultimo_error =
+                        String(
+                            event.reason ||
+                            "error_desconocido"
+                        );
+
+                    saveSessionLocally(
+                        "promesa_rechazada"
+                    );
+                }
+            }
+        );
+
         document
             .getElementById(
                 "newChatButton"
@@ -4141,74 +4113,6 @@
                     }
                 }
             );
-
-        document.addEventListener(
-            "visibilitychange",
-            () => {
-                if (
-                    document.visibilityState ===
-                        "visible" &&
-                    currentSession &&
-                    !sessionFinished &&
-                    Date.now() -
-                        sessionStartTimestamp >=
-                        TIME_LIMIT_MS
-                ) {
-                    finishSession(
-                        "tiempo"
-                    );
-                }
-            }
-        );
-
-        window.addEventListener(
-            "pagehide",
-            () => {
-                preserveInterruptedSession(
-                    "cierre_o_recarga"
-                );
-            }
-        );
-
-        window.addEventListener(
-            "error",
-            event => {
-                if (
-                    currentSession &&
-                    !sessionFinished
-                ) {
-                    currentSession.ultimo_evento_guardado =
-                        "error_javascript";
-
-                    currentSession.ultimo_error =
-                        event.message ||
-                        "error_desconocido";
-
-                    saveSessionLocally();
-                }
-            }
-        );
-
-        window.addEventListener(
-            "unhandledrejection",
-            event => {
-                if (
-                    currentSession &&
-                    !sessionFinished
-                ) {
-                    currentSession.ultimo_evento_guardado =
-                        "promesa_rechazada";
-
-                    currentSession.ultimo_error =
-                        String(
-                            event.reason ||
-                            "error_desconocido"
-                        );
-
-                    saveSessionLocally();
-                }
-            }
-        );
 
         resizeTextarea();
         updateButton();
