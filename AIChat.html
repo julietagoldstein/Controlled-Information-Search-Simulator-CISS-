@@ -4,1806 +4,4632 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatGPT</title>
+
     <style>
-        :root {
-            --sidebar-width: 280px;
-            --sidebar-bg: #f9f9f9;
-            --main-bg: #ffffff;
-            --active-bg: #ececec;
-            --composer-bg: #ffffff;
-            --user-bubble-bg: #f4f4f4;
-            --border-color: #e5e5e5;
-            --text-primary: #0d0d0d;
-            --content-width: 768px;
-            --composer-width: 1000px;
+    :root {
+        --sidebar-width: 280px;
+        --sidebar-bg: #f9f9f9;
+        --main-bg: #ffffff;
+        --text-primary: #111111;
+        --border-color: #e5e5e5;
+        --active-bg: #ececec;
+        --user-bubble-bg: #f4f4f4;
+        --content-width: 760px;
+        --composer-width: 760px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; }
+
+    body {
+        display: flex;
+        overflow: hidden;
+        background: var(--main-bg);
+        color: var(--text-primary);
+        font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: 16px;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { color: inherit; }
+    .hidden { display: none !important; }
+
+    #setupOverlay, #endOverlay {
+        position: fixed;
+        z-index: 200000;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: #ffffff;
+    }
+
+    #endOverlay { z-index: 210000; }
+
+    #setupPanel, #endPanel {
+        width: 100%;
+        max-width: 620px;
+        text-align: center;
+    }
+
+    #setupPanel { max-width: 420px; }
+
+    #setupPanel h1 {
+        margin-bottom: 28px;
+        color: #111;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    #participantIdInput {
+        width: 100%;
+        height: 58px;
+        padding: 0 18px;
+        border: 1px solid #cfcfcf;
+        border-radius: 12px;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    #startExperimentButton {
+        width: 100%;
+        min-height: 52px;
+        margin-top: 18px;
+        border: none;
+        border-radius: 26px;
+        background: #111;
+        color: #fff;
+        font-weight: 650;
+        cursor: pointer;
+    }
+
+    #startExperimentButton:disabled { opacity: .6; }
+
+    #setupError {
+        min-height: 22px;
+        margin-top: 12px;
+        color: #b42318;
+        font-size: 14px;
+    }
+
+    #endPanel h1 {
+        margin-bottom: 14px;
+        font-size: 34px;
+        font-weight: 600;
+    }
+
+    #endPanel p {
+        color: #676767;
+        font-size: 22px;
+    }
+
+    #fullscreenCorner {
+        position: fixed;
+        z-index: 220000;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
+    }
+
+    #sidebar {
+        width: var(--sidebar-width);
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--sidebar-bg);
+        border-right: 1px solid var(--border-color);
+    }
+
+    #sidebarTop {
+        height: 60px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #sidebarLogo img {
+        width: 27px;
+        height: 27px;
+        object-fit: contain;
+    }
+
+    #sidebarTopActions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .sidebar-icon-button {
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: transparent;
+        color: #6f6f6f;
+    }
+
+    #sidebarNavigation {
+        padding: 0 8px;
+    }
+
+    .sidebar-nav-button {
+        width: 100%;
+        min-height: 42px;
+        padding: 8px 10px;
+        border: none;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        background: transparent;
+        text-align: left;
+    }
+
+    .sidebar-nav-button.active {
+        background: var(--active-bg);
+    }
+
+    .sidebar-nav-button svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    #sidebarSpacer {
+        flex: 1;
+    }
+
+    #sidebarUtilities {
+        padding: 0 8px 13px;
+    }
+
+    .sidebar-utility {
+        padding: 8px 10px;
+        min-height: 42px;
+    }
+
+    #sidebarLoginPanel {
+        padding: 22px 18px 18px;
+        border-top: 1px solid #ddd;
+    }
+
+    #sidebarLoginPanel h2 {
+        margin-bottom: 16px;
+        font-size: 15px;
+    }
+
+    #sidebarLoginPanel p {
+        margin-bottom: 22px;
+        color: #929292;
+        font-size: 14px;
+        line-height: 1.55;
+    }
+
+    #sidebarLoginButton {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid #d2d2d2;
+        border-radius: 25px;
+        background: #fff;
+        font-weight: 650;
+    }
+
+    #main {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #header {
+        min-height: 60px;
+        flex-shrink: 0;
+        padding: 0 24px 0 38px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #headerTitle {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 20px;
+        font-weight: 650;
+    }
+
+    #headerTitle svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    #headerActions {
+        display: flex;
+        gap: 9px;
+    }
+
+    .header-account-button {
+        min-height: 40px;
+        padding: 0 17px;
+        border-radius: 22px;
+        font-size: 14px;
+        font-weight: 650;
+    }
+
+    #loginButton {
+        border: 1px solid #111;
+        background: #111;
+        color: #fff;
+    }
+
+    #signupButton {
+        border: 1px solid #d5d5d5;
+        background: #fff;
+    }
+
+    #mobileMenuButton {
+        display: none;
+    }
+
+    #startScreen {
+        position: absolute;
+        inset: 60px 0 0;
+        padding: clamp(145px, 27vh, 255px) 24px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background: #fff;
+        pointer-events: none;
+    }
+
+    #welcome {
+        width: 100%;
+        max-width: var(--composer-width);
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    #welcome h1 {
+        color: #111111;
+        font-size: 29px;
+        font-weight: 400;
+        line-height: 1.3;
+        letter-spacing: -0.55px;
+    }
+
+    body.chat-started #startScreen {
+        display: none;
+    }
+
+    #messages {
+        display: none;
+        flex: 1;
+        min-height: 0;
+        padding: 30px 24px 150px;
+        overflow-y: auto;
+    }
+
+    body.chat-started #messages {
+        display: block;
+    }
+
+    .message {
+        width: 100%;
+        max-width: var(--content-width);
+        margin: 0 auto 32px;
+        font-size: 16px;
+        line-height: 1.65;
+    }
+
+    .user-message {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .user-bubble {
+        width: fit-content;
+        max-width: 75%;
+        padding: 10px 16px;
+        border-radius: 20px;
+        background: var(--user-bubble-bg);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .assistant-text {
+        white-space: pre-wrap;
+    }
+
+    .thinking .assistant-text {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #676767;
+    }
+
+    .thinking .assistant-text::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #676767;
+        animation: thinkingPulse 1.1s ease-in-out infinite;
+    }
+
+    @keyframes thinkingPulse {
+        0%, 100% {
+            opacity: .3;
+            transform: scale(.8);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; }
-
-        body {
-            display: flex;
-            overflow: hidden;
-            background: var(--main-bg);
-            color: var(--text-primary);
-            font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
-                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            font-size: 16px;
+        50% {
+            opacity: 1;
+            transform: scale(1);
         }
+    }
 
-        button, input, textarea { font: inherit; }
-        button { color: inherit; }
-        .hidden { display: none !important; }
+    .assistant-content p {
+        margin-bottom: 18px;
+    }
 
-        #setupOverlay, #endOverlay {
-            position: fixed;
-            z-index: 200000;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: #ffffff;
-        }
+    .assistant-content h2 {
+        margin: 30px 0 14px;
+        font-size: 21px;
+    }
 
-        #endOverlay { z-index: 210000; }
+    .assistant-content h2:first-child {
+        margin-top: 0;
+    }
 
-        #setupPanel, #endPanel {
-            width: 100%;
-            max-width: 620px;
-            text-align: center;
-        }
+    .assistant-content h3 {
+        margin: 28px 0 13px;
+        font-size: 18px;
+    }
 
-        #setupPanel { max-width: 420px; }
+    .assistant-content ol {
+        margin: 0 0 18px 25px;
+    }
 
-        #setupPanel h1 {
-            margin-bottom: 28px;
-            color: #111;
-            font-size: 28px;
-            font-weight: 600;
-        }
+    .assistant-content li {
+        margin-bottom: 7px;
+    }
 
-        #participantIdInput {
-            width: 100%;
-            height: 58px;
-            padding: 0 18px;
-            border: 1px solid #cfcfcf;
-            border-radius: 12px;
-            font-size: 20px;
-            text-align: center;
-        }
+    .set-image {
+        display: block;
+        width: auto;
+        max-width: 100%;
+        max-height: 440px;
+        margin: 20px 0 28px;
+        border-radius: 12px;
+        object-fit: contain;
+    }
 
-        #startExperimentButton {
-            width: 100%;
-            min-height: 52px;
-            margin-top: 18px;
-            border: none;
-            border-radius: 26px;
-            background: #111;
-            color: #fff;
-            font-weight: 650;
-            cursor: pointer;
-        }
+    #inputArea {
+        position: absolute;
+        z-index: 15;
+        top: clamp(235px, 45vh, 360px);
+        left: 24px;
+        right: 24px;
+    }
 
-        #startExperimentButton:disabled { opacity: .6; }
-        #setupError { min-height: 22px; margin-top: 12px; color: #b42318; font-size: 14px; }
+    body.chat-started #inputArea {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        width: 100%;
+        flex-shrink: 0;
+        padding: 10px 24px 18px;
+        background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0),
+            #fff 24px
+        );
+    }
 
-        #endPanel h1 { margin-bottom: 14px; font-size: 34px; font-weight: 600; }
-        #endPanel p { color: #676767; font-size: 22px; }
+    #inputContainer {
+        position: relative;
+        width: 100%;
+        max-width: var(--composer-width);
+        min-height: 66px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        border-radius: 34px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        background: #fff;
+        box-shadow:
+            0 1px 2px rgba(0,0,0,.04),
+            0 8px 25px rgba(0,0,0,.06);
+    }
 
-        #fullscreenCorner {
-            position: fixed;
-            z-index: 220000;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-        }
+    #addButton {
+        width: 46px;
+        height: 46px;
+        margin-left: 8px;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+    }
 
+    #prompt {
+        width: 100%;
+        min-height: 56px;
+        max-height: 180px;
+        padding: 15px 145px 14px 4px;
+        border: none;
+        outline: none;
+        resize: none;
+        overflow-y: hidden;
+        background: transparent;
+        font-size: 16px;
+    }
+
+    #composerActions {
+        position: absolute;
+        right: 9px;
+        bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    #microphoneButton,
+    #voiceButton,
+    #sendButton {
+        border: none;
+        border-radius: 50%;
+    }
+
+    #microphoneButton {
+        width: 36px;
+        height: 36px;
+        background: transparent;
+    }
+
+    #voiceButton {
+        min-width: 82px;
+        height: 46px;
+        padding: 0 15px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #f0f0f0;
+        font-weight: 650;
+    }
+
+    #sendButton {
+        display: none;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        background: #111;
+        color: #fff;
+    }
+
+    #inputContainer.has-text #microphoneButton,
+    #inputContainer.has-text #voiceButton {
+        display: none;
+    }
+
+    #inputContainer.has-text #sendButton {
+        display: flex;
+    }
+
+    #inputDisclaimer {
+        display: none;
+        max-width: var(--content-width);
+        margin: 8px auto 0;
+        color: #8d8d8d;
+        font-size: 11px;
+        text-align: center;
+    }
+
+    body.chat-started #inputDisclaimer {
+        display: block;
+    }
+
+    @media (max-width: 760px) {
         #sidebar {
-            width: var(--sidebar-width);
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
+            display: none;
         }
 
-        #sidebarTop {
-            height: 60px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        #sidebarLogo img { width: 27px; height: 27px; object-fit: contain; }
-        #sidebarTopActions { display: flex; gap: 10px; }
-
-        .sidebar-icon-button {
-            width: 30px;
-            height: 30px;
+        #mobileMenuButton {
+            display: block;
             border: none;
             background: transparent;
-            color: #6f6f6f;
         }
-
-        #sidebarNavigation { padding: 0 8px; }
-
-        .sidebar-nav-button {
-            width: 100%;
-            min-height: 42px;
-            padding: 8px 10px;
-            border: none;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            background: transparent;
-            text-align: left;
-        }
-
-        .sidebar-nav-button.active { background: var(--active-bg); }
-        .sidebar-nav-button svg { width: 21px; height: 21px; }
-        #sidebarSpacer { flex: 1; }
-
-        #sidebarUtilities { padding: 0 8px 13px; }
-        .sidebar-utility { padding: 8px 10px; min-height: 42px; }
-
-        #sidebarLoginPanel {
-            padding: 22px 18px 18px;
-            border-top: 1px solid #ddd;
-        }
-
-        #sidebarLoginPanel h2 { margin-bottom: 16px; font-size: 15px; }
-        #sidebarLoginPanel p { margin-bottom: 22px; color: #929292; font-size: 14px; line-height: 1.55; }
-
-        #sidebarLoginButton {
-            width: 100%;
-            min-height: 48px;
-            border: 1px solid #d2d2d2;
-            border-radius: 25px;
-            background: #fff;
-            font-weight: 650;
-        }
-
-        #main {
-            position: relative;
-            flex: 1;
-            min-width: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        #header {
-            min-height: 60px;
-            flex-shrink: 0;
-            padding: 0 24px 0 38px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        #headerTitle { display: flex; align-items: center; gap: 5px; font-size: 20px; font-weight: 650; }
-        #headerTitle svg { width: 16px; height: 16px; }
-        #headerActions { display: flex; gap: 9px; }
-
-        .header-account-button {
-            min-height: 40px;
-            padding: 0 17px;
-            border-radius: 22px;
-            font-size: 14px;
-            font-weight: 650;
-        }
-
-        #loginButton { border: 1px solid #111; background: #111; color: #fff; }
-        #signupButton { border: 1px solid #d5d5d5; background: #fff; }
-        #mobileMenuButton { display: none; }
-
-        #startScreen {
-            position: absolute;
-            inset: 60px 0 0;
-            padding: clamp(145px, 27vh, 255px) 24px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            background: #fff;
-            pointer-events: none;
-        }
-
-        #welcome {
-            width: 100%;
-            max-width: var(--composer-width);
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        #welcome h1 {
-            color: #111111;
-            font-size: 29px;
-            font-weight: 400;
-            line-height: 1.3;
-            letter-spacing: -0.55px;
-        }
-        body.chat-started #startScreen { display: none; }
 
         #messages {
-            display: none;
-            flex: 1;
-            min-height: 0;
-            padding: 30px 24px 150px;
-            overflow-y: auto;
-        }
-
-        body.chat-started #messages { display: block; }
-
-        .message {
-            width: 100%;
-            max-width: var(--content-width);
-            margin: 0 auto 32px;
-            font-size: 16px;
-            line-height: 1.65;
-        }
-
-        .user-message { display: flex; justify-content: flex-end; }
-
-        .user-bubble {
-            width: fit-content;
-            max-width: 75%;
-            padding: 10px 16px;
-            border-radius: 20px;
-            background: var(--user-bubble-bg);
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        .assistant-text { white-space: pre-wrap; }
-
-        .thinking .assistant-text {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #676767;
-        }
-
-        .thinking .assistant-text::before {
-            content: "";
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #676767;
-            animation: thinkingPulse 1.1s ease-in-out infinite;
-        }
-
-        @keyframes thinkingPulse {
-            0%, 100% { opacity: .3; transform: scale(.8); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        .assistant-content p { margin-bottom: 18px; }
-        .assistant-content h2 { margin: 30px 0 14px; font-size: 21px; }
-        .assistant-content h2:first-child { margin-top: 0; }
-        .assistant-content h3 { margin: 28px 0 13px; font-size: 18px; }
-        .assistant-content ol { margin: 0 0 18px 25px; }
-        .assistant-content li { margin-bottom: 7px; }
-
-        .set-image {
-            display: block;
-            width: auto;
-            max-width: 100%;
-            max-height: 440px;
-            margin: 20px 0 28px;
-            border-radius: 12px;
-            object-fit: contain;
+            padding: 24px 13px 130px;
         }
 
         #inputArea {
-            position: absolute;
-            z-index: 15;
-            top: clamp(235px, 45vh, 360px);
-            left: 24px;
-            right: 24px;
+            left: 10px;
+            right: 10px;
         }
 
         body.chat-started #inputArea {
-            position: relative;
-            top: auto;
             left: auto;
             right: auto;
-            width: 100%;
-            flex-shrink: 0;
-            padding: 10px 24px 18px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 24px);
+            padding: 9px 10px 13px;
         }
 
-        #inputContainer {
-            position: relative;
-            width: 100%;
-            max-width: var(--composer-width);
-            min-height: 66px;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            border-radius: 34px;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 25px rgba(0,0,0,.06);
+        .user-bubble {
+            max-width: 88%;
         }
-
-        #addButton {
-            width: 46px;
-            height: 46px;
-            margin-left: 8px;
-            border: none;
-            border-radius: 50%;
-            background: transparent;
-        }
-
-        #prompt {
-            width: 100%;
-            min-height: 56px;
-            max-height: 180px;
-            padding: 15px 145px 14px 4px;
-            border: none;
-            outline: none;
-            resize: none;
-            overflow-y: hidden;
-            background: transparent;
-            font-size: 16px;
-        }
-
-        #composerActions {
-            position: absolute;
-            right: 9px;
-            bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        #microphoneButton, #voiceButton, #sendButton {
-            border: none;
-            border-radius: 50%;
-        }
-
-        #microphoneButton { width: 36px; height: 36px; background: transparent; }
-
-        #voiceButton {
-            min-width: 82px;
-            height: 46px;
-            padding: 0 15px;
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: #f0f0f0;
-            font-weight: 650;
-        }
-
-        #sendButton {
-            display: none;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-            background: #111;
-            color: #fff;
-        }
-
-        #inputContainer.has-text #microphoneButton,
-        #inputContainer.has-text #voiceButton { display: none; }
-
-        #inputContainer.has-text #sendButton { display: flex; }
-
-        #inputDisclaimer {
-            display: none;
-            max-width: var(--content-width);
-            margin: 8px auto 0;
-            color: #8d8d8d;
-            font-size: 11px;
-            text-align: center;
-        }
-
-        body.chat-started #inputDisclaimer { display: block; }
-
-        @media (max-width: 760px) {
-            #sidebar { display: none; }
-            #mobileMenuButton { display: block; border: none; background: transparent; }
-            #messages { padding: 24px 13px 130px; }
-            #inputArea { left: 10px; right: 10px; }
-            body.chat-started #inputArea { left: auto; right: auto; padding: 9px 10px 13px; }
-            .user-bubble { max-width: 88%; }
-        }
+    }
     </style>
 </head>
 
 <body>
-    <div id="fullscreenCorner" aria-hidden="true"></div>
 
-    <div id="setupOverlay">
-        <div id="setupPanel">
-            <h1>Configuración del experimento</h1>
-            <input id="participantIdInput" type="text" inputmode="numeric"
-                autocomplete="off" placeholder="ID participante" aria-label="ID participante">
-            <button id="startExperimentButton" type="button">Comenzar experimento</button>
-            <div id="setupError" aria-live="polite"></div>
+<div id="fullscreenCorner" aria-hidden="true"></div>
+
+<div id="setupOverlay">
+    <div id="setupPanel">
+        <h1>Configuración del experimento</h1>
+
+        <input
+            id="participantIdInput"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="ID participante"
+            aria-label="ID participante"
+        >
+
+        <button id="startExperimentButton" type="button">
+            Comenzar experimento
+        </button>
+
+        <div id="setupError" aria-live="polite"></div>
+    </div>
+</div>
+
+<div id="endOverlay" class="hidden">
+    <div id="endPanel">
+        <h1>Se terminó el tiempo</h1>
+        <p>¡Es hora de jugar!</p>
+    </div>
+</div>
+
+<aside id="sidebar">
+
+    <div id="sidebarTop">
+
+        <div id="sidebarLogo">
+            <img
+                src="Images/ChatGPT/chatgpt-logo.png"
+                alt="ChatGPT"
+            >
+        </div>
+
+        <div id="sidebarTopActions">
+            <button class="sidebar-icon-button" type="button">⌕</button>
+            <button class="sidebar-icon-button" type="button">▣</button>
+        </div>
+
+    </div>
+
+    <nav id="sidebarNavigation">
+
+        <button
+            id="newChatButton"
+            class="sidebar-nav-button active"
+            type="button"
+        >
+            <span>Nuevo chat</span>
+        </button>
+
+        <button class="sidebar-nav-button" type="button">
+            <span>Imágenes</span>
+        </button>
+
+    </nav>
+
+    <div id="sidebarSpacer"></div>
+
+    <div id="sidebarUtilities">
+        <div class="sidebar-utility">Ver planes y precios</div>
+        <div class="sidebar-utility">Configuración</div>
+        <div class="sidebar-utility">Ayuda</div>
+    </div>
+
+    <div id="sidebarLoginPanel">
+
+        <h2>Obtén respuestas adaptadas a ti</h2>
+
+        <p>
+            Inicia sesión para obtener respuestas basadas en chats guardados,
+            además de crear imágenes y cargar archivos.
+        </p>
+
+        <button id="sidebarLoginButton" type="button">
+            Iniciar sesión
+        </button>
+
+    </div>
+
+</aside>
+
+<main id="main">
+
+    <header id="header">
+
+        <button id="mobileMenuButton" type="button">☰</button>
+
+        <div id="headerTitle">
+            <span>ChatGPT</span>
+            <span>⌄</span>
+        </div>
+
+        <div id="headerActions">
+
+            <button
+                id="loginButton"
+                class="header-account-button"
+                type="button"
+            >
+                Iniciar sesión
+            </button>
+
+            <button
+                id="signupButton"
+                class="header-account-button"
+                type="button"
+            >
+                Registrarse gratis
+            </button>
+
+        </div>
+
+    </header>
+
+    <div id="startScreen">
+        <div id="welcome">
+            <h1>¿Qué toca hoy?</h1>
         </div>
     </div>
 
-    <div id="endOverlay" class="hidden">
-        <div id="endPanel">
-            <h1>Se terminó el tiempo</h1>
-            <p>¡Es hora de jugar!</p>
+    <div id="messages"></div>
+
+    <div id="inputArea">
+
+        <div id="inputContainer">
+
+            <button id="addButton" type="button">
+                ＋
+            </button>
+
+            <textarea
+                id="prompt"
+                rows="1"
+                placeholder="Pregunta lo que quieras"
+                aria-label="Mensaje"
+            ></textarea>
+
+            <div id="composerActions">
+
+                <button
+                    id="microphoneButton"
+                    type="button"
+                >
+                    🎙
+                </button>
+
+                <button
+                    id="voiceButton"
+                    type="button"
+                >
+                    <span>Voz</span>
+                </button>
+
+                <button
+                    id="sendButton"
+                    type="button"
+                    disabled
+                    aria-label="Enviar mensaje"
+                >
+                    ↑
+                </button>
+
+            </div>
+
         </div>
+
+        <div id="inputDisclaimer">
+            ChatGPT puede cometer errores. Considera verificar la información importante.
+        </div>
+
     </div>
 
-    <aside id="sidebar">
-        <div id="sidebarTop">
-            <div id="sidebarLogo">
-                <img src="Images/ChatGPT/chatgpt-logo.png" alt="ChatGPT">
-            </div>
-            <div id="sidebarTopActions">
-                <button class="sidebar-icon-button" type="button">⌕</button>
-                <button class="sidebar-icon-button" type="button">▣</button>
-            </div>
+</main>
+
+<script>
+    const SIMULATOR_VERSION = "AIChat_v1.5_flexible_input";
+    const TIME_LIMIT_MS = 10 * 60 * 1000;
+    const LOCAL_SAVE_INTERVAL_MS = 5000;
+    const MANUAL_END_COMMANDS = new Set(["fin", "/fin"]);
+    const ACTIVE_SESSION_KEY = "aiChatActiveSession";
+    const SESSION_ARCHIVE_KEY = "aiChatExperimentSessions";
+
+    const GOOGLE_FORM_CONFIG = Object.freeze({
+        enabled: true,
+
+        formURL:
+            "https://docs.google.com/forms/d/e/1FAIpQLSd-jC8jc_UwiMOW3Y2g92AoNm9WSy4buENDWDYqTDAvHr0hqQ/formResponse",
+
+        entries: {
+            id: "entry.734956938",
+            session_id: "entry.881696520",
+            inicio: "entry.1221449566",
+            fin: "entry.262053977",
+            duracion_total_ms: "entry.1019970391",
+            estado: "entry.1253557311",
+            motivo_finalizacion: "entry.421581979",
+            cantidad_mensajes_usuario: "entry.1728551874",
+            cantidad_palabras_usuario: "entry.670694487",
+            caracteres_con_espacios: "entry.144925831",
+            conteos_categorias_json: "entry.587160584",
+            conversacion_json: "entry.1906092020",
+            ultimo_evento_guardado: "entry.2078020150",
+            version_simulador: "entry.427391662"
+        }
+    });
+
+    const promptInput =
+        document.getElementById("prompt");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+    const messages =
+        document.getElementById("messages");
+
+    const inputContainer =
+        document.getElementById("inputContainer");
+
+    const setupOverlay =
+        document.getElementById("setupOverlay");
+
+    const participantIdInput =
+        document.getElementById("participantIdInput");
+
+    const startExperimentButton =
+        document.getElementById("startExperimentButton");
+
+    const setupError =
+        document.getElementById("setupError");
+
+    const endOverlay =
+        document.getElementById("endOverlay");
+
+    const fullscreenCorner =
+        document.getElementById("fullscreenCorner");
+
+    let currentSession = null;
+    let sessionStartTimestamp = 0;
+    let sessionDeadlineTimestamp = 0;
+    let lastAssistantShownTimestamp = 0;
+    let sessionTimeout = null;
+    let heartbeatInterval = null;
+    let draftSaveTimeout = null;
+    let sessionFinished = false;
+
+    const pendingResponseTimeouts = new Set();
+
+    const Category = Object.freeze({
+        GREETING: "GREETING",
+        THANKS: "THANKS",
+        FAREWELL: "FAREWELL",
+        GENERAL: "GENERAL",
+        CLARIFICATION: "CLARIFICATION",
+        TWO_SAME_ONE_DIFFERENT: "TWO_SAME_ONE_DIFFERENT",
+        CASE_1_EXISTS: "CASE_1_EXISTS",
+        REQUEST_TO_PLAY: "REQUEST_TO_PLAY",
+        HOW_TO_WIN: "HOW_TO_WIN",
+        HOW_TO_LOSE: "HOW_TO_LOSE",
+        CHEATING: "CHEATING",
+        RULE: "RULE",
+        EXAMPLE_1: "EXAMPLE_1",
+        EXAMPLE_2: "EXAMPLE_2",
+        EXAMPLE_3: "EXAMPLE_3",
+        EXAMPLE_4: "EXAMPLE_4",
+        OFF_TOPIC: "OFF_TOPIC"
+    });
+
+    const GREETING_RESPONSE =
+        "¡Hola! 😊 ¿Cómo te puedo ayudar?";
+
+    const THANKS_RESPONSE =
+        "¡De nada! 😊";
+
+    const FAREWELL_RESPONSE =
+        "¡Chau! 👋";
+
+    const CASE_1_EXISTS_RESPONSE =
+        "Sí, existe.";
+
+    const REQUEST_TO_PLAY_RESPONSE =
+        "Puedo ayudarte con las instrucciones que estamos viendo. Para formar un SET, en cada característica tienen que ser todas iguales o todas distintas.";
+
+    const HOW_TO_WIN_SCRIPT = `
+        <div class="assistant-content">
+
+            <p>
+                Para ganar, tenés que descubrir correctamente si las cartas forman un SET o no.
+            </p>
+
+            <p>
+                Acordate de la regla: en cada característica —forma, color, relleno y cantidad—
+                las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+
+            <p>
+                Si las cuatro características cumplen esa regla, forman un SET.
+                Si alguna no la cumple, no forman un SET.
+            </p>
+
+        </div>
+    `;
+
+    const HOW_TO_LOSE_SCRIPT = `
+        <div class="assistant-content">
+
+            <p>
+                Perdés si no descubrís correctamente si las cartas forman un SET o no.
+            </p>
+
+            <p>
+                Acordate de la regla: en cada característica —forma, color, relleno y cantidad—
+                las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+
+            <p>
+                Si las cuatro características cumplen esa regla, forman un SET.
+                Si alguna no la cumple, no forman un SET.
+            </p>
+
+        </div>
+    `;
+
+    const CHEATING_SCRIPT = `
+        <div class="assistant-content">
+
+            <p>
+                No hace falta hacer trampa.
+            </p>
+
+            <p>
+                Para jugar, tenés que mirar las cartas y descubrir correctamente si forman un SET o no.
+            </p>
+
+            <p>
+                Acordate de la regla: en cada característica —forma, color, relleno y cantidad—
+                las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+
+        </div>
+    `;
+
+    const OFF_TOPIC_RESPONSE =
+        "Ahora estamos aprendiendo a jugar a SET. Hazme una pregunta sobre el juego y estaré encantado de ayudarte.";
+
+    const fullSetScript = `
+        <div class="assistant-content">
+
+            <h2>Instrucciones para Jugar al SET</h2>
+
+            <p>
+                En el juego hay cartas, y estas cartas tienen dibujitos.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/intro-set.png"
+                alt="Cartas del juego SET"
+            >
+
+            <p>
+                Entonces, tenemos que descubrir si las cartas forman un SET, o no.
+            </p>
+
+            <h2>Regla para formar un SET</h2>
+
+            <p>
+                Para formar un “set”, cada característica
+                (forma, color, relleno y cantidad)
+                tiene que cumplir una regla.
+            </p>
+
+            <p>
+                Esa regla dice que tienen que ser:
+                o todas iguales, o todas distintas
+                en esa característica.
+            </p>
+
+            <p>
+                Si las cuatro características cumplen la regla,
+                entonces las cartas forman un SET.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/set.png"
+                alt="Ejemplo de cartas que forman un SET"
+            >
+
+            <p>
+                Pero, si alguna característica no cumple la regla,
+                entonces las cartas ya NO forman un SET.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/noSet.png"
+                alt="Ejemplo de cartas que no forman un SET"
+            >
+
+            <h2>Veamos algunos ejemplos</h2>
+
+            <h3>
+                1) Todas iguales → Sí forman un SET
+            </h3>
+
+            <img
+                class="set-image"
+                src="Images/ejemplo1.png"
+                alt="Ejemplo de cartas con características iguales"
+            >
+
+            <ol>
+                <li>Todas tienen la misma forma.</li>
+                <li>Todas tienen el mismo color.</li>
+                <li>Todas tienen el mismo relleno.</li>
+                <li>Todas tienen la misma cantidad.</li>
+            </ol>
+
+            <p>
+                Entonces, estas cartas forman un SET.
+            </p>
+
+            <h3>
+                2) Todas distintas → Sí forman un SET
+            </h3>
+
+            <img
+                class="set-image"
+                src="Images/ejemplo2.png"
+                alt="Ejemplo de cartas con características distintas"
+            >
+
+            <ol>
+                <li>Las formas son todas distintas.</li>
+                <li>Los colores son todos distintos.</li>
+                <li>Los rellenos son todos distintos.</li>
+                <li>Las cantidades son todas distintas.</li>
+            </ol>
+
+            <p>
+                Como todas cumplen la regla, forman un SET.
+            </p>
+
+            <h3>
+                3) Mezcla de iguales y distintas → Sí forman un SET
+            </h3>
+
+            <img
+                class="set-image"
+                src="Images/ejemplo3.png"
+                alt="Ejemplo con características iguales y distintas"
+            >
+
+            <ol>
+                <li>Las formas son iguales.</li>
+                <li>Los colores son distintos.</li>
+                <li>Los rellenos son iguales.</li>
+                <li>Las cantidades son distintas.</li>
+            </ol>
+
+            <p>
+                La regla se cumple en todas las características.
+            </p>
+
+            <h3>
+                4) Una característica rompe la regla → NO forman un SET
+            </h3>
+
+            <img
+                class="set-image"
+                src="Images/ejemplo4.png"
+                alt="Ejemplo en el que una característica rompe la regla"
+            >
+
+            <ol>
+                <li>Las formas sí cumplen la regla.</li>
+                <li>
+                    El color NO cumple la regla:
+                    hay dos verdes iguales y una azul distinta.
+                </li>
+            </ol>
+
+            <p>
+                Entonces, estas cartas NO forman un SET.
+            </p>
+
+        </div>
+    `;
+
+    const greetingGeneralScript = `
+        <div class="assistant-content">
+            <p>¡Hola! 😊</p>
         </div>
 
-        <nav id="sidebarNavigation">
-            <button id="newChatButton" class="sidebar-nav-button active" type="button">
-                <span>Nuevo chat</span>
-            </button>
-            <button class="sidebar-nav-button" type="button">
-                <span>Imágenes</span>
-            </button>
-        </nav>
+        ${fullSetScript}
+    `;
 
-        <div id="sidebarSpacer"></div>
+    const ruleScript = `
+        <div class="assistant-content">
 
-        <div id="sidebarUtilities">
-            <div class="sidebar-utility">Ver planes y precios</div>
-            <div class="sidebar-utility">Configuración</div>
-            <div class="sidebar-utility">Ayuda</div>
+            <h2>Regla para formar un SET</h2>
+
+            <p>
+                Para formar un SET, cada característica
+                —forma, color, relleno y cantidad—
+                tiene que cumplir una regla.
+            </p>
+
+            <p>
+                Las tres cartas tienen que ser todas iguales
+                o todas distintas en esa característica.
+            </p>
+
+            <p>
+                Si las cuatro características cumplen la regla,
+                forman un SET.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/set.png"
+                alt="Ejemplo de cartas que forman un SET"
+            >
+
+            <p>
+                Si alguna característica no cumple la regla,
+                no forman un SET.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/noSet.png"
+                alt="Ejemplo de cartas que no forman un SET"
+            >
+
         </div>
+    `;
 
-        <div id="sidebarLoginPanel">
-            <h2>Obtén respuestas adaptadas a ti</h2>
-            <p>Inicia sesión para obtener respuestas basadas en chats guardados, además de crear imágenes y cargar archivos.</p>
-            <button id="sidebarLoginButton" type="button">Iniciar sesión</button>
+    const clarificationScript = `
+        <div class="assistant-content">
+
+            <h2>Vamos de nuevo</h2>
+
+            <p>No hay problema. La regla más importante es esta:</p>
+
+            <p>
+                En cada característica —forma, color, relleno y cantidad—
+                las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+
+            <p>
+                Si en alguna característica hay dos iguales y una distinta,
+                no forman un SET.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/noSet.png"
+                alt="Ejemplo de cartas que no forman un SET"
+            >
+
         </div>
-    </aside>
+    `;
 
-    <main id="main">
-        <header id="header">
-            <button id="mobileMenuButton" type="button">☰</button>
-            <div id="headerTitle">
-                <span>ChatGPT</span>
-                <span>⌄</span>
-            </div>
-            <div id="headerActions">
-                <button id="loginButton" class="header-account-button" type="button">Iniciar sesión</button>
-                <button id="signupButton" class="header-account-button" type="button">Registrarse gratis</button>
-            </div>
-        </header>
+    const twoSameOneDifferentScript = `
+        <div class="assistant-content">
 
-        <div id="startScreen">
-            <div id="welcome">
-                <h1>¿Qué toca hoy?</h1>
-            </div>
+            <p>
+                Si en una característica hay dos cartas iguales y una distinta,
+                las cartas no forman un SET.
+            </p>
+
+            <p>
+                Para formar un SET, en cada característica tienen que ser
+                todas iguales o todas distintas.
+            </p>
+
+            <img
+                class="set-image"
+                src="Images/noSet.png"
+                alt="Ejemplo de cartas que no forman un SET"
+            >
+
         </div>
+    `;
 
-        <div id="messages"></div>
+    const example1Script = `
+        <div class="assistant-content">
 
-        <div id="inputArea">
-            <div id="inputContainer">
-                <button id="addButton" type="button">＋</button>
-                <textarea id="prompt" rows="1" placeholder="Pregunta lo que quieras" aria-label="Mensaje"></textarea>
+            <h3>
+                1) Todas iguales → Sí forman un SET
+            </h3>
 
-                <div id="composerActions">
-                    <button id="microphoneButton" type="button">🎙</button>
-                    <button id="voiceButton" type="button"><span>Voz</span></button>
-                    <button id="sendButton" type="button" disabled aria-label="Enviar mensaje">↑</button>
-                </div>
-            </div>
+            <img
+                class="set-image"
+                src="Images/ejemplo1.png"
+                alt="Ejemplo de cartas con características iguales"
+            >
 
-            <div id="inputDisclaimer">
-                ChatGPT puede cometer errores. Considera verificar la información importante.
-            </div>
+            <ol>
+                <li>Todas tienen la misma forma.</li>
+                <li>Todas tienen el mismo color.</li>
+                <li>Todas tienen el mismo relleno.</li>
+                <li>Todas tienen la misma cantidad.</li>
+            </ol>
+
+            <p>
+                Entonces, estas cartas forman un SET.
+            </p>
+
         </div>
-    </main>
+    `;
 
-    <script>
-        const SIMULATOR_VERSION = "AIChat_v1.4_test_adjustments";
-        const TIME_LIMIT_MS = 10 * 60 * 1000;
-        const LOCAL_SAVE_INTERVAL_MS = 5000;
-        const MANUAL_END_COMMANDS = new Set(["fin", "/fin"]);
-        const ACTIVE_SESSION_KEY = "aiChatActiveSession";
-        const SESSION_ARCHIVE_KEY = "aiChatExperimentSessions";
+    const example2Script = `
+        <div class="assistant-content">
 
-        const GOOGLE_FORM_CONFIG = Object.freeze({
-            enabled: true,
-            formURL: "https://docs.google.com/forms/d/e/1FAIpQLSd-jC8jc_UwiMOW3Y2g92AoNm9WSy4buENDWDYqTDAvHr0hqQ/formResponse",
-            entries: {
-                id: "entry.734956938",
-                session_id: "entry.881696520",
-                inicio: "entry.1221449566",
-                fin: "entry.262053977",
-                duracion_total_ms: "entry.1019970391",
-                estado: "entry.1253557311",
-                motivo_finalizacion: "entry.421581979",
-                cantidad_mensajes_usuario: "entry.1728551874",
-                cantidad_palabras_usuario: "entry.670694487",
-                caracteres_con_espacios: "entry.144925831",
-                conteos_categorias_json: "entry.587160584",
-                conversacion_json: "entry.1906092020",
-                ultimo_evento_guardado: "entry.2078020150",
-                version_simulador: "entry.427391662"
-            }
-        });
+            <h3>
+                2) Todas distintas → Sí forman un SET
+            </h3>
 
-        const promptInput = document.getElementById("prompt");
-        const sendButton = document.getElementById("sendButton");
-        const messages = document.getElementById("messages");
-        const inputContainer = document.getElementById("inputContainer");
-        const setupOverlay = document.getElementById("setupOverlay");
-        const participantIdInput = document.getElementById("participantIdInput");
-        const startExperimentButton = document.getElementById("startExperimentButton");
-        const setupError = document.getElementById("setupError");
-        const endOverlay = document.getElementById("endOverlay");
-        const fullscreenCorner = document.getElementById("fullscreenCorner");
+            <img
+                class="set-image"
+                src="Images/ejemplo2.png"
+                alt="Ejemplo de cartas con características distintas"
+            >
 
-        let currentSession = null;
-        let sessionStartTimestamp = 0;
-        let sessionDeadlineTimestamp = 0;
-        let lastAssistantShownTimestamp = 0;
-        let sessionTimeout = null;
-        let heartbeatInterval = null;
-        let draftSaveTimeout = null;
-        let sessionFinished = false;
+            <ol>
+                <li>Las formas son todas distintas.</li>
+                <li>Los colores son todos distintos.</li>
+                <li>Los rellenos son todos distintos.</li>
+                <li>Las cantidades son todas distintas.</li>
+            </ol>
 
-        const pendingResponseTimeouts = new Set();
+            <p>
+                Como todas cumplen la regla, forman un SET.
+            </p>
 
-        const Category = Object.freeze({
-            GREETING: "GREETING",
-            THANKS: "THANKS",
-            FAREWELL: "FAREWELL",
-            GENERAL: "GENERAL",
-            CLARIFICATION: "CLARIFICATION",
-            TWO_SAME_ONE_DIFFERENT: "TWO_SAME_ONE_DIFFERENT",
-            CASE_1_EXISTS: "CASE_1_EXISTS",
-            REQUEST_TO_PLAY: "REQUEST_TO_PLAY",
-            RULE: "RULE",
-            EXAMPLE_1: "EXAMPLE_1",
-            EXAMPLE_2: "EXAMPLE_2",
-            EXAMPLE_3: "EXAMPLE_3",
-            EXAMPLE_4: "EXAMPLE_4",
-            OFF_TOPIC: "OFF_TOPIC"
-        });
+        </div>
+    `;
 
-        const GREETING_RESPONSE = "¡Hola! 😊 ¿Cómo te puedo ayudar?";
-        const THANKS_RESPONSE = "¡De nada! 😊";
-        const FAREWELL_RESPONSE = "¡Chau! 👋";
-        const CASE_1_EXISTS_RESPONSE = "Sí, existe.";
-        const REQUEST_TO_PLAY_RESPONSE =
-            "Puedo ayudarte con las instrucciones que estamos viendo. Para formar un SET, en cada característica tienen que ser todas iguales o todas distintas.";
-        const OFF_TOPIC_RESPONSE =
-            "Ahora estamos aprendiendo a jugar a SET. Hazme una pregunta sobre el juego y estaré encantado de ayudarte.";
+    const example3Script = `
+        <div class="assistant-content">
 
-        const fullSetScript = `
-            <div class="assistant-content">
-                <h2>Instrucciones para Jugar al SET</h2>
-                <p>En el juego hay cartas, y estas cartas tienen dibujitos.</p>
-                <img class="set-image" src="Images/intro-set.png" alt="Cartas del juego SET">
-                <p>Entonces, tenemos que descubrir si las cartas forman un SET, o no.</p>
+            <h3>
+                3) Mezcla de iguales y distintas → Sí forman un SET
+            </h3>
 
-                <h2>Regla para formar un SET</h2>
-                <p>Para formar un “set”, cada característica (forma, color, relleno y cantidad) tiene que cumplir una regla.</p>
-                <p>Esa regla dice que tienen que ser: o todas iguales, o todas distintas en esa característica.</p>
-                <p>Si las cuatro características cumplen la regla, entonces las cartas forman un SET.</p>
-                <img class="set-image" src="Images/set.png" alt="Ejemplo de cartas que forman un SET">
-                <p>Pero, si alguna característica no cumple la regla, entonces las cartas ya NO forman un SET.</p>
-                <img class="set-image" src="Images/noSet.png" alt="Ejemplo de cartas que no forman un SET">
+            <img
+                class="set-image"
+                src="Images/ejemplo3.png"
+                alt="Ejemplo con características iguales y distintas"
+            >
 
-                <h2>Veamos algunos ejemplos</h2>
+            <ol>
+                <li>Las formas son iguales.</li>
+                <li>Los colores son distintos.</li>
+                <li>Los rellenos son iguales.</li>
+                <li>Las cantidades son distintas.</li>
+            </ol>
 
-                <h3>1) Todas iguales → Sí forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo1.png" alt="Ejemplo de cartas con características iguales">
-                <ol>
-                    <li>Todas tienen la misma forma.</li>
-                    <li>Todas tienen el mismo color.</li>
-                    <li>Todas tienen el mismo relleno.</li>
-                    <li>Todas tienen la misma cantidad.</li>
-                </ol>
-                <p>Entonces, estas cartas forman un SET.</p>
+            <p>
+                La regla se cumple en todas las características.
+            </p>
 
-                <h3>2) Todas distintas → Sí forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo2.png" alt="Ejemplo de cartas con características distintas">
-                <ol>
-                    <li>Las formas son todas distintas.</li>
-                    <li>Los colores son todos distintos.</li>
-                    <li>Los rellenos son todos distintos.</li>
-                    <li>Las cantidades son todas distintas.</li>
-                </ol>
-                <p>Como todas cumplen la regla, forman un SET.</p>
+        </div>
+    `;
 
-                <h3>3) Mezcla de iguales y distintas → Sí forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo3.png" alt="Ejemplo con características iguales y distintas">
-                <ol>
-                    <li>Las formas son iguales.</li>
-                    <li>Los colores son distintos.</li>
-                    <li>Los rellenos son iguales.</li>
-                    <li>Las cantidades son distintas.</li>
-                </ol>
-                <p>La regla se cumple en todas las características.</p>
+    const example4Script = `
+        <div class="assistant-content">
 
-                <h3>4) Una característica rompe la regla → NO forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo4.png" alt="Ejemplo en el que una característica rompe la regla">
-                <ol>
-                    <li>Las formas sí cumplen la regla.</li>
-                    <li>El color NO cumple la regla: hay dos verdes iguales y una azul distinta.</li>
-                </ol>
-                <p>Entonces, estas cartas NO forman un SET.</p>
-            </div>
-        `;
+            <h3>
+                4) Una característica rompe la regla → NO forman un SET
+            </h3>
 
-        const greetingGeneralScript = `
-            <div class="assistant-content"><p>¡Hola! 😊</p></div>
-            ${fullSetScript}
-        `;
+            <img
+                class="set-image"
+                src="Images/ejemplo4.png"
+                alt="Ejemplo en el que una característica rompe la regla"
+            >
 
-        const ruleScript = `
-            <div class="assistant-content">
-                <h2>Regla para formar un SET</h2>
-                <p>Para formar un SET, cada característica —forma, color, relleno y cantidad— tiene que cumplir una regla.</p>
-                <p>Las tres cartas tienen que ser todas iguales o todas distintas en esa característica.</p>
-                <p>Si las cuatro características cumplen la regla, forman un SET.</p>
-                <img class="set-image" src="Images/set.png" alt="Ejemplo de cartas que forman un SET">
-                <p>Si alguna característica no cumple la regla, no forman un SET.</p>
-                <img class="set-image" src="Images/noSet.png" alt="Ejemplo de cartas que no forman un SET">
-            </div>
-        `;
+            <ol>
+                <li>Las formas sí cumplen la regla.</li>
+                <li>
+                    El color NO cumple la regla:
+                    hay dos verdes iguales y una azul distinta.
+                </li>
+            </ol>
 
-        const clarificationScript = `
-            <div class="assistant-content">
-                <p>Para formar un SET, cada característica —forma, color, relleno y cantidad— tiene que cumplir una regla.</p>
-                <p>Tienen que ser todas iguales o todas distintas en esa característica.</p>
-            </div>
-        `;
+            <p>
+                Entonces, estas cartas NO forman un SET.
+            </p>
 
-        const twoSameOneDifferentScript = `
-            <div class="assistant-content">
-                <h3>4) Una característica rompe la regla → NO forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo4.png" alt="Ejemplo en el que una característica rompe la regla">
-                <ol>
-                    <li>Las formas sí cumplen la regla.</li>
-                    <li>El color NO cumple la regla: hay dos verdes iguales y una azul distinta.</li>
-                </ol>
-                <p>Entonces, estas cartas NO forman un SET.</p>
-            </div>
-        `;
+        </div>
+    `;
 
-        const example1Script = `
-            <div class="assistant-content">
-                <h3>1) Todas iguales → Sí forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo1.png" alt="Ejemplo de cartas con características iguales">
-                <ol>
-                    <li>Todas tienen la misma forma.</li>
-                    <li>Todas tienen el mismo color.</li>
-                    <li>Todas tienen el mismo relleno.</li>
-                    <li>Todas tienen la misma cantidad.</li>
-                </ol>
-                <p>Entonces, estas cartas forman un SET.</p>
-            </div>
-        `;
+    const STOP_WORDS = new Set([
+        "a","al","algo","como","con","cual","cuales","de","del","el","en","es",
+        "esa","ese","esta","este","esto","hay","la","las","lo","los","me","mi",
+        "no","o","para","por","porque","que","se","si","son","su","te","tiene",
+        "un","una","unas","unos","y","yo","quiero","puedo","podes","podrias",
+        "muchas","muchos"
+    ]);
 
-        const example2Script = `
-            <div class="assistant-content">
-                <h3>2) Todas distintas → Sí forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo2.png" alt="Ejemplo de cartas con características distintas">
-                <ol>
-                    <li>Las formas son todas distintas.</li>
-                    <li>Los colores son todos distintos.</li>
-                    <li>Los rellenos son todos distintos.</li>
-                    <li>Las cantidades son todas distintas.</li>
-                </ol>
-                <p>Como todas cumplen la regla, forman un SET.</p>
-            </div>
-        `;
+    const TOKEN_GROUPS = Object.freeze({
 
-        const example3Script = `
-            <div class="assistant-content">
-                <h3>3) Mezcla de iguales y distintas → Sí forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo3.png" alt="Ejemplo con características iguales y distintas">
-                <ol>
-                    <li>Las formas son iguales.</li>
-                    <li>Los colores son distintos.</li>
-                    <li>Los rellenos son iguales.</li>
-                    <li>Las cantidades son distintas.</li>
-                </ol>
-                <p>La regla se cumple en todas las características.</p>
-            </div>
-        `;
+        SET_CONTEXT: [
+            "set",
+            "carta",
+            "cartas",
+            "juego"
+        ],
 
-        const example4Script = `
-            <div class="assistant-content">
-                <h3>4) Una característica rompe la regla → NO forman un SET</h3>
-                <img class="set-image" src="Images/ejemplo4.png" alt="Ejemplo en el que una característica rompe la regla">
-                <ol>
-                    <li>Las formas sí cumplen la regla.</li>
-                    <li>El color NO cumple la regla: hay dos verdes iguales y una azul distinta.</li>
-                </ol>
-                <p>Entonces, estas cartas NO forman un SET.</p>
-            </div>
-        `;
+        GENERAL: [
+            "jugar",
+            "juega",
+            "jugamos",
+            "aprender",
+            "aprendo",
+            "ensenar",
+            "ensename",
+            "ensenarme",
+            "explicar",
+            "explicame",
+            "instrucciones",
+            "empezar",
+            "comenzar"
+        ],
 
-        const STOP_WORDS = new Set([
-            "a","al","algo","como","con","cual","cuales","de","del","el","en","es",
-            "esa","ese","esta","este","esto","hay","la","las","lo","los","me","mi",
-            "no","o","para","por","porque","que","se","si","son","su","te","tiene",
-            "un","una","unas","unos","y","yo","quiero","puedo","podes","podrias",
-            "muchas","muchos"
-        ]);
+        RULE: [
+            "regla",
+            "reglas",
+            "formar",
+            "forman",
+            "forma",
+            "cumplir",
+            "cumple",
+            "caracteristica",
+            "caracteristicas",
+            "iguales",
+            "distintas",
+            "diferentes",
+            "saber",
+            "descubrir"
+        ],
 
-        const TOKEN_GROUPS = Object.freeze({
-            SET_CONTEXT: ["set","carta","cartas","juego"],
-            GENERAL: [
-                "jugar","juega","jugamos","aprender","aprendo","ensenar","ensename",
-                "ensenarme","explicar","explicame","instrucciones","empezar","comenzar"
-            ],
-            RULE: [
-                "regla","reglas","formar","forman","forma","cumplir","cumple",
-                "caracteristica","caracteristicas","iguales","distintas","diferentes",
-                "saber","descubrir"
-            ],
-            EXAMPLE: [
-                "ejemplo","ejemplos","mostrar","mostrame","muestrame","explicar",
-                "explicame","entender"
-            ]
-        });
+        EXAMPLE: [
+            "ejemplo",
+            "ejemplos",
+            "mostrar",
+            "mostrame",
+            "muestrame",
+            "explicar",
+            "explicame",
+            "entender"
+        ]
+    });
 
-        function normalizeText(text) {
-            return String(text)
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9ñ\s/]/g, " ")
-                .replace(/\s+/g, " ")
-                .trim();
+
+    /*
+        ====================================================
+        NORMALIZACIÓN FLEXIBLE
+        ====================================================
+
+        Esta parte agrega tolerancia a:
+
+        holaaaaaaa
+        jueeegoooooo
+        holacomo juego al set
+        comojuego al set
+        hola como juego alset
+        holacomojuegoalset
+
+        No cambia el texto original guardado.
+    */
+
+
+    function separateKnownJoinedWords(text) {
+
+        let result = String(text);
+
+        /*
+            Las reglas se aplican en este orden
+            para que una cadena totalmente pegada
+            pueda separarse por etapas.
+
+            Ejemplo:
+
+            holacomojuegoalset
+
+            hola comojuegoalset
+            hola como juegoalset
+            hola como juego alset
+            hola como juego al set
+        */
+
+        result = result.replace(/holacomo/g, "hola como ");
+        result = result.replace(/comojuego/g, "como juego ");
+        result = result.replace(/comojugar/g, "como jugar ");
+        result = result.replace(/comoaprender/g, "como aprender ");
+
+        result = result.replace(/juegoal/g, "juego al ");
+        result = result.replace(/jugaral/g, "jugar al ");
+
+        result = result.replace(/alset/g, "al set");
+        result = result.replace(/alzet/g, "al zet");
+
+        return result
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+
+    function normalizeText(text) {
+
+        let normalized = String(text)
+
+            .toLowerCase()
+
+            .normalize("NFD")
+
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+
+            .replace(
+                /[^a-z0-9ñ\s/]/g,
+                " "
+            )
+
+            /*
+                Si hay 3 o más letras iguales seguidas,
+                las reduce a una.
+
+                holaaaaaaa -> hola
+                jueeegoooooo -> juego
+
+                Dos letras iguales NO se modifican.
+            */
+            .replace(
+                /([a-zñ])\1{2,}/g,
+                "$1"
+            )
+
+            .replace(/\s+/g, " ")
+
+            .trim();
+
+
+        /*
+            Separamos combinaciones conocidas.
+        */
+
+        normalized =
+            separateKnownJoinedWords(
+                normalized
+            );
+
+
+        return normalized
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+
+    function tokenize(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        if (!normalized) {
+            return [];
         }
 
-        function tokenize(text) {
-            const normalized = normalizeText(text);
-            if (!normalized) return [];
-            return normalized.split(" ").filter(token => token && !STOP_WORDS.has(token));
+        return normalized
+            .split(" ")
+            .filter(
+                token =>
+                    token &&
+                    !STOP_WORDS.has(token)
+            );
+    }
+
+
+    function levenshteinDistance(a, b) {
+
+        const matrix =
+            Array.from(
+                { length: a.length + 1 },
+                () =>
+                    Array(
+                        b.length + 1
+                    ).fill(0)
+            );
+
+        for (
+            let i = 0;
+            i <= a.length;
+            i++
+        ) {
+            matrix[i][0] = i;
         }
 
-        function levenshteinDistance(a, b) {
-            const matrix = Array.from({length: a.length + 1}, () => Array(b.length + 1).fill(0));
-            for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-            for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+        for (
+            let j = 0;
+            j <= b.length;
+            j++
+        ) {
+            matrix[0][j] = j;
+        }
 
-            for (let i = 1; i <= a.length; i++) {
-                for (let j = 1; j <= b.length; j++) {
-                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-                    matrix[i][j] = Math.min(
+        for (
+            let i = 1;
+            i <= a.length;
+            i++
+        ) {
+
+            for (
+                let j = 1;
+                j <= b.length;
+                j++
+            ) {
+
+                const cost =
+                    a[i - 1] === b[j - 1]
+                        ? 0
+                        : 1;
+
+                matrix[i][j] =
+                    Math.min(
                         matrix[i - 1][j] + 1,
                         matrix[i][j - 1] + 1,
                         matrix[i - 1][j - 1] + cost
                     );
-                }
             }
-            return matrix[a.length][b.length];
         }
 
-        function getAllowedDistance(word) {
-            if (word.length <= 3) return 0;
-            if (word.length <= 6) return 1;
-            return 2;
+        return matrix[a.length][b.length];
+    }
+
+
+    function getAllowedDistance(word) {
+
+        if (word.length <= 3) {
+            return 0;
         }
 
-        function isKnownVariant(inputToken, targetToken) {
-            const variants = {
-                set: ["set","zet"],
-                hola: ["hola","holaa","ola","hala","hla"],
-                regla: ["regla","relga"]
-            };
-            return (variants[targetToken] || []).includes(inputToken);
+        if (word.length <= 6) {
+            return 1;
         }
 
-        function tokensAreSimilar(inputToken, targetToken) {
-            if (inputToken === targetToken) return true;
-            if (isKnownVariant(inputToken, targetToken)) return true;
-            const allowed = getAllowedDistance(targetToken);
-            if (allowed === 0) return false;
-            if (Math.abs(inputToken.length - targetToken.length) > allowed) return false;
-            return levenshteinDistance(inputToken, targetToken) <= allowed;
+        return 2;
+    }
+
+
+    function isKnownVariant(
+        inputToken,
+        targetToken
+    ) {
+
+        const variants = {
+
+            set: [
+                "set",
+                "zet"
+            ],
+
+            hola: [
+                "hola",
+                "holaa",
+                "ola",
+                "hala",
+                "hla"
+            ],
+
+            regla: [
+                "regla",
+                "relga"
+            ]
+        };
+
+        return (
+            variants[targetToken] || []
+        ).includes(inputToken);
+    }
+
+
+    function tokensAreSimilar(
+        inputToken,
+        targetToken
+    ) {
+
+        if (
+            inputToken === targetToken
+        ) {
+            return true;
         }
 
-        function tokenListContains(tokens, targetWord) {
-            return tokens.some(token => tokensAreSimilar(token, targetWord));
+        if (
+            isKnownVariant(
+                inputToken,
+                targetToken
+            )
+        ) {
+            return true;
         }
 
-        function tokenListContainsAny(tokens, targetWords) {
-            return targetWords.some(word => tokenListContains(tokens, word));
+        const allowed =
+            getAllowedDistance(
+                targetToken
+            );
+
+        if (allowed === 0) {
+            return false;
         }
 
-        function countMatches(tokens, targetWords) {
-            const used = new Set();
-            let count = 0;
-            targetWords.forEach(targetWord => {
-                const index = tokens.findIndex((token, i) =>
-                    !used.has(i) && tokensAreSimilar(token, targetWord)
-                );
+        if (
+            Math.abs(
+                inputToken.length -
+                targetToken.length
+            ) > allowed
+        ) {
+            return false;
+        }
+
+        return (
+            levenshteinDistance(
+                inputToken,
+                targetToken
+            ) <= allowed
+        );
+    }
+
+
+    function tokenListContains(
+        tokens,
+        targetWord
+    ) {
+
+        return tokens.some(
+            token =>
+                tokensAreSimilar(
+                    token,
+                    targetWord
+                )
+        );
+    }
+
+
+    function tokenListContainsAny(
+        tokens,
+        targetWords
+    ) {
+
+        return targetWords.some(
+            word =>
+                tokenListContains(
+                    tokens,
+                    word
+                )
+        );
+    }
+
+
+    function countMatches(
+        tokens,
+        targetWords
+    ) {
+
+        const used =
+            new Set();
+
+        let count = 0;
+
+        targetWords.forEach(
+            targetWord => {
+
+                const index =
+                    tokens.findIndex(
+                        (token, i) =>
+                            !used.has(i) &&
+                            tokensAreSimilar(
+                                token,
+                                targetWord
+                            )
+                    );
+
                 if (index !== -1) {
+
                     used.add(index);
+
                     count += 1;
                 }
-            });
-            return count;
+            }
+        );
+
+        return count;
+    }
+
+
+    function containsGreeting(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        const firstToken =
+            normalized.split(" ")[0] || "";
+
+        return (
+            [
+                "hola",
+                "holaa",
+                "ola",
+                "hala",
+                "hla",
+                "buenas",
+                "hey"
+            ].includes(firstToken)
+
+            ||
+
+            normalized.startsWith(
+                "buen dia"
+            )
+
+            ||
+
+            normalized.startsWith(
+                "buenos dias"
+            )
+
+            ||
+
+            normalized.startsWith(
+                "buenas tardes"
+            )
+
+            ||
+
+            normalized.startsWith(
+                "buenas noches"
+            )
+        );
+    }
+
+
+    function isGreetingOnly(text) {
+
+        return [
+            "hola",
+            "holaa",
+            "ola",
+            "hala",
+            "hla",
+            "buenas",
+            "hey",
+            "buen dia",
+            "buenos dias",
+            "buenas tardes",
+            "buenas noches"
+        ].includes(
+            normalizeText(text)
+        );
+    }
+
+
+    function isThanks(text) {
+
+        return [
+            "gracias",
+            "muchas gracias",
+            "gracias chat",
+            "gracias chatgpt"
+        ].includes(
+            normalizeText(text)
+        );
+    }
+
+
+    function isFarewell(text) {
+
+        return [
+            "chau",
+            "chao",
+            "adios",
+            "nos vemos",
+            "hasta luego"
+        ].includes(
+            normalizeText(text)
+        );
+    }
+
+
+    function isClarificationRequest(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        const exactPhrases = [
+            "como",
+            "y como",
+            "pero como",
+            "no entendi",
+            "no entiendo",
+            "no comprendi",
+            "no me quedo claro",
+            "no me queda claro",
+            "me explicas de nuevo",
+            "explicame de nuevo",
+            "otra vez",
+            "de nuevo",
+            "no lo entendi",
+            "no lo entiendo"
+        ];
+
+        if (
+            exactPhrases.includes(
+                normalized
+            )
+        ) {
+            return true;
         }
 
-        function containsGreeting(text) {
-            const normalized = normalizeText(text);
-            const firstToken = normalized.split(" ")[0] || "";
+        const containedPhrases = [
+            "no entendi",
+            "no entiendo",
+            "no comprendi",
+            "no me quedo claro",
+            "no me queda claro",
+            "explica de nuevo",
+            "explicame de nuevo",
+            "me explicas de nuevo"
+        ];
 
-            return ["hola","holaa","ola","hala","hla","buenas","hey"].includes(firstToken) ||
-                normalized.startsWith("buen dia") ||
-                normalized.startsWith("buenos dias") ||
-                normalized.startsWith("buenas tardes") ||
-                normalized.startsWith("buenas noches");
-        }
+        return containedPhrases.some(
+            phrase =>
+                normalized.includes(
+                    phrase
+                )
+        );
+    }
 
-        function isGreetingOnly(text) {
-            return [
-                "hola","holaa","ola","hala","hla","buenas","hey",
-                "buen dia","buenos dias","buenas tardes","buenas noches"
-            ].includes(normalizeText(text));
-        }
 
-        function isThanks(text) {
-            return ["gracias","muchas gracias","gracias chat","gracias chatgpt"]
-                .includes(normalizeText(text));
-        }
+    function isTwoSameOneDifferent(text) {
 
-        function isFarewell(text) {
-            return ["chau","chao","adios","nos vemos","hasta luego"]
-                .includes(normalizeText(text));
-        }
+        const normalized =
+            normalizeText(text);
 
-        function isClarificationRequest(text) {
-            const normalized = normalizeText(text);
-            const exactPhrases = [
-                "como","y como","pero como","no entendi","no entiendo","no comprendi",
-                "no me quedo claro","no me queda claro","me explicas de nuevo",
-                "explicame de nuevo","otra vez","de nuevo","no lo entendi","no lo entiendo"
-            ];
-
-            if (exactPhrases.includes(normalized)) return true;
-
-            const containedPhrases = [
-                "no entendi","no entiendo","no comprendi","no me quedo claro",
-                "no me queda claro","explica de nuevo","explicame de nuevo",
-                "me explicas de nuevo"
-            ];
-
-            return containedPhrases.some(phrase => normalized.includes(phrase));
-        }
-
-        function isTwoSameOneDifferent(text) {
-            const normalized = normalizeText(text);
-
-            const hasTwo =
-                /\b2\b/.test(normalized) ||
-                normalized.includes("dos") ||
-                normalized.includes("en dos") ||
-                normalized.includes("las otras dos");
-
-            const hasOne =
-                /\b1\b/.test(normalized) ||
-                normalized.includes("una") ||
-                normalized.includes("uno") ||
-                normalized.includes("otra");
-
-            const hasSame =
-                normalized.includes("igual") ||
-                normalized.includes("iguales") ||
-                normalized.includes("mismo") ||
-                normalized.includes("misma") ||
-                normalized.includes("del mismo") ||
-                normalized.includes("de la misma");
-
-            const hasDifferent =
-                normalized.includes("distinta") ||
-                normalized.includes("distinto") ||
-                normalized.includes("diferente") ||
-                normalized.includes("otro") ||
-                normalized.includes("otra");
-
-            const sameColorInTwo =
-                (normalized.includes("mismo color") || normalized.includes("misma color")) &&
-                (
-                    normalized.includes("en dos") ||
-                    normalized.includes("dos cartas") ||
-                    normalized.includes("dos tienen")
-                );
-
-            const twoOfOneColor =
-                normalized.includes("dos del mismo color") ||
-                normalized.includes("dos de un color") ||
-                normalized.includes("dos colores iguales");
-
-            const allDifferentExcept =
-                normalized.includes("todas distintas") &&
-                (
-                    normalized.includes("mismo color") ||
-                    normalized.includes("dos iguales") ||
-                    normalized.includes("color en dos")
-                );
-
-            return (
-                (hasTwo && hasOne && hasSame && hasDifferent) ||
-                sameColorInTwo ||
-                twoOfOneColor ||
-                allDifferentExcept
+        const hasTwo =
+            /\b2\b/.test(normalized) ||
+            normalized.includes("dos") ||
+            normalized.includes("en dos") ||
+            normalized.includes(
+                "las otras dos"
             );
-        }
 
-        function isCaseOneExistsQuestion(text) {
-            const normalized = normalizeText(text);
+        const hasOne =
+            /\b1\b/.test(normalized) ||
+            normalized.includes("una") ||
+            normalized.includes("uno") ||
+            normalized.includes("otra");
 
-            const mentionsCaseOne =
-                normalized.includes("caso 1") ||
-                normalized.includes("caso uno") ||
-                normalized.includes("ejemplo 1") ||
-                normalized.includes("ejemplo uno") ||
-                normalized.includes("primer caso") ||
-                normalized.includes("primer ejemplo");
-
-            const mentionsIdenticalCards =
-                (
-                    normalized.includes("tres cartas") ||
-                    normalized.includes("3 cartas")
-                ) &&
-                (
-                    normalized.includes("exactamente iguales") ||
-                    normalized.includes("identicas") ||
-                    normalized.includes("repetidas")
-                );
-
-            const asksAboutDeckDuplicates =
-                (
-                    normalized.includes("mazo") ||
-                    normalized.includes("mazos")
-                ) &&
-                (
-                    normalized.includes("mas de una") ||
-                    normalized.includes("repetida") ||
-                    normalized.includes("repetidas") ||
-                    normalized.includes("exactamente igual")
-                );
-
-            const asksIfExists =
-                normalized.includes("existe") ||
-                normalized.includes("puede pasar") ||
-                normalized.includes("pueden tocar") ||
-                normalized.includes("me pueden tocar");
-
-            return (
-                (mentionsCaseOne && asksIfExists) ||
-                mentionsIdenticalCards ||
-                asksAboutDeckDuplicates
+        const hasSame =
+            normalized.includes("igual") ||
+            normalized.includes("iguales") ||
+            normalized.includes("mismo") ||
+            normalized.includes("misma") ||
+            normalized.includes(
+                "del mismo"
+            ) ||
+            normalized.includes(
+                "de la misma"
             );
-        }
 
-        function isRequestToPlay(text) {
-            const normalized = normalizeText(text);
-            const phrases = [
-                "podriamos probar una partida",
-                "podemos probar una partida",
-                "podemos jugar una partida",
-                "podriamos jugar una partida",
-                "quiero probar una partida",
-                "quiero jugar una partida",
-                "jugamos una partida",
-                "hacemos una partida",
-                "probamos una partida",
-                "podemos jugar",
-                "podemos probar",
-                "quiero jugar",
-                "jugamos"
-            ];
+        const hasDifferent =
+            normalized.includes("distinta") ||
+            normalized.includes("distinto") ||
+            normalized.includes("diferente") ||
+            normalized.includes("otro") ||
+            normalized.includes("otra");
 
-            return phrases.some(phrase =>
-                normalized === phrase || normalized.includes(phrase)
+        const sameColorInTwo =
+            (
+                normalized.includes(
+                    "mismo color"
+                ) ||
+                normalized.includes(
+                    "misma color"
+                )
+            )
+
+            &&
+
+            (
+                normalized.includes(
+                    "en dos"
+                ) ||
+                normalized.includes(
+                    "dos cartas"
+                ) ||
+                normalized.includes(
+                    "dos tienen"
+                )
             );
+
+        const twoOfOneColor =
+            normalized.includes(
+                "dos del mismo color"
+            ) ||
+            normalized.includes(
+                "dos de un color"
+            ) ||
+            normalized.includes(
+                "dos colores iguales"
+            );
+
+        const allDifferentExcept =
+            normalized.includes(
+                "todas distintas"
+            )
+
+            &&
+
+            (
+                normalized.includes(
+                    "mismo color"
+                ) ||
+                normalized.includes(
+                    "dos iguales"
+                ) ||
+                normalized.includes(
+                    "color en dos"
+                )
+            );
+
+        return (
+            (
+                hasTwo &&
+                hasOne &&
+                hasSame &&
+                hasDifferent
+            )
+
+            ||
+
+            sameColorInTwo
+
+            ||
+
+            twoOfOneColor
+
+            ||
+
+            allDifferentExcept
+        );
+    }
+
+
+    function isCaseOneExistsQuestion(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        const mentionsCaseOne =
+            normalized.includes(
+                "caso 1"
+            ) ||
+            normalized.includes(
+                "caso uno"
+            ) ||
+            normalized.includes(
+                "ejemplo 1"
+            ) ||
+            normalized.includes(
+                "ejemplo uno"
+            ) ||
+            normalized.includes(
+                "primer caso"
+            ) ||
+            normalized.includes(
+                "primer ejemplo"
+            );
+
+        const mentionsIdenticalCards =
+            (
+                normalized.includes(
+                    "tres cartas"
+                ) ||
+                normalized.includes(
+                    "3 cartas"
+                )
+            )
+
+            &&
+
+            (
+                normalized.includes(
+                    "exactamente iguales"
+                ) ||
+                normalized.includes(
+                    "identicas"
+                ) ||
+                normalized.includes(
+                    "repetidas"
+                )
+            );
+
+        const asksAboutDeckDuplicates =
+            (
+                normalized.includes(
+                    "mazo"
+                ) ||
+                normalized.includes(
+                    "mazos"
+                )
+            )
+
+            &&
+
+            (
+                normalized.includes(
+                    "mas de una"
+                ) ||
+                normalized.includes(
+                    "repetida"
+                ) ||
+                normalized.includes(
+                    "repetidas"
+                ) ||
+                normalized.includes(
+                    "exactamente igual"
+                )
+            );
+
+        const asksIfExists =
+            normalized.includes(
+                "existe"
+            ) ||
+            normalized.includes(
+                "puede pasar"
+            ) ||
+            normalized.includes(
+                "pueden tocar"
+            ) ||
+            normalized.includes(
+                "me pueden tocar"
+            );
+
+        return (
+            (
+                mentionsCaseOne &&
+                asksIfExists
+            )
+
+            ||
+
+            mentionsIdenticalCards
+
+            ||
+
+            asksAboutDeckDuplicates
+        );
+    }
+
+
+    function isRequestToPlay(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        const phrases = [
+            "podriamos probar una partida",
+            "podemos probar una partida",
+            "podemos jugar una partida",
+            "podriamos jugar una partida",
+            "quiero probar una partida",
+            "quiero jugar una partida",
+            "jugamos una partida",
+            "hacemos una partida",
+            "probamos una partida",
+            "podemos jugar",
+            "podemos probar",
+            "quiero jugar",
+            "jugamos"
+        ];
+
+        return phrases.some(
+            phrase =>
+                normalized === phrase ||
+                normalized.includes(
+                    phrase
+                )
+        );
+    }
+
+
+    function isWhatIsSetQuestion(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        return (
+            normalized === "que es set" ||
+            normalized === "que es el set" ||
+            normalized === "que es zet" ||
+            normalized === "que es el zet"
+        );
+    }
+
+
+    function isHowToWin(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        const exactPhrases = [
+            "como gano",
+            "cuando gano",
+            "como se gana",
+            "cuando se gana",
+            "como puedo ganar",
+            "que hago para ganar",
+            "que tengo que hacer para ganar",
+            "que hay que hacer para ganar",
+            "como hago para ganar",
+            "como ganar",
+            "ganar"
+        ];
+
+        if (
+            exactPhrases.includes(
+                normalized
+            )
+        ) {
+            return true;
         }
 
-        function isSetOnly(text) {
-            const normalized = normalizeText(text);
-            return normalized === "set" || normalized === "zet";
+        const mentionsWinning =
+            normalized.includes("ganar") ||
+            normalized.includes("gano") ||
+            normalized.includes("gana");
+
+        const asksHowOrWhen =
+            normalized.includes("como") ||
+            normalized.includes("cuando") ||
+            normalized.includes("que hago") ||
+            normalized.includes("que tengo que hacer") ||
+            normalized.includes("que hay que hacer");
+
+        return (
+            mentionsWinning &&
+            asksHowOrWhen
+        );
+    }
+
+
+    function isHowToLose(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        const exactPhrases = [
+            "como pierdo",
+            "cuando pierdo",
+            "como se pierde",
+            "cuando se pierde",
+            "como puedo perder",
+            "que hago para perder",
+            "que tengo que hacer para perder",
+            "que hay que hacer para perder",
+            "como hago para perder",
+            "como perder",
+            "perder"
+        ];
+
+        if (
+            exactPhrases.includes(
+                normalized
+            )
+        ) {
+            return true;
         }
 
-        function classifySpecificExample(tokens) {
-            const hasExampleMarker = tokenListContainsAny(tokens, TOKEN_GROUPS.EXAMPLE);
-            const hasOne = tokens.includes("1") || tokenListContainsAny(tokens, ["uno","primer","primero"]);
-            const hasTwo = tokens.includes("2") || tokenListContainsAny(tokens, ["dos","segundo","segunda"]);
-            const hasThree = tokens.includes("3") || tokenListContainsAny(tokens, ["tres","tercer","tercero"]);
-            const hasFour = tokens.includes("4") || tokenListContainsAny(tokens, ["cuatro","cuarto"]);
+        const mentionsLosing =
+            normalized.includes("perder") ||
+            normalized.includes("pierdo") ||
+            normalized.includes("pierde");
 
-            if (hasExampleMarker && hasFour) return Category.EXAMPLE_4;
-            if (hasExampleMarker && hasThree) return Category.EXAMPLE_3;
-            if (hasExampleMarker && hasTwo) return Category.EXAMPLE_2;
-            if (hasExampleMarker && hasOne) return Category.EXAMPLE_1;
-            return null;
+        const asksHowOrWhen =
+            normalized.includes("como") ||
+            normalized.includes("cuando") ||
+            normalized.includes("que hago") ||
+            normalized.includes("que tengo que hacer") ||
+            normalized.includes("que hay que hacer");
+
+        return (
+            mentionsLosing &&
+            asksHowOrWhen
+        );
+    }
+
+
+    function isCheatingQuestion(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        return (
+            normalized.includes("trampa") ||
+            normalized.includes("trampear")
+        );
+    }
+
+
+    function isSetOnly(text) {
+
+        const normalized =
+            normalizeText(text);
+
+        return (
+            normalized === "set" ||
+            normalized === "zet"
+        );
+    }
+
+
+    function classifySpecificExample(tokens) {
+
+        const hasExampleMarker =
+            tokenListContainsAny(
+                tokens,
+                TOKEN_GROUPS.EXAMPLE
+            );
+
+        const hasOne =
+            tokens.includes("1") ||
+            tokenListContainsAny(
+                tokens,
+                [
+                    "uno",
+                    "primer",
+                    "primero"
+                ]
+            );
+
+        const hasTwo =
+            tokens.includes("2") ||
+            tokenListContainsAny(
+                tokens,
+                [
+                    "dos",
+                    "segundo",
+                    "segunda"
+                ]
+            );
+
+        const hasThree =
+            tokens.includes("3") ||
+            tokenListContainsAny(
+                tokens,
+                [
+                    "tres",
+                    "tercer",
+                    "tercero"
+                ]
+            );
+
+        const hasFour =
+            tokens.includes("4") ||
+            tokenListContainsAny(
+                tokens,
+                [
+                    "cuatro",
+                    "cuarto"
+                ]
+            );
+
+        if (
+            hasExampleMarker &&
+            hasFour
+        ) {
+            return Category.EXAMPLE_4;
         }
 
-        function classifyQuestionDetailed(text) {
-            const greetingDetected = containsGreeting(text);
-
-            if (isGreetingOnly(text)) {
-                return { category: Category.GREETING, greetingDetected: true };
-            }
-
-            if (isThanks(text)) {
-                return { category: Category.THANKS, greetingDetected: false };
-            }
-
-            if (isFarewell(text)) {
-                return { category: Category.FAREWELL, greetingDetected: false };
-            }
-
-            if (isCaseOneExistsQuestion(text)) {
-                return { category: Category.CASE_1_EXISTS, greetingDetected };
-            }
-
-            if (isRequestToPlay(text)) {
-                return { category: Category.REQUEST_TO_PLAY, greetingDetected };
-            }
-
-            if (isClarificationRequest(text)) {
-                return { category: Category.CLARIFICATION, greetingDetected };
-            }
-
-            if (isTwoSameOneDifferent(text)) {
-                return { category: Category.TWO_SAME_ONE_DIFFERENT, greetingDetected };
-            }
-
-            if (isSetOnly(text)) {
-                return { category: Category.GENERAL, greetingDetected };
-            }
-
-            const tokens = tokenize(text);
-            const specificExample = classifySpecificExample(tokens);
-
-            if (specificExample) {
-                return { category: specificExample, greetingDetected };
-            }
-
-            const generalScore =
-                countMatches(tokens, TOKEN_GROUPS.GENERAL) * 2 +
-                countMatches(tokens, TOKEN_GROUPS.SET_CONTEXT);
-
-            const ruleScore =
-                countMatches(tokens, TOKEN_GROUPS.RULE) * 2 +
-                countMatches(tokens, TOKEN_GROUPS.SET_CONTEXT);
-
-            if (generalScore >= 2 && generalScore >= ruleScore) {
-                return { category: Category.GENERAL, greetingDetected };
-            }
-
-            if (ruleScore >= 2) {
-                return { category: Category.RULE, greetingDetected };
-            }
-
-            return { category: Category.OFF_TOPIC, greetingDetected };
+        if (
+            hasExampleMarker &&
+            hasThree
+        ) {
+            return Category.EXAMPLE_3;
         }
 
-        function getAssistantResponse(classification) {
-            switch (classification.category) {
-                case Category.GREETING:
-                    return { id: "GREETING", type: "text", content: GREETING_RESPONSE };
-                case Category.THANKS:
-                    return { id: "THANKS", type: "text", content: THANKS_RESPONSE };
-                case Category.FAREWELL:
-                    return { id: "FAREWELL", type: "text", content: FAREWELL_RESPONSE };
-                case Category.GENERAL:
-                    return {
-                        id: classification.greetingDetected ? "GREETING_GENERAL" : "GENERAL",
-                        type: "html",
-                        content: classification.greetingDetected ? greetingGeneralScript : fullSetScript
-                    };
-                case Category.CLARIFICATION:
-                    return { id: "CLARIFICATION", type: "html", content: clarificationScript };
-                case Category.TWO_SAME_ONE_DIFFERENT:
-                    return {
-                        id: "TWO_SAME_ONE_DIFFERENT",
-                        type: "html",
-                        content: twoSameOneDifferentScript
-                    };
-                case Category.CASE_1_EXISTS:
-                    return { id: "CASE_1_EXISTS", type: "text", content: CASE_1_EXISTS_RESPONSE };
-                case Category.REQUEST_TO_PLAY:
-                    return { id: "REQUEST_TO_PLAY", type: "text", content: REQUEST_TO_PLAY_RESPONSE };
-                case Category.RULE:
-                    return { id: "RULE", type: "html", content: ruleScript };
-                case Category.EXAMPLE_1:
-                    return { id: "EXAMPLE_1", type: "html", content: example1Script };
-                case Category.EXAMPLE_2:
-                    return { id: "EXAMPLE_2", type: "html", content: example2Script };
-                case Category.EXAMPLE_3:
-                    return { id: "EXAMPLE_3", type: "html", content: example3Script };
-                case Category.EXAMPLE_4:
-                    return { id: "EXAMPLE_4", type: "html", content: example4Script };
-                default:
-                    return { id: "OFF_TOPIC", type: "text", content: OFF_TOPIC_RESPONSE };
-            }
+        if (
+            hasExampleMarker &&
+            hasTwo
+        ) {
+            return Category.EXAMPLE_2;
         }
 
-        function countWords(text) {
-            const normalized = String(text).trim().replace(/\s+/g, " ");
-            return normalized ? normalized.split(" ").length : 0;
+        if (
+            hasExampleMarker &&
+            hasOne
+        ) {
+            return Category.EXAMPLE_1;
         }
 
-        function countCharactersWithoutSpaces(text) {
-            return String(text).replace(/\s/g, "").length;
-        }
+        return null;
+    }
 
-        function createSessionId(participantId) {
-            return participantId + "_" + Date.now();
-        }
 
-        function getCategoryCounts(turns) {
-            const counts = {
-                GREETING: 0,
-                THANKS: 0,
-                FAREWELL: 0,
-                GENERAL: 0,
-                CLARIFICATION: 0,
-                TWO_SAME_ONE_DIFFERENT: 0,
-                CASE_1_EXISTS: 0,
-                REQUEST_TO_PLAY: 0,
-                RULE: 0,
-                EXAMPLE_1: 0,
-                EXAMPLE_2: 0,
-                EXAMPLE_3: 0,
-                EXAMPLE_4: 0,
-                OFF_TOPIC: 0
+    function classifyQuestionDetailed(text) {
+
+        const greetingDetected =
+            containsGreeting(text);
+
+
+        if (
+            isGreetingOnly(text)
+        ) {
+            return {
+                category:
+                    Category.GREETING,
+
+                greetingDetected:
+                    true
             };
-
-            turns.forEach(turn => {
-                if (Object.prototype.hasOwnProperty.call(counts, turn.categoria_asignada)) {
-                    counts[turn.categoria_asignada] += 1;
-                }
-            });
-
-            return counts;
         }
 
-        function updateSessionTotals(session = currentSession) {
-            if (!session) return;
 
-            session.cantidad_mensajes_usuario = session.turnos.length;
-            session.cantidad_palabras_usuario = session.turnos.reduce(
-                (total, turn) => total + turn.cantidad_palabras, 0
-            );
-            session.cantidad_caracteres_con_espacios = session.turnos.reduce(
-                (total, turn) => total + turn.caracteres_con_espacios, 0
-            );
-            session.cantidad_caracteres_sin_espacios = session.turnos.reduce(
-                (total, turn) => total + turn.caracteres_sin_espacios, 0
-            );
-            session.conteos_categorias = getCategoryCounts(session.turnos);
-        }
+        if (
+            isThanks(text)
+        ) {
+            return {
+                category:
+                    Category.THANKS,
 
-        function getSessionArchive() {
-            try {
-                return JSON.parse(localStorage.getItem(SESSION_ARCHIVE_KEY) || "[]");
-            } catch {
-                return [];
-            }
-        }
-
-        function saveSessionToArchive(session) {
-            const archive = getSessionArchive();
-            const index = archive.findIndex(item => item.session_id === session.session_id);
-
-            if (index >= 0) archive[index] = session;
-            else archive.push(session);
-
-            localStorage.setItem(SESSION_ARCHIVE_KEY, JSON.stringify(archive));
-        }
-
-        function saveSessionLocally(eventName = null) {
-            if (!currentSession) return;
-
-            if (eventName) currentSession.ultimo_evento_guardado = eventName;
-            currentSession.borrador_actual = promptInput.value;
-            currentSession.ultima_actualizacion_iso = new Date().toISOString();
-
-            updateSessionTotals(currentSession);
-
-            try {
-                localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(currentSession));
-                saveSessionToArchive(currentSession);
-            } catch (error) {
-                console.error("No se pudo guardar localmente:", error);
-            }
-        }
-
-        function scheduleDraftSave() {
-            clearTimeout(draftSaveTimeout);
-            draftSaveTimeout = setTimeout(
-                () => saveSessionLocally("borrador_actualizado"),
-                150
-            );
-        }
-
-        function readActiveSession() {
-            try {
-                return JSON.parse(localStorage.getItem(ACTIVE_SESSION_KEY) || "null");
-            } catch {
-                return null;
-            }
-        }
-
-        async function closePreviousIncompleteSession() {
-            const previousSession = readActiveSession();
-
-            if (!previousSession || previousSession.estado !== "en_curso") return;
-
-            const now = Date.now();
-
-            updateSessionTotals(previousSession);
-
-            previousSession.estado = "interrumpida";
-            previousSession.motivo_finalizacion = "sesion_incompleta_detectada";
-            previousSession.fin_iso = new Date(now).toISOString();
-            previousSession.duracion_total_ms = Math.max(
-                0,
-                Math.min(now, previousSession.deadline_timestamp || now) -
-                    previousSession.inicio_timestamp
-            );
-            previousSession.ultimo_evento_guardado = "sesion_incompleta_detectada";
-            previousSession.ultima_actualizacion_iso = new Date(now).toISOString();
-
-            saveSessionToArchive(previousSession);
-            await saveOnline(previousSession);
-            localStorage.removeItem(ACTIVE_SESSION_KEY);
-        }
-
-        function createOnlinePayload(session) {
-            updateSessionTotals(session);
-
-            const conversationData = {
-                turnos: session.turnos,
-                borrador_actual: session.borrador_actual || "",
-                actividad_input: session.actividad_input || {},
-                inicio_iso: session.inicio_iso,
-                deadline_iso: session.deadline_iso,
-                estado: session.estado,
-                motivo_finalizacion: session.motivo_finalizacion
+                greetingDetected:
+                    false
             };
+        }
+
+
+        if (
+            isFarewell(text)
+        ) {
+            return {
+                category:
+                    Category.FAREWELL,
+
+                greetingDetected:
+                    false
+            };
+        }
+
+
+        if (
+            isCaseOneExistsQuestion(text)
+        ) {
+            return {
+                category:
+                    Category.CASE_1_EXISTS,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isHowToWin(text)
+        ) {
+            return {
+                category:
+                    Category.HOW_TO_WIN,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isHowToLose(text)
+        ) {
+            return {
+                category:
+                    Category.HOW_TO_LOSE,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isCheatingQuestion(text)
+        ) {
+            return {
+                category:
+                    Category.CHEATING,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isRequestToPlay(text)
+        ) {
+            return {
+                category:
+                    Category.REQUEST_TO_PLAY,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isClarificationRequest(text)
+        ) {
+            return {
+                category:
+                    Category.CLARIFICATION,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isTwoSameOneDifferent(text)
+        ) {
+            return {
+                category:
+                    Category.TWO_SAME_ONE_DIFFERENT,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isWhatIsSetQuestion(text)
+        ) {
+            return {
+                category:
+                    Category.GENERAL,
+
+                greetingDetected
+            };
+        }
+
+
+        if (
+            isSetOnly(text)
+        ) {
+            return {
+                category:
+                    Category.GENERAL,
+
+                greetingDetected
+            };
+        }
+
+
+        const tokens =
+            tokenize(text);
+
+        const specificExample =
+            classifySpecificExample(
+                tokens
+            );
+
+
+        if (specificExample) {
 
             return {
-                id: session.id,
-                session_id: session.session_id,
-                inicio: session.inicio_iso,
-                fin: session.fin_iso || "",
-                duracion_total_ms: session.duracion_total_ms ?? "",
-                estado: session.estado,
-                motivo_finalizacion: session.motivo_finalizacion || "",
-                cantidad_mensajes_usuario: session.cantidad_mensajes_usuario,
-                cantidad_palabras_usuario: session.cantidad_palabras_usuario,
-                caracteres_con_espacios: session.cantidad_caracteres_con_espacios,
-                conteos_categorias_json: JSON.stringify(session.conteos_categorias),
-                conversacion_json: JSON.stringify(conversationData),
-                ultimo_evento_guardado: session.ultimo_evento_guardado,
-                version_simulador: session.version_simulador
+                category:
+                    specificExample,
+
+                greetingDetected
             };
         }
 
-        function createGoogleFormData(session) {
-            const payload = createOnlinePayload(session);
-            const formData = new FormData();
 
-            Object.entries(payload).forEach(([fieldName, value]) => {
-                const entryCode = GOOGLE_FORM_CONFIG.entries[fieldName];
-                if (entryCode) formData.append(entryCode, String(value));
-            });
+        const generalScore =
+            countMatches(
+                tokens,
+                TOKEN_GROUPS.GENERAL
+            ) * 2
 
-            return formData;
+            +
+
+            countMatches(
+                tokens,
+                TOKEN_GROUPS.SET_CONTEXT
+            );
+
+
+        const ruleScore =
+            countMatches(
+                tokens,
+                TOKEN_GROUPS.RULE
+            ) * 2
+
+            +
+
+            countMatches(
+                tokens,
+                TOKEN_GROUPS.SET_CONTEXT
+            );
+
+
+        if (
+            generalScore >= 2 &&
+            generalScore >= ruleScore
+        ) {
+
+            return {
+                category:
+                    Category.GENERAL,
+
+                greetingDetected
+            };
         }
 
-        async function saveOnline(session) {
-            if (!GOOGLE_FORM_CONFIG.enabled) return false;
 
-            try {
-                await fetch(GOOGLE_FORM_CONFIG.formURL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: createGoogleFormData(session),
-                    keepalive: true
-                });
-                return true;
-            } catch (error) {
-                console.error("No se pudo enviar al formulario:", error);
-                return false;
-            }
+        if (
+            ruleScore >= 2
+        ) {
+
+            return {
+                category:
+                    Category.RULE,
+
+                greetingDetected
+            };
         }
 
-        function saveEmergencyOnline(session) {
-            try {
-                const formData = createGoogleFormData(session);
 
-                if (navigator.sendBeacon) {
-                    return navigator.sendBeacon(GOOGLE_FORM_CONFIG.formURL, formData);
-                }
+        return {
+            category:
+                Category.OFF_TOPIC,
 
-                fetch(GOOGLE_FORM_CONFIG.formURL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: formData,
-                    keepalive: true
-                });
+            greetingDetected
+        };
+    }
 
-                return true;
-            } catch {
-                return false;
-            }
-        }
 
-        function normalizeParticipantId(rawId) {
-            const trimmed = String(rawId).trim();
-            if (!trimmed) return "";
-            return /^\d+$/.test(trimmed) ? trimmed.padStart(3, "0") : trimmed;
-        }
+    function getAssistantResponse(
+        classification
+    ) {
 
-        function hasDeadlinePassed() {
-            return currentSession && Date.now() >= sessionDeadlineTimestamp;
-        }
+        switch (
+            classification.category
+        ) {
 
-        function scheduleDeadline() {
-            clearTimeout(sessionTimeout);
-            const remaining = Math.max(0, sessionDeadlineTimestamp - Date.now());
-            sessionTimeout = setTimeout(() => finishSession("tiempo"), remaining);
-        }
+            case Category.GREETING:
 
-        async function startExperiment() {
-            const participantId = normalizeParticipantId(participantIdInput.value);
-
-            if (!participantId) {
-                setupError.textContent = "Ingresá el ID del participante.";
-                participantIdInput.focus();
-                return;
-            }
-
-            setupError.textContent = "";
-            startExperimentButton.disabled = true;
-
-            try {
-                await closePreviousIncompleteSession();
-
-                const now = Date.now();
-
-                sessionStartTimestamp = now;
-                sessionDeadlineTimestamp = now + TIME_LIMIT_MS;
-                lastAssistantShownTimestamp = now;
-                sessionFinished = false;
-
-                currentSession = {
-                    id: participantId,
-                    session_id: createSessionId(participantId),
-                    version_simulador: SIMULATOR_VERSION,
-                    tiempo_limite_ms: TIME_LIMIT_MS,
-                    inicio_timestamp: now,
-                    inicio_iso: new Date(now).toISOString(),
-                    deadline_timestamp: sessionDeadlineTimestamp,
-                    deadline_iso: new Date(sessionDeadlineTimestamp).toISOString(),
-                    fin_iso: null,
-                    duracion_total_ms: null,
-                    estado: "en_curso",
-                    motivo_finalizacion: null,
-                    cantidad_mensajes_usuario: 0,
-                    cantidad_palabras_usuario: 0,
-                    cantidad_caracteres_con_espacios: 0,
-                    cantidad_caracteres_sin_espacios: 0,
-                    conteos_categorias: getCategoryCounts([]),
-                    borrador_actual: "",
-                    actividad_input: {
-                        cantidad_eventos_input: 0,
-                        primer_input_iso: null,
-                        ultimo_input_iso: null,
-                        cantidad_focos: 0,
-                        ultimo_foco_iso: null,
-                        cantidad_blurs: 0,
-                        ultimo_blur_iso: null
-                    },
-                    ultimo_evento_guardado: "sesion_iniciada",
-                    ultima_actualizacion_iso: new Date(now).toISOString(),
-                    turnos: []
+                return {
+                    id: "GREETING",
+                    type: "text",
+                    content:
+                        GREETING_RESPONSE
                 };
 
-                saveSessionLocally("sesion_iniciada");
-                setupOverlay.classList.add("hidden");
-                scheduleDeadline();
 
-                heartbeatInterval = setInterval(() => {
-                    if (currentSession && !sessionFinished) {
-                        saveSessionLocally("guardado_periodico");
+            case Category.THANKS:
 
-                        if (hasDeadlinePassed()) {
-                            finishSession("tiempo");
-                        }
-                    }
-                }, LOCAL_SAVE_INTERVAL_MS);
+                return {
+                    id: "THANKS",
+                    type: "text",
+                    content:
+                        THANKS_RESPONSE
+                };
 
-                setTimeout(() => promptInput.focus(), 200);
-            } catch (error) {
-                console.error(error);
-                setupError.textContent = "No se pudo iniciar. Volvé a intentarlo.";
-                startExperimentButton.disabled = false;
+
+            case Category.FAREWELL:
+
+                return {
+                    id: "FAREWELL",
+                    type: "text",
+                    content:
+                        FAREWELL_RESPONSE
+                };
+
+
+            case Category.GENERAL:
+
+                return {
+                    id:
+                        classification.greetingDetected
+                            ? "GREETING_GENERAL"
+                            : "GENERAL",
+
+                    type: "html",
+
+                    content:
+                        classification.greetingDetected
+                            ? greetingGeneralScript
+                            : fullSetScript
+                };
+
+
+            case Category.CLARIFICATION:
+
+                return {
+                    id:
+                        "CLARIFICATION",
+
+                    type:
+                        "html",
+
+                    content:
+                        clarificationScript
+                };
+
+
+            case Category.TWO_SAME_ONE_DIFFERENT:
+
+                return {
+                    id:
+                        "TWO_SAME_ONE_DIFFERENT",
+
+                    type:
+                        "html",
+
+                    content:
+                        twoSameOneDifferentScript
+                };
+
+
+            case Category.CASE_1_EXISTS:
+
+                return {
+                    id:
+                        "CASE_1_EXISTS",
+
+                    type:
+                        "text",
+
+                    content:
+                        CASE_1_EXISTS_RESPONSE
+                };
+
+
+            case Category.REQUEST_TO_PLAY:
+
+                return {
+                    id:
+                        "REQUEST_TO_PLAY",
+
+                    type:
+                        "text",
+
+                    content:
+                        REQUEST_TO_PLAY_RESPONSE
+                };
+
+
+            case Category.HOW_TO_WIN:
+
+                return {
+                    id:
+                        "HOW_TO_WIN",
+
+                    type:
+                        "html",
+
+                    content:
+                        HOW_TO_WIN_SCRIPT
+                };
+
+
+            case Category.HOW_TO_LOSE:
+
+                return {
+                    id:
+                        "HOW_TO_LOSE",
+
+                    type:
+                        "html",
+
+                    content:
+                        HOW_TO_LOSE_SCRIPT
+                };
+
+
+            case Category.CHEATING:
+
+                return {
+                    id:
+                        "CHEATING",
+
+                    type:
+                        "html",
+
+                    content:
+                        CHEATING_SCRIPT
+                };
+
+
+            case Category.RULE:
+
+                return {
+                    id:
+                        "RULE",
+
+                    type:
+                        "html",
+
+                    content:
+                        ruleScript
+                };
+
+
+            case Category.EXAMPLE_1:
+
+                return {
+                    id:
+                        "EXAMPLE_1",
+
+                    type:
+                        "html",
+
+                    content:
+                        example1Script
+                };
+
+
+            case Category.EXAMPLE_2:
+
+                return {
+                    id:
+                        "EXAMPLE_2",
+
+                    type:
+                        "html",
+
+                    content:
+                        example2Script
+                };
+
+
+            case Category.EXAMPLE_3:
+
+                return {
+                    id:
+                        "EXAMPLE_3",
+
+                    type:
+                        "html",
+
+                    content:
+                        example3Script
+                };
+
+
+            case Category.EXAMPLE_4:
+
+                return {
+                    id:
+                        "EXAMPLE_4",
+
+                    type:
+                        "html",
+
+                    content:
+                        example4Script
+                };
+
+
+            default:
+
+                return {
+                    id:
+                        "OFF_TOPIC",
+
+                    type:
+                        "text",
+
+                    content:
+                        OFF_TOPIC_RESPONSE
+                };
+        }
+    }
+
+
+    function countWords(text) {
+
+        const normalized =
+            String(text)
+                .trim()
+                .replace(
+                    /\s+/g,
+                    " "
+                );
+
+        return normalized
+            ? normalized
+                .split(" ")
+                .length
+            : 0;
+    }
+
+
+    function countCharactersWithoutSpaces(
+        text
+    ) {
+
+        return String(text)
+            .replace(
+                /\s/g,
+                ""
+            )
+            .length;
+    }
+
+
+    function createSessionId(
+        participantId
+    ) {
+
+        return (
+            participantId +
+            "_" +
+            Date.now()
+        );
+    }
+
+
+    function getCategoryCounts(turns) {
+
+        const counts = {
+            GREETING: 0,
+            THANKS: 0,
+            FAREWELL: 0,
+            GENERAL: 0,
+            CLARIFICATION: 0,
+            TWO_SAME_ONE_DIFFERENT: 0,
+            CASE_1_EXISTS: 0,
+            REQUEST_TO_PLAY: 0,
+            HOW_TO_WIN: 0,
+            HOW_TO_LOSE: 0,
+            CHEATING: 0,
+            RULE: 0,
+            EXAMPLE_1: 0,
+            EXAMPLE_2: 0,
+            EXAMPLE_3: 0,
+            EXAMPLE_4: 0,
+            OFF_TOPIC: 0
+        };
+
+        turns.forEach(
+            turn => {
+
+                if (
+                    Object.prototype
+                        .hasOwnProperty
+                        .call(
+                            counts,
+                            turn.categoria_asignada
+                        )
+                ) {
+
+                    counts[
+                        turn.categoria_asignada
+                    ] += 1;
+                }
             }
+        );
+
+        return counts;
+    }
+
+
+    function updateSessionTotals(
+        session = currentSession
+    ) {
+
+        if (!session) {
+            return;
         }
 
-        function updateButton() {
-            const hasText = promptInput.value.trim() !== "";
-            sendButton.disabled = !hasText || sessionFinished;
-            inputContainer.classList.toggle("has-text", hasText && !sessionFinished);
+        session.cantidad_mensajes_usuario =
+            session.turnos.length;
+
+        session.cantidad_palabras_usuario =
+            session.turnos.reduce(
+                (
+                    total,
+                    turn
+                ) =>
+                    total +
+                    turn.cantidad_palabras,
+                0
+            );
+
+        session.cantidad_caracteres_con_espacios =
+            session.turnos.reduce(
+                (
+                    total,
+                    turn
+                ) =>
+                    total +
+                    turn.caracteres_con_espacios,
+                0
+            );
+
+        session.cantidad_caracteres_sin_espacios =
+            session.turnos.reduce(
+                (
+                    total,
+                    turn
+                ) =>
+                    total +
+                    turn.caracteres_sin_espacios,
+                0
+            );
+
+        session.conteos_categorias =
+            getCategoryCounts(
+                session.turnos
+            );
+    }
+
+
+    function getSessionArchive() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(
+                    SESSION_ARCHIVE_KEY
+                ) || "[]"
+            );
+
+        } catch {
+
+            return [];
+        }
+    }
+
+
+    function saveSessionToArchive(
+        session
+    ) {
+
+        const archive =
+            getSessionArchive();
+
+        const index =
+            archive.findIndex(
+                item =>
+                    item.session_id ===
+                    session.session_id
+            );
+
+        if (index >= 0) {
+
+            archive[index] =
+                session;
+
+        } else {
+
+            archive.push(
+                session
+            );
         }
 
-        function resizeTextarea() {
-            promptInput.style.height = "auto";
-            const height = Math.min(promptInput.scrollHeight, 180);
-            promptInput.style.height = height + "px";
-            promptInput.style.overflowY = promptInput.scrollHeight > 180 ? "auto" : "hidden";
+        localStorage.setItem(
+            SESSION_ARCHIVE_KEY,
+            JSON.stringify(
+                archive
+            )
+        );
+    }
+
+
+    function saveSessionLocally(
+        eventName = null
+    ) {
+
+        if (!currentSession) {
+            return;
         }
 
-        function addUserMessage(text) {
-            const wrapper = document.createElement("div");
-            wrapper.className = "message user-message";
+        if (eventName) {
 
-            const bubble = document.createElement("div");
-            bubble.className = "user-bubble";
-            bubble.textContent = text;
-
-            wrapper.appendChild(bubble);
-            messages.appendChild(wrapper);
-            return wrapper;
+            currentSession
+                .ultimo_evento_guardado =
+                eventName;
         }
 
-        function addAssistantMessage(text, extraClass = "") {
-            const message = document.createElement("div");
-            message.className = (`message assistant-message ${extraClass}`).trim();
+        currentSession.borrador_actual =
+            promptInput.value;
 
-            const content = document.createElement("div");
-            content.className = "assistant-text";
-            content.textContent = text;
+        currentSession.ultima_actualizacion_iso =
+            new Date()
+                .toISOString();
 
-            message.appendChild(content);
-            messages.appendChild(message);
-            return message;
+        updateSessionTotals(
+            currentSession
+        );
+
+        try {
+
+            localStorage.setItem(
+                ACTIVE_SESSION_KEY,
+                JSON.stringify(
+                    currentSession
+                )
+            );
+
+            saveSessionToArchive(
+                currentSession
+            );
+
+        } catch (error) {
+
+            console.error(
+                "No se pudo guardar localmente:",
+                error
+            );
+        }
+    }
+
+
+    function scheduleDraftSave() {
+
+        clearTimeout(
+            draftSaveTimeout
+        );
+
+        draftSaveTimeout =
+            setTimeout(
+                () =>
+                    saveSessionLocally(
+                        "borrador_actualizado"
+                    ),
+                150
+            );
+    }
+
+
+    function readActiveSession() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(
+                    ACTIVE_SESSION_KEY
+                ) || "null"
+            );
+
+        } catch {
+
+            return null;
+        }
+    }
+
+
+    async function closePreviousIncompleteSession() {
+
+        const previousSession =
+            readActiveSession();
+
+        if (
+            !previousSession ||
+            previousSession.estado !==
+                "en_curso"
+        ) {
+            return;
         }
 
-        function addAssistantHTML(html) {
-            const message = document.createElement("div");
-            message.className = "message assistant-message";
-            message.innerHTML = html;
-            messages.appendChild(message);
-            return message;
-        }
+        const now =
+            Date.now();
 
-        function displayAssistantResponse(response) {
-            return response.type === "html"
-                ? addAssistantHTML(response.content)
-                : addAssistantMessage(response.content);
-        }
+        updateSessionTotals(
+            previousSession
+        );
 
-        function sendMessage() {
-            if (sessionFinished || !currentSession) return;
+        previousSession.estado =
+            "interrumpida";
 
-            if (hasDeadlinePassed()) {
-                finishSession("tiempo");
-                return;
-            }
+        previousSession.motivo_finalizacion =
+            "sesion_incompleta_detectada";
 
-            const text = promptInput.value.trim();
-            if (!text) return;
+        previousSession.fin_iso =
+            new Date(
+                now
+            ).toISOString();
 
-            if (MANUAL_END_COMMANDS.has(normalizeText(text))) {
-                promptInput.value = "";
-                resizeTextarea();
-                updateButton();
-                saveSessionLocally("comando_finalizacion_ingresado");
-                finishSession("comando");
-                return;
-            }
+        previousSession.duracion_total_ms =
+            Math.max(
+                0,
 
-            const sendTimestamp = Date.now();
-            const classification = classifyQuestionDetailed(text);
-            const response = getAssistantResponse(classification);
+                Math.min(
+                    now,
 
-            const turn = {
-                turno: currentSession.turnos.length + 1,
-                texto_original: text,
-                texto_normalizado: normalizeText(text),
-                categoria_asignada: classification.category,
-                saludo_detectado: classification.greetingDetected,
-                categorias_detectadas:
-                    classification.greetingDetected &&
-                    classification.category !== Category.GREETING
-                        ? [Category.GREETING, classification.category]
-                        : [classification.category],
-                respuesta_id: response.id,
-                tiempo_previo_ms: Math.max(
-                    0,
-                    sendTimestamp - lastAssistantShownTimestamp
+                    previousSession
+                        .deadline_timestamp
+                        || now
+                )
+
+                -
+
+                previousSession
+                    .inicio_timestamp
+            );
+
+        previousSession.ultimo_evento_guardado =
+            "sesion_incompleta_detectada";
+
+        previousSession.ultima_actualizacion_iso =
+            new Date(
+                now
+            ).toISOString();
+
+        saveSessionToArchive(
+            previousSession
+        );
+
+        await saveOnline(
+            previousSession
+        );
+
+        localStorage.removeItem(
+            ACTIVE_SESSION_KEY
+        );
+    }
+
+
+    function createOnlinePayload(
+        session
+    ) {
+
+        updateSessionTotals(
+            session
+        );
+
+        const conversationData = {
+
+            turnos:
+                session.turnos,
+
+            borrador_actual:
+                session.borrador_actual || "",
+
+            actividad_input:
+                session.actividad_input || {},
+
+            inicio_iso:
+                session.inicio_iso,
+
+            deadline_iso:
+                session.deadline_iso,
+
+            estado:
+                session.estado,
+
+            motivo_finalizacion:
+                session.motivo_finalizacion
+        };
+
+
+        return {
+
+            id:
+                session.id,
+
+            session_id:
+                session.session_id,
+
+            inicio:
+                session.inicio_iso,
+
+            fin:
+                session.fin_iso || "",
+
+            duracion_total_ms:
+                session.duracion_total_ms ?? "",
+
+            estado:
+                session.estado,
+
+            motivo_finalizacion:
+                session.motivo_finalizacion || "",
+
+            cantidad_mensajes_usuario:
+                session.cantidad_mensajes_usuario,
+
+            cantidad_palabras_usuario:
+                session.cantidad_palabras_usuario,
+
+            caracteres_con_espacios:
+                session.cantidad_caracteres_con_espacios,
+
+            conteos_categorias_json:
+                JSON.stringify(
+                    session.conteos_categorias
                 ),
-                cantidad_palabras: countWords(text),
-                caracteres_con_espacios: text.length,
-                caracteres_sin_espacios: countCharactersWithoutSpaces(text),
-                hora_envio_iso: new Date(sendTimestamp).toISOString(),
-                respuesta_mostrada_iso: null,
-                tiempo_respuesta_simulador_ms: null
+
+            conversacion_json:
+                JSON.stringify(
+                    conversationData
+                ),
+
+            ultimo_evento_guardado:
+                session.ultimo_evento_guardado,
+
+            version_simulador:
+                session.version_simulador
+        };
+    }
+
+
+    function createGoogleFormData(
+        session
+    ) {
+
+        const payload =
+            createOnlinePayload(
+                session
+            );
+
+        const formData =
+            new FormData();
+
+        Object.entries(
+            payload
+        ).forEach(
+            (
+                [
+                    fieldName,
+                    value
+                ]
+            ) => {
+
+                const entryCode =
+                    GOOGLE_FORM_CONFIG
+                        .entries[
+                            fieldName
+                        ];
+
+                if (entryCode) {
+
+                    formData.append(
+                        entryCode,
+                        String(value)
+                    );
+                }
+            }
+        );
+
+        return formData;
+    }
+
+
+    async function saveOnline(
+        session
+    ) {
+
+        if (
+            !GOOGLE_FORM_CONFIG.enabled
+        ) {
+            return false;
+        }
+
+        try {
+
+            await fetch(
+                GOOGLE_FORM_CONFIG.formURL,
+                {
+                    method:
+                        "POST",
+
+                    mode:
+                        "no-cors",
+
+                    body:
+                        createGoogleFormData(
+                            session
+                        ),
+
+                    keepalive:
+                        true
+                }
+            );
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "No se pudo enviar al formulario:",
+                error
+            );
+
+            return false;
+        }
+    }
+
+
+    function saveEmergencyOnline(
+        session
+    ) {
+
+        try {
+
+            const formData =
+                createGoogleFormData(
+                    session
+                );
+
+            if (
+                navigator.sendBeacon
+            ) {
+
+                return navigator
+                    .sendBeacon(
+                        GOOGLE_FORM_CONFIG
+                            .formURL,
+                        formData
+                    );
+            }
+
+            fetch(
+                GOOGLE_FORM_CONFIG.formURL,
+                {
+                    method:
+                        "POST",
+
+                    mode:
+                        "no-cors",
+
+                    body:
+                        formData,
+
+                    keepalive:
+                        true
+                }
+            );
+
+            return true;
+
+        } catch {
+
+            return false;
+        }
+    }
+
+
+    function normalizeParticipantId(
+        rawId
+    ) {
+
+        const trimmed =
+            String(rawId)
+                .trim();
+
+        if (!trimmed) {
+            return "";
+        }
+
+        return /^\d+$/.test(
+            trimmed
+        )
+            ? trimmed.padStart(
+                3,
+                "0"
+            )
+            : trimmed;
+    }
+
+
+    function hasDeadlinePassed() {
+
+        return (
+            currentSession &&
+            Date.now() >=
+                sessionDeadlineTimestamp
+        );
+    }
+
+
+    function scheduleDeadline() {
+
+        clearTimeout(
+            sessionTimeout
+        );
+
+        const remaining =
+            Math.max(
+                0,
+
+                sessionDeadlineTimestamp -
+                Date.now()
+            );
+
+        sessionTimeout =
+            setTimeout(
+                () =>
+                    finishSession(
+                        "tiempo"
+                    ),
+                remaining
+            );
+    }
+
+
+    async function startExperiment() {
+
+        const participantId =
+            normalizeParticipantId(
+                participantIdInput.value
+            );
+
+        if (!participantId) {
+
+            setupError.textContent =
+                "Ingresá el ID del participante.";
+
+            participantIdInput.focus();
+
+            return;
+        }
+
+        setupError.textContent =
+            "";
+
+        startExperimentButton.disabled =
+            true;
+
+        try {
+
+            await closePreviousIncompleteSession();
+
+            const now =
+                Date.now();
+
+            sessionStartTimestamp =
+                now;
+
+            sessionDeadlineTimestamp =
+                now +
+                TIME_LIMIT_MS;
+
+            lastAssistantShownTimestamp =
+                now;
+
+            sessionFinished =
+                false;
+
+            currentSession = {
+
+                id:
+                    participantId,
+
+                session_id:
+                    createSessionId(
+                        participantId
+                    ),
+
+                version_simulador:
+                    SIMULATOR_VERSION,
+
+                tiempo_limite_ms:
+                    TIME_LIMIT_MS,
+
+                inicio_timestamp:
+                    now,
+
+                inicio_iso:
+                    new Date(
+                        now
+                    ).toISOString(),
+
+                deadline_timestamp:
+                    sessionDeadlineTimestamp,
+
+                deadline_iso:
+                    new Date(
+                        sessionDeadlineTimestamp
+                    ).toISOString(),
+
+                fin_iso:
+                    null,
+
+                duracion_total_ms:
+                    null,
+
+                estado:
+                    "en_curso",
+
+                motivo_finalizacion:
+                    null,
+
+                cantidad_mensajes_usuario:
+                    0,
+
+                cantidad_palabras_usuario:
+                    0,
+
+                cantidad_caracteres_con_espacios:
+                    0,
+
+                cantidad_caracteres_sin_espacios:
+                    0,
+
+                conteos_categorias:
+                    getCategoryCounts(
+                        []
+                    ),
+
+                borrador_actual:
+                    "",
+
+                actividad_input: {
+
+                    cantidad_eventos_input:
+                        0,
+
+                    primer_input_iso:
+                        null,
+
+                    ultimo_input_iso:
+                        null,
+
+                    cantidad_focos:
+                        0,
+
+                    ultimo_foco_iso:
+                        null,
+
+                    cantidad_blurs:
+                        0,
+
+                    ultimo_blur_iso:
+                        null
+                },
+
+                ultimo_evento_guardado:
+                    "sesion_iniciada",
+
+                ultima_actualizacion_iso:
+                    new Date(
+                        now
+                    ).toISOString(),
+
+                turnos:
+                    []
             };
 
-            currentSession.turnos.push(turn);
-            currentSession.borrador_actual = "";
-            saveSessionLocally("mensaje_usuario_enviado");
-
-            document.body.classList.add("chat-started");
-            const userMessage = addUserMessage(text);
-
-            promptInput.value = "";
-            resizeTextarea();
-            updateButton();
-
-            const thinkingMessage = addAssistantMessage("Pensando", "thinking");
-            userMessage.scrollIntoView({behavior: "smooth", block: "start"});
-
-            const timeoutId = setTimeout(() => {
-                pendingResponseTimeouts.delete(timeoutId);
-
-                if (sessionFinished) {
-                    thinkingMessage.remove();
-                    return;
-                }
-
-                const shownTimestamp = Date.now();
-
-                thinkingMessage.remove();
-                displayAssistantResponse(response);
-
-                turn.respuesta_mostrada_iso = new Date(shownTimestamp).toISOString();
-                turn.tiempo_respuesta_simulador_ms = shownTimestamp - sendTimestamp;
-                lastAssistantShownTimestamp = shownTimestamp;
-
-                saveSessionLocally("respuesta_mostrada");
-                promptInput.focus();
-            }, 800);
-
-            pendingResponseTimeouts.add(timeoutId);
-        }
-
-        async function finishSession(reason) {
-            if (sessionFinished || !currentSession) return;
-
-            sessionFinished = true;
-
-            clearTimeout(sessionTimeout);
-            clearInterval(heartbeatInterval);
-            clearTimeout(draftSaveTimeout);
-
-            pendingResponseTimeouts.forEach(clearTimeout);
-            pendingResponseTimeouts.clear();
-
-            document.querySelectorAll(".thinking").forEach(element => element.remove());
-
-            const actualNow = Date.now();
-            const finalTimestamp =
-                reason === "tiempo" ? sessionDeadlineTimestamp : actualNow;
-
-            currentSession.fin_iso = new Date(finalTimestamp).toISOString();
-            currentSession.duracion_total_ms = Math.max(
-                0,
-                finalTimestamp - sessionStartTimestamp
+            saveSessionLocally(
+                "sesion_iniciada"
             );
-            currentSession.estado = "finalizada";
-            currentSession.motivo_finalizacion = reason;
-            currentSession.borrador_actual = promptInput.value;
-            currentSession.ultimo_evento_guardado =
-                reason === "tiempo"
-                    ? "tiempo_agotado"
-                    : "finalizacion_por_comando";
 
-            saveSessionLocally();
-
-            promptInput.disabled = true;
-            sendButton.disabled = true;
-            endOverlay.classList.remove("hidden");
-
-            await saveOnline(currentSession);
-            localStorage.removeItem(ACTIVE_SESSION_KEY);
-        }
-
-        function preserveInterruptedSession(reason) {
-            if (
-                !currentSession ||
-                sessionFinished ||
-                currentSession.estado !== "en_curso"
-            ) {
-                return;
-            }
-
-            const now = Date.now();
-
-            currentSession.estado = "interrumpida";
-            currentSession.motivo_finalizacion = reason;
-            currentSession.fin_iso = new Date(
-                Math.min(now, sessionDeadlineTimestamp)
-            ).toISOString();
-            currentSession.duracion_total_ms = Math.max(
-                0,
-                Math.min(now, sessionDeadlineTimestamp) - sessionStartTimestamp
-            );
-            currentSession.borrador_actual = promptInput.value;
-
-            saveSessionLocally("cierre_o_recarga");
-            saveEmergencyOnline(currentSession);
-        }
-
-        let fullscreenClicks = 0;
-        let fullscreenTimer = null;
-
-        fullscreenCorner.addEventListener("click", () => {
-            fullscreenClicks += 1;
-            clearTimeout(fullscreenTimer);
-
-            fullscreenTimer = setTimeout(() => {
-                fullscreenClicks = 0;
-            }, 700);
-
-            if (fullscreenClicks >= 3) {
-                fullscreenClicks = 0;
-
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen?.();
-                } else {
-                    document.exitFullscreen?.();
-                }
-            }
-        });
-
-        startExperimentButton.addEventListener("click", startExperiment);
-
-        participantIdInput.addEventListener("keydown", event => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                startExperiment();
-            }
-        });
-
-        promptInput.addEventListener("focus", () => {
-            if (currentSession && !sessionFinished) {
-                const nowIso = new Date().toISOString();
-                currentSession.actividad_input.cantidad_focos += 1;
-                currentSession.actividad_input.ultimo_foco_iso = nowIso;
-                saveSessionLocally("input_enfocado");
-            }
-        });
-
-        promptInput.addEventListener("blur", () => {
-            if (currentSession && !sessionFinished) {
-                const nowIso = new Date().toISOString();
-                currentSession.actividad_input.cantidad_blurs += 1;
-                currentSession.actividad_input.ultimo_blur_iso = nowIso;
-                saveSessionLocally("input_desenfocado");
-            }
-        });
-
-        promptInput.addEventListener("input", () => {
-            updateButton();
-            resizeTextarea();
-
-            if (currentSession && !sessionFinished) {
-                const nowIso = new Date().toISOString();
-
-                currentSession.actividad_input.cantidad_eventos_input += 1;
-
-                if (!currentSession.actividad_input.primer_input_iso) {
-                    currentSession.actividad_input.primer_input_iso = nowIso;
-                }
-
-                currentSession.actividad_input.ultimo_input_iso = nowIso;
-                currentSession.borrador_actual = promptInput.value;
-
-                scheduleDraftSave();
-            }
-        });
-
-        promptInput.addEventListener("keydown", event => {
-            if (
-                event.key === "Enter" &&
-                !event.shiftKey &&
-                !event.isComposing
-            ) {
-                event.preventDefault();
-                sendMessage();
-            }
-        });
-
-        inputContainer.addEventListener("click", event => {
-            const clickedButton = event.target.closest("button");
-
-            if (!clickedButton && !promptInput.disabled) {
-                promptInput.focus();
-            }
-        });
-
-        sendButton.addEventListener("click", sendMessage);
-
-        document.addEventListener("visibilitychange", () => {
-            if (!currentSession || sessionFinished) return;
-
-            if (document.visibilityState === "hidden") {
-                saveSessionLocally("pagina_en_segundo_plano");
-                return;
-            }
-
-            saveSessionLocally("pagina_nuevamente_visible");
-
-            if (hasDeadlinePassed()) {
-                finishSession("tiempo");
-            } else {
-                scheduleDeadline();
-            }
-        });
-
-        window.addEventListener("pagehide", () => {
-            preserveInterruptedSession("cierre_o_recarga");
-        });
-
-        window.addEventListener("beforeunload", () => {
-            if (currentSession && !sessionFinished) {
-                saveSessionLocally("beforeunload");
-            }
-        });
-
-        window.addEventListener("error", event => {
-            if (currentSession && !sessionFinished) {
-                currentSession.ultimo_error =
-                    event.message || "error_desconocido";
-                saveSessionLocally("error_javascript");
-            }
-        });
-
-        window.addEventListener("unhandledrejection", event => {
-            if (currentSession && !sessionFinished) {
-                currentSession.ultimo_error = String(
-                    event.reason || "error_desconocido"
+            setupOverlay
+                .classList
+                .add(
+                    "hidden"
                 );
-                saveSessionLocally("promesa_rechazada");
-            }
-        });
 
-        document.getElementById("newChatButton").addEventListener(
+            scheduleDeadline();
+
+            heartbeatInterval =
+                setInterval(
+                    () => {
+
+                        if (
+                            currentSession &&
+                            !sessionFinished
+                        ) {
+
+                            saveSessionLocally(
+                                "guardado_periodico"
+                            );
+
+                            if (
+                                hasDeadlinePassed()
+                            ) {
+
+                                finishSession(
+                                    "tiempo"
+                                );
+                            }
+                        }
+
+                    },
+                    LOCAL_SAVE_INTERVAL_MS
+                );
+
+            setTimeout(
+                () =>
+                    promptInput.focus(),
+                200
+            );
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+            setupError.textContent =
+                "No se pudo iniciar. Volvé a intentarlo.";
+
+            startExperimentButton.disabled =
+                false;
+        }
+    }
+
+
+    function updateButton() {
+
+        const hasText =
+            promptInput.value
+                .trim() !== "";
+
+        sendButton.disabled =
+            !hasText ||
+            sessionFinished;
+
+        inputContainer
+            .classList
+            .toggle(
+                "has-text",
+                hasText &&
+                !sessionFinished
+            );
+    }
+
+
+    function resizeTextarea() {
+
+        promptInput.style.height =
+            "auto";
+
+        const height =
+            Math.min(
+                promptInput.scrollHeight,
+                180
+            );
+
+        promptInput.style.height =
+            height + "px";
+
+        promptInput.style.overflowY =
+            promptInput.scrollHeight > 180
+                ? "auto"
+                : "hidden";
+    }
+
+
+    function addUserMessage(text) {
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+        wrapper.className =
+            "message user-message";
+
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+        bubble.className =
+            "user-bubble";
+
+        bubble.textContent =
+            text;
+
+        wrapper.appendChild(
+            bubble
+        );
+
+        messages.appendChild(
+            wrapper
+        );
+
+        return wrapper;
+    }
+
+
+    function addAssistantMessage(
+        text,
+        extraClass = ""
+    ) {
+
+        const message =
+            document.createElement(
+                "div"
+            );
+
+        message.className =
+            (
+                `message assistant-message ${extraClass}`
+            ).trim();
+
+        const content =
+            document.createElement(
+                "div"
+            );
+
+        content.className =
+            "assistant-text";
+
+        content.textContent =
+            text;
+
+        message.appendChild(
+            content
+        );
+
+        messages.appendChild(
+            message
+        );
+
+        return message;
+    }
+
+
+    function addAssistantHTML(
+        html
+    ) {
+
+        const message =
+            document.createElement(
+                "div"
+            );
+
+        message.className =
+            "message assistant-message";
+
+        message.innerHTML =
+            html;
+
+        messages.appendChild(
+            message
+        );
+
+        return message;
+    }
+
+
+    function displayAssistantResponse(
+        response
+    ) {
+
+        return (
+            response.type ===
+            "html"
+        )
+
+            ? addAssistantHTML(
+                response.content
+            )
+
+            : addAssistantMessage(
+                response.content
+            );
+    }
+
+
+    function sendMessage() {
+
+        if (
+            sessionFinished ||
+            !currentSession
+        ) {
+            return;
+        }
+
+        if (
+            hasDeadlinePassed()
+        ) {
+
+            finishSession(
+                "tiempo"
+            );
+
+            return;
+        }
+
+        const text =
+            promptInput.value
+                .trim();
+
+        if (!text) {
+            return;
+        }
+
+        if (
+            MANUAL_END_COMMANDS.has(
+                normalizeText(
+                    text
+                )
+            )
+        ) {
+
+            promptInput.value =
+                "";
+
+            resizeTextarea();
+
+            updateButton();
+
+            saveSessionLocally(
+                "comando_finalizacion_ingresado"
+            );
+
+            finishSession(
+                "comando"
+            );
+
+            return;
+        }
+
+
+        const sendTimestamp =
+            Date.now();
+
+
+        const classification =
+            classifyQuestionDetailed(
+                text
+            );
+
+
+        const response =
+            getAssistantResponse(
+                classification
+            );
+
+
+        const turn = {
+
+            turno:
+                currentSession
+                    .turnos
+                    .length + 1,
+
+            texto_original:
+                text,
+
+            texto_normalizado:
+                normalizeText(
+                    text
+                ),
+
+            categoria_asignada:
+                classification
+                    .category,
+
+            saludo_detectado:
+                classification
+                    .greetingDetected,
+
+            categorias_detectadas:
+                (
+                    classification
+                        .greetingDetected
+
+                    &&
+
+                    classification
+                        .category !==
+                        Category.GREETING
+                )
+
+                    ? [
+                        Category.GREETING,
+                        classification.category
+                    ]
+
+                    : [
+                        classification.category
+                    ],
+
+            respuesta_id:
+                response.id,
+
+            tiempo_previo_ms:
+                Math.max(
+                    0,
+
+                    sendTimestamp -
+                    lastAssistantShownTimestamp
+                ),
+
+            cantidad_palabras:
+                countWords(
+                    text
+                ),
+
+            caracteres_con_espacios:
+                text.length,
+
+            caracteres_sin_espacios:
+                countCharactersWithoutSpaces(
+                    text
+                ),
+
+            hora_envio_iso:
+                new Date(
+                    sendTimestamp
+                ).toISOString(),
+
+            respuesta_mostrada_iso:
+                null,
+
+            tiempo_respuesta_simulador_ms:
+                null
+        };
+
+
+        currentSession
+            .turnos
+            .push(
+                turn
+            );
+
+
+        currentSession.borrador_actual =
+            "";
+
+
+        saveSessionLocally(
+            "mensaje_usuario_enviado"
+        );
+
+
+        document.body
+            .classList
+            .add(
+                "chat-started"
+            );
+
+
+        const userMessage =
+            addUserMessage(
+                text
+            );
+
+
+        promptInput.value =
+            "";
+
+
+        resizeTextarea();
+
+        updateButton();
+
+
+        const thinkingMessage =
+            addAssistantMessage(
+                "Pensando",
+                "thinking"
+            );
+
+
+        userMessage
+            .scrollIntoView({
+                behavior:
+                    "smooth",
+
+                block:
+                    "start"
+            });
+
+
+        const timeoutId =
+            setTimeout(
+                () => {
+
+                    pendingResponseTimeouts
+                        .delete(
+                            timeoutId
+                        );
+
+                    if (
+                        sessionFinished
+                    ) {
+
+                        thinkingMessage
+                            .remove();
+
+                        return;
+                    }
+
+
+                    const shownTimestamp =
+                        Date.now();
+
+
+                    thinkingMessage
+                        .remove();
+
+
+                    displayAssistantResponse(
+                        response
+                    );
+
+
+                    turn.respuesta_mostrada_iso =
+                        new Date(
+                            shownTimestamp
+                        ).toISOString();
+
+
+                    turn.tiempo_respuesta_simulador_ms =
+                        shownTimestamp -
+                        sendTimestamp;
+
+
+                    lastAssistantShownTimestamp =
+                        shownTimestamp;
+
+
+                    saveSessionLocally(
+                        "respuesta_mostrada"
+                    );
+
+
+                    promptInput.focus();
+
+                },
+                800
+            );
+
+
+        pendingResponseTimeouts
+            .add(
+                timeoutId
+            );
+    }
+
+
+    async function finishSession(
+        reason
+    ) {
+
+        if (
+            sessionFinished ||
+            !currentSession
+        ) {
+            return;
+        }
+
+        sessionFinished =
+            true;
+
+        clearTimeout(
+            sessionTimeout
+        );
+
+        clearInterval(
+            heartbeatInterval
+        );
+
+        clearTimeout(
+            draftSaveTimeout
+        );
+
+        pendingResponseTimeouts
+            .forEach(
+                clearTimeout
+            );
+
+        pendingResponseTimeouts
+            .clear();
+
+        document
+            .querySelectorAll(
+                ".thinking"
+            )
+            .forEach(
+                element =>
+                    element.remove()
+            );
+
+
+        const actualNow =
+            Date.now();
+
+
+        const finalTimestamp =
+            reason === "tiempo"
+                ? sessionDeadlineTimestamp
+                : actualNow;
+
+
+        currentSession.fin_iso =
+            new Date(
+                finalTimestamp
+            ).toISOString();
+
+
+        currentSession.duracion_total_ms =
+            Math.max(
+                0,
+
+                finalTimestamp -
+                sessionStartTimestamp
+            );
+
+
+        currentSession.estado =
+            "finalizada";
+
+
+        currentSession.motivo_finalizacion =
+            reason;
+
+
+        currentSession.borrador_actual =
+            promptInput.value;
+
+
+        currentSession.ultimo_evento_guardado =
+            reason === "tiempo"
+
+                ? "tiempo_agotado"
+
+                : "finalizacion_por_comando";
+
+
+        saveSessionLocally();
+
+
+        promptInput.disabled =
+            true;
+
+
+        sendButton.disabled =
+            true;
+
+
+        endOverlay
+            .classList
+            .remove(
+                "hidden"
+            );
+
+
+        await saveOnline(
+            currentSession
+        );
+
+
+        localStorage.removeItem(
+            ACTIVE_SESSION_KEY
+        );
+    }
+
+
+    function preserveInterruptedSession(
+        reason
+    ) {
+
+        if (
+            !currentSession ||
+            sessionFinished ||
+            currentSession.estado !==
+                "en_curso"
+        ) {
+            return;
+        }
+
+        const now =
+            Date.now();
+
+
+        currentSession.estado =
+            "interrumpida";
+
+
+        currentSession.motivo_finalizacion =
+            reason;
+
+
+        currentSession.fin_iso =
+            new Date(
+                Math.min(
+                    now,
+                    sessionDeadlineTimestamp
+                )
+            ).toISOString();
+
+
+        currentSession.duracion_total_ms =
+            Math.max(
+                0,
+
+                Math.min(
+                    now,
+                    sessionDeadlineTimestamp
+                )
+
+                -
+
+                sessionStartTimestamp
+            );
+
+
+        currentSession.borrador_actual =
+            promptInput.value;
+
+
+        saveSessionLocally(
+            "cierre_o_recarga"
+        );
+
+
+        saveEmergencyOnline(
+            currentSession
+        );
+    }
+
+
+    let fullscreenClicks =
+        0;
+
+
+    let fullscreenTimer =
+        null;
+
+
+    fullscreenCorner
+        .addEventListener(
+            "click",
+            () => {
+
+                fullscreenClicks +=
+                    1;
+
+
+                clearTimeout(
+                    fullscreenTimer
+                );
+
+
+                fullscreenTimer =
+                    setTimeout(
+                        () => {
+
+                            fullscreenClicks =
+                                0;
+
+                        },
+                        700
+                    );
+
+
+                if (
+                    fullscreenClicks >=
+                    3
+                ) {
+
+                    fullscreenClicks =
+                        0;
+
+
+                    if (
+                        !document.fullscreenElement
+                    ) {
+
+                        document
+                            .documentElement
+                            .requestFullscreen?.();
+
+                    } else {
+
+                        document
+                            .exitFullscreen?.();
+                    }
+                }
+            }
+        );
+
+
+    startExperimentButton
+        .addEventListener(
+            "click",
+            startExperiment
+        );
+
+
+    participantIdInput
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    event
+                        .preventDefault();
+
+                    startExperiment();
+                }
+            }
+        );
+
+
+    promptInput
+        .addEventListener(
+            "focus",
+            () => {
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+
+                    const nowIso =
+                        new Date()
+                            .toISOString();
+
+
+                    currentSession
+                        .actividad_input
+                        .cantidad_focos +=
+                        1;
+
+
+                    currentSession
+                        .actividad_input
+                        .ultimo_foco_iso =
+                        nowIso;
+
+
+                    saveSessionLocally(
+                        "input_enfocado"
+                    );
+                }
+            }
+        );
+
+
+    promptInput
+        .addEventListener(
+            "blur",
+            () => {
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+
+                    const nowIso =
+                        new Date()
+                            .toISOString();
+
+
+                    currentSession
+                        .actividad_input
+                        .cantidad_blurs +=
+                        1;
+
+
+                    currentSession
+                        .actividad_input
+                        .ultimo_blur_iso =
+                        nowIso;
+
+
+                    saveSessionLocally(
+                        "input_desenfocado"
+                    );
+                }
+            }
+        );
+
+
+    promptInput
+        .addEventListener(
+            "input",
+            () => {
+
+                updateButton();
+
+                resizeTextarea();
+
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+
+                    const nowIso =
+                        new Date()
+                            .toISOString();
+
+
+                    currentSession
+                        .actividad_input
+                        .cantidad_eventos_input +=
+                        1;
+
+
+                    if (
+                        !currentSession
+                            .actividad_input
+                            .primer_input_iso
+                    ) {
+
+                        currentSession
+                            .actividad_input
+                            .primer_input_iso =
+                            nowIso;
+                    }
+
+
+                    currentSession
+                        .actividad_input
+                        .ultimo_input_iso =
+                        nowIso;
+
+
+                    currentSession
+                        .borrador_actual =
+                        promptInput.value;
+
+
+                    scheduleDraftSave();
+                }
+            }
+        );
+
+
+    promptInput
+        .addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                        "Enter"
+
+                    &&
+
+                    !event.shiftKey
+
+                    &&
+
+                    !event.isComposing
+                ) {
+
+                    event
+                        .preventDefault();
+
+                    sendMessage();
+                }
+            }
+        );
+
+
+    inputContainer
+        .addEventListener(
             "click",
             event => {
-                event.preventDefault();
 
-                if (!sessionFinished) {
+                const clickedButton =
+                    event.target
+                        .closest(
+                            "button"
+                        );
+
+
+                if (
+                    !clickedButton &&
+                    !promptInput.disabled
+                ) {
+
                     promptInput.focus();
                 }
             }
         );
 
-        resizeTextarea();
-        updateButton();
 
-        setTimeout(() => participantIdInput.focus(), 100);
-    </script>
+    sendButton
+        .addEventListener(
+            "click",
+            sendMessage
+        );
+
+
+    document
+        .addEventListener(
+            "visibilitychange",
+            () => {
+
+                if (
+                    !currentSession ||
+                    sessionFinished
+                ) {
+                    return;
+                }
+
+
+                if (
+                    document.visibilityState ===
+                    "hidden"
+                ) {
+
+                    saveSessionLocally(
+                        "pagina_en_segundo_plano"
+                    );
+
+                    return;
+                }
+
+
+                saveSessionLocally(
+                    "pagina_nuevamente_visible"
+                );
+
+
+                if (
+                    hasDeadlinePassed()
+                ) {
+
+                    finishSession(
+                        "tiempo"
+                    );
+
+                } else {
+
+                    scheduleDeadline();
+                }
+            }
+        );
+
+
+    window
+        .addEventListener(
+            "pagehide",
+            () => {
+
+                preserveInterruptedSession(
+                    "cierre_o_recarga"
+                );
+            }
+        );
+
+
+    window
+        .addEventListener(
+            "beforeunload",
+            () => {
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+
+                    saveSessionLocally(
+                        "beforeunload"
+                    );
+                }
+            }
+        );
+
+
+    window
+        .addEventListener(
+            "error",
+            event => {
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+
+                    currentSession.ultimo_error =
+                        event.message ||
+                        "error_desconocido";
+
+
+                    saveSessionLocally(
+                        "error_javascript"
+                    );
+                }
+            }
+        );
+
+
+    window
+        .addEventListener(
+            "unhandledrejection",
+            event => {
+
+                if (
+                    currentSession &&
+                    !sessionFinished
+                ) {
+
+                    currentSession.ultimo_error =
+                        String(
+                            event.reason ||
+                            "error_desconocido"
+                        );
+
+
+                    saveSessionLocally(
+                        "promesa_rechazada"
+                    );
+                }
+            }
+        );
+
+
+    document
+        .getElementById(
+            "newChatButton"
+        )
+        .addEventListener(
+            "click",
+            event => {
+
+                event
+                    .preventDefault();
+
+
+                if (
+                    !sessionFinished
+                ) {
+
+                    promptInput.focus();
+                }
+            }
+        );
+
+
+    resizeTextarea();
+
+    updateButton();
+
+
+    setTimeout(
+        () =>
+            participantIdInput.focus(),
+        100
+    );
+</script>
+
 </body>
 </html>
