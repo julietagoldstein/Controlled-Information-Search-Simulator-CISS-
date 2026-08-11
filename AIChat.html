@@ -756,7 +756,7 @@
 </main>
 
 <script>
-    const SIMULATOR_VERSION = "AIChat_v1.6_expanded_prompts";
+    const SIMULATOR_VERSION = "AIChat_v1.8_child_typo_tolerance";
     const TIME_LIMIT_MS = 10 * 60 * 1000;
     const LOCAL_SAVE_INTERVAL_MS = 5000;
     const MANUAL_END_COMMANDS = new Set(["fin", "/fin"]);
@@ -853,6 +853,7 @@
         WHY_SET: "WHY_SET",
         GENERIC_IF: "GENERIC_IF",
         VAGUE_WHAT_TO_DO: "VAGUE_WHAT_TO_DO",
+        MISTAKE_OR_CONFUSION: "MISTAKE_OR_CONFUSION",
         RULE: "RULE",
         EXAMPLE_1: "EXAMPLE_1",
         EXAMPLE_2: "EXAMPLE_2",
@@ -1008,6 +1009,17 @@
     const ALL_DONE_RESPONSE = "Sí, eso es todo.";
 
     const VAGUE_WHAT_TO_DO_RESPONSE = "¿Sobre qué necesitás ayuda?";
+
+    const MISTAKE_OR_CONFUSION_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                No pasa nada. Podés volver a mirar las cartas y usar la regla.
+            </p>
+            <p>
+                En cada característica —forma, color, relleno y cantidad— las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+        </div>
+    `;
 
     const WHY_SET_SCRIPT = `
         <div class="assistant-content">
@@ -1950,51 +1962,26 @@
             normalized.split(" ")[0] || "";
 
         return (
-            [
-                "hola",
-                "holaa",
-                "ola",
-                "hala",
-                "hla",
-                "buenas",
-                "hey"
-            ].includes(firstToken)
-
-            ||
-
-            normalized.startsWith(
-                "buen dia"
-            )
-
-            ||
-
-            normalized.startsWith(
-                "buenos dias"
-            )
-
-            ||
-
-            normalized.startsWith(
-                "buenas tardes"
-            )
-
-            ||
-
-            normalized.startsWith(
-                "buenas noches"
-            )
+            intentWordMatches(firstToken, "hola")
+            || intentWordMatches(firstToken, "buenas")
+            || intentWordMatches(firstToken, "hey")
+            || containsPhraseFuzzy(normalized, "buen dia")
+            || containsPhraseFuzzy(normalized, "buenos dias")
+            || containsPhraseFuzzy(normalized, "buenas tardes")
+            || containsPhraseFuzzy(normalized, "buenas noches")
         );
     }
 
 
     function isGreetingOnly(text) {
 
-        return [
-            "hola",
-            "holaa",
+        const greetingPhrases = [
+            "hola",,
+            "hola chat",
+            "chat",
             "ola",
-            "hala",
-            "hla",
+            "holis",
+            "holi",
             "buenas",
             "hola como estas",
             "como estas",
@@ -2011,8 +1998,10 @@
             "buenos dias",
             "buenas tardes",
             "buenas noches"
-        ].includes(
-            normalizeText(text)
+        ];
+
+        return greetingPhrases.some(
+            phrase => phraseMatchesFuzzy(text, phrase)
         );
     }
 
@@ -2354,7 +2343,9 @@
             "podemos jugar",
             "podemos probar",
             "quiero jugar",
-            "jugamos"
+            "jugamos",
+            "juguemos",
+            "probemos"
         ];
 
         return phrases.some(
@@ -2397,7 +2388,9 @@
             "que hay que hacer para ganar",
             "como hago para ganar",
             "como ganar",
-            "ganar"
+            "ganar",
+            "quiero ganar",
+            "pero quiero ganar"
         ];
 
         if (
@@ -2438,9 +2431,12 @@
                 intentWordMatches(word, "cuando")
             );
 
+        const asksWhatIf =
+            /\bsi\b/.test(normalized);
+
         return (
             mentionsWinning &&
-            asksHowOrWhen
+            (asksHowOrWhen || asksWhatIf)
         );
     }
 
@@ -2502,9 +2498,12 @@
                 intentWordMatches(word, "cuando")
             );
 
+        const asksWhatIf =
+            /\bsi\b/.test(normalized);
+
         return (
             mentionsLosing &&
-            asksHowOrWhen
+            (asksHowOrWhen || asksWhatIf)
         );
     }
 
@@ -2514,9 +2513,16 @@
         const normalized =
             normalizeText(text);
 
+        const words =
+            normalized.split(" ").filter(Boolean);
+
         return (
             normalized.includes("trampa") ||
-            normalized.includes("trampear")
+            normalized.includes("trampear") ||
+            words.some(word =>
+                intentWordMatches(word, "trampa") ||
+                intentWordMatches(word, "trampear")
+            )
         );
     }
 
@@ -2534,6 +2540,65 @@
         return phrases.some(
             phrase => normalized.includes(normalizeText(phrase)) || containsPhraseFuzzy(normalized, phrase)
         );
+    }
+
+
+    function getPriorityCategory(text) {
+        const normalized = normalizeText(text);
+
+        if ([
+            "siempre son tres cartas",
+            "siempre son 3 cartas"
+        ].includes(normalized)) {
+            return Category.NUMBER_OF_CARDS;
+        }
+
+        if ([
+            "atyda",
+            "ayuda",
+            "ayudame",
+            "atuda",
+            "ayda",
+            "aydua"
+        ].includes(normalized)) {
+            return Category.CLARIFICATION;
+        }
+
+        if ([
+            "ya esta",
+            "ya esta listo",
+            "eso es todo",
+            "listo"
+        ].includes(normalized)) {
+            return Category.ALL_DONE;
+        }
+
+        if ([
+            "podemos probar",
+            "podemos jugar",
+            "probamos",
+            "jugamos"
+        ].includes(normalized)) {
+            return Category.REQUEST_TO_PLAY;
+        }
+
+        if (
+            containsAnyExactOrFuzzy(normalized, [
+                "y si me equivoco",
+                "si me equivoco",
+                "que pasa si me equivoco",
+                "y si me confundo",
+                "si me confundo",
+                "que pasa si me confundo",
+                "y si me equivoco o me confundo",
+                "me puedo equivocar",
+                "me puedo confundir"
+            ])
+        ) {
+            return Category.MISTAKE_OR_CONFUSION;
+        }
+
+        return null;
     }
 
 
@@ -2625,7 +2690,10 @@
             "siempre tienen que ser iguales",
             "tienen que ser todas distintas",
             "todas tienen que ser distintas",
-            "siempre tienen que ser distintas"
+            "siempre tienen que ser distintas",
+            "tienen que ser todas diferentes",
+            "todas tienen que ser diferentes",
+            "siempre tienen que ser diferentes"
         ]);
     }
 
@@ -2648,7 +2716,8 @@
             "cuantas caracteristicas hay",
             "cuales son las caracteristicas",
             "que caracteristicas",
-            "cuantas caracteristicas"
+            "cuantas caracteristicas",
+            "cuantas caracteristicas son"
         ]);
     }
 
@@ -2820,6 +2889,16 @@
 
         const greetingDetected =
             containsGreeting(text);
+
+        const priorityCategory =
+            getPriorityCategory(text);
+
+        if (priorityCategory) {
+            return {
+                category: priorityCategory,
+                greetingDetected
+            };
+        }
 
 
         if (
@@ -3349,6 +3428,9 @@
             case Category.VAGUE_WHAT_TO_DO:
                 return { id: "VAGUE_WHAT_TO_DO", type: "text", content: VAGUE_WHAT_TO_DO_RESPONSE };
 
+            case Category.MISTAKE_OR_CONFUSION:
+                return { id: "MISTAKE_OR_CONFUSION", type: "html", content: MISTAKE_OR_CONFUSION_SCRIPT };
+
             case Category.RULE:
 
                 return {
@@ -3505,6 +3587,7 @@
             WHY_SET: 0,
             GENERIC_IF: 0,
             VAGUE_WHAT_TO_DO: 0,
+            MISTAKE_OR_CONFUSION: 0,
             RULE: 0,
             EXAMPLE_1: 0,
             EXAMPLE_2: 0,
