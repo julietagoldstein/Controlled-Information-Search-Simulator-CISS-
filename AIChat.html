@@ -756,7 +756,7 @@
 </main>
 
 <script>
-    const SIMULATOR_VERSION = "AIChat_v1.5_flexible_input";
+    const SIMULATOR_VERSION = "AIChat_v1.6_expanded_prompts";
     const TIME_LIMIT_MS = 10 * 60 * 1000;
     const LOCAL_SAVE_INTERVAL_MS = 5000;
     const MANUAL_END_COMMANDS = new Set(["fin", "/fin"]);
@@ -840,6 +840,19 @@
         HOW_TO_WIN: "HOW_TO_WIN",
         HOW_TO_LOSE: "HOW_TO_LOSE",
         CHEATING: "CHEATING",
+        HOW_TO_RECOGNIZE_SET: "HOW_TO_RECOGNIZE_SET",
+        WHEN_NOT_SET: "WHEN_NOT_SET",
+        WHAT_TO_LOOK_AT: "WHAT_TO_LOOK_AT",
+        FEATURE_SPECIFIC: "FEATURE_SPECIFIC",
+        MIXED_FEATURES: "MIXED_FEATURES",
+        ALL_SAME_OR_DIFFERENT: "ALL_SAME_OR_DIFFERENT",
+        NUMBER_OF_CARDS: "NUMBER_OF_CARDS",
+        NUMBER_OF_FEATURES: "NUMBER_OF_FEATURES",
+        FILL_DEFINITION: "FILL_DEFINITION",
+        ALL_DONE: "ALL_DONE",
+        WHY_SET: "WHY_SET",
+        GENERIC_IF: "GENERIC_IF",
+        VAGUE_WHAT_TO_DO: "VAGUE_WHAT_TO_DO",
         RULE: "RULE",
         EXAMPLE_1: "EXAMPLE_1",
         EXAMPLE_2: "EXAMPLE_2",
@@ -921,6 +934,116 @@
 
         </div>
     `;
+
+    const HOW_TO_RECOGNIZE_SET_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                Para saber si las cartas forman un SET, tenés que mirar cada característica: forma, color, relleno y cantidad.
+            </p>
+            <p>
+                En cada una, las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+            <p>
+                Si las cuatro características cumplen esa regla, forman un SET. Si alguna no la cumple, no forman un SET.
+            </p>
+        </div>
+    `;
+
+    const WHEN_NOT_SET_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                Las cartas no forman un SET si alguna característica no cumple la regla.
+            </p>
+            <p>
+                En cada característica —forma, color, relleno y cantidad— las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+            <p>
+                Si hay, por ejemplo, dos iguales y una distinta en una característica, no forman un SET.
+            </p>
+            <img class="set-image" src="Images/noSet.png" alt="Ejemplo de cartas que no forman un SET">
+        </div>
+    `;
+
+    const WHAT_TO_LOOK_AT_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                Tenés que mirar cuatro características de las cartas: la forma, el color, el relleno y la cantidad.
+            </p>
+            <p>
+                En cada una, fijate si las tres cartas son todas iguales o todas distintas.
+            </p>
+        </div>
+    `;
+
+    const MIXED_FEATURES_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                Sí. Lo importante es que, dentro de cada característica, sean todas iguales o todas distintas.
+            </p>
+        </div>
+    `;
+
+    const ALL_SAME_OR_DIFFERENT_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                No necesariamente. En cada característica pueden ser todas iguales o todas distintas.
+            </p>
+            <p>
+                Por ejemplo, las formas pueden ser iguales y los colores distintos.
+            </p>
+            <p>
+                Lo importante es que cada característica cumpla una de esas dos opciones.
+            </p>
+        </div>
+    `;
+
+    const NUMBER_OF_CARDS_RESPONSE = "Son tres cartas.";
+
+    const NUMBER_OF_FEATURES_RESPONSE =
+        "Hay cuatro características: forma, color, relleno y cantidad.";
+
+    const FILL_DEFINITION_RESPONSE =
+        "El relleno es cómo está pintado el dibujito de la carta.";
+
+    const ALL_DONE_RESPONSE = "Sí, eso es todo.";
+
+    const VAGUE_WHAT_TO_DO_RESPONSE = "¿Sobre qué necesitás ayuda?";
+
+    const WHY_SET_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                Para saberlo, hay que revisar las cuatro características.
+            </p>
+            <p>
+                En cada una, las tres cartas tienen que ser todas iguales o todas distintas.
+            </p>
+            <p>
+                Si las cuatro cumplen la regla, forman un SET. Si alguna no la cumple, no forman un SET.
+            </p>
+        </div>
+    `;
+
+    const GENERIC_IF_SCRIPT = `
+        <div class="assistant-content">
+            <p>
+                Si en una característica son todas iguales o todas distintas, esa característica sí cumple la regla.
+            </p>
+            <p>
+                Para que formen un SET, las cuatro características tienen que cumplir la regla.
+            </p>
+        </div>
+    `;
+
+    function getFeatureSpecificResponse(feature) {
+        const labels = {
+            color: "color",
+            forma: "forma",
+            relleno: "relleno",
+            cantidad: "cantidad"
+        };
+        const label = labels[feature] || feature;
+        return `Con ${label === "forma" || label === "cantidad" ? "la" : "el"} ${label} pasa lo mismo que con las otras características: ${label === "forma" || label === "cantidad" ? "las" : "los"} ${label === "cantidad" ? "cantidades" : label === "forma" ? "formas" : label === "color" ? "colores" : "rellenos"} de las tres cartas tienen que ser ${label === "forma" || label === "cantidad" ? "todas" : "todos"} iguales o ${label === "forma" || label === "cantidad" ? "todas" : "todos"} distintos.`;
+    }
 
     const OFF_TOPIC_RESPONSE =
         "Ahora estamos aprendiendo a jugar a SET. Hazme una pregunta sobre el juego y estaré encantado de ayudarte.";
@@ -1225,7 +1348,7 @@
         <div class="assistant-content">
 
             <h3>
-                3) Mezcla de iguales y distintas → Sí forman un SET
+                ¡Claro! Veamos un ejemplo.
             </h3>
 
             <img
@@ -1243,6 +1366,10 @@
 
             <p>
                 La regla se cumple en todas las características.
+            </p>
+
+            <p>
+                Entonces, las cartas sí forman un SET.
             </p>
 
         </div>
@@ -1522,6 +1649,132 @@
     }
 
 
+    function damerauLevenshteinDistance(a, b) {
+
+        const matrix = Array.from(
+            { length: a.length + 1 },
+            () => Array(b.length + 1).fill(0)
+        );
+
+        for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+        for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+        for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j] + 1,
+                    matrix[i][j - 1] + 1,
+                    matrix[i - 1][j - 1] + cost
+                );
+
+                if (
+                    i > 1 &&
+                    j > 1 &&
+                    a[i - 1] === b[j - 2] &&
+                    a[i - 2] === b[j - 1]
+                ) {
+                    matrix[i][j] = Math.min(
+                        matrix[i][j],
+                        matrix[i - 2][j - 2] + 1
+                    );
+                }
+            }
+        }
+
+        return matrix[a.length][b.length];
+    }
+
+
+    function collapseRepeatedLettersForMatching(word) {
+        return String(word).replace(/([a-zñ])\1+/g, "$1");
+    }
+
+
+    function intentWordMatches(inputWord, targetWord) {
+
+        if (inputWord === targetWord) return true;
+
+        const compactInput = collapseRepeatedLettersForMatching(inputWord);
+        const compactTarget = collapseRepeatedLettersForMatching(targetWord);
+
+        if (compactInput === compactTarget) return true;
+
+        if (targetWord.length <= 3) return false;
+
+        const allowed =
+            targetWord.length <= 7 ? 1 : 2;
+
+        if (
+            Math.abs(compactInput.length - compactTarget.length) > allowed
+        ) {
+            return false;
+        }
+
+        return (
+            damerauLevenshteinDistance(
+                compactInput,
+                compactTarget
+            ) <= allowed
+        );
+    }
+
+
+    function phraseMatchesFuzzy(text, phrase) {
+
+        const inputWords =
+            normalizeText(text).split(" ").filter(Boolean);
+
+        const targetWords =
+            normalizeText(phrase).split(" ").filter(Boolean);
+
+        if (inputWords.length !== targetWords.length) {
+            return false;
+        }
+
+        return targetWords.every(
+            (targetWord, index) =>
+                intentWordMatches(
+                    inputWords[index],
+                    targetWord
+                )
+        );
+    }
+
+
+    function containsPhraseFuzzy(text, phrase) {
+
+        const inputWords =
+            normalizeText(text).split(" ").filter(Boolean);
+
+        const targetWords =
+            normalizeText(phrase).split(" ").filter(Boolean);
+
+        if (targetWords.length > inputWords.length) {
+            return false;
+        }
+
+        for (
+            let start = 0;
+            start <= inputWords.length - targetWords.length;
+            start++
+        ) {
+            const matches = targetWords.every(
+                (targetWord, offset) =>
+                    intentWordMatches(
+                        inputWords[start + offset],
+                        targetWord
+                    )
+            );
+
+            if (matches) return true;
+        }
+
+        return false;
+    }
+
+
     function getAllowedDistance(word) {
 
         if (word.length <= 3) {
@@ -1579,6 +1832,13 @@
             return true;
         }
 
+        const compactInput = collapseRepeatedLettersForMatching(inputToken);
+        const compactTarget = collapseRepeatedLettersForMatching(targetToken);
+
+        if (compactInput === compactTarget) {
+            return true;
+        }
+
         if (
             isKnownVariant(
                 inputToken,
@@ -1599,8 +1859,8 @@
 
         if (
             Math.abs(
-                inputToken.length -
-                targetToken.length
+                compactInput.length -
+                compactTarget.length
             ) > allowed
         ) {
             return false;
@@ -1608,8 +1868,8 @@
 
         return (
             levenshteinDistance(
-                inputToken,
-                targetToken
+                compactInput,
+                compactTarget
             ) <= allowed
         );
     }
@@ -1736,6 +1996,16 @@
             "hala",
             "hla",
             "buenas",
+            "hola como estas",
+            "como estas",
+            "como tas",
+            "hola como tas",
+            "que tal",
+            "hola que tal",
+            "que onda",
+            "hola que onda",
+            "todo bien",
+            "hola todo bien",
             "hey",
             "buen dia",
             "buenos dias",
@@ -1792,6 +2062,16 @@
             "explicame de nuevo",
             "otra vez",
             "de nuevo",
+            "no se",
+            "nose",
+            "ayuda",
+            "atyda",
+            "ayudame",
+            "no puedo",
+            "no se como",
+            "no me sale",
+            "que",
+            "eh",
             "no lo entendi",
             "no lo entiendo"
         ];
@@ -1799,6 +2079,12 @@
         if (
             exactPhrases.includes(
                 normalized
+            ) ||
+            exactPhrases.some(
+                phrase => phraseMatchesFuzzy(
+                    normalized,
+                    phrase
+                )
             )
         ) {
             return true;
@@ -1818,6 +2104,10 @@
         return containedPhrases.some(
             phrase =>
                 normalized.includes(
+                    phrase
+                ) ||
+                containsPhraseFuzzy(
+                    normalized,
                     phrase
                 )
         );
@@ -2113,22 +2403,40 @@
         if (
             exactPhrases.includes(
                 normalized
+            ) ||
+            exactPhrases.some(
+                phrase => phraseMatchesFuzzy(
+                    normalized,
+                    phrase
+                )
             )
         ) {
             return true;
         }
 
+        const words =
+            normalized.split(" ").filter(Boolean);
+
         const mentionsWinning =
             normalized.includes("ganar") ||
             normalized.includes("gano") ||
-            normalized.includes("gana");
+            normalized.includes("gana") ||
+            words.some(word =>
+                intentWordMatches(word, "ganar") ||
+                intentWordMatches(word, "gano") ||
+                intentWordMatches(word, "gana")
+            );
 
         const asksHowOrWhen =
             normalized.includes("como") ||
             normalized.includes("cuando") ||
             normalized.includes("que hago") ||
             normalized.includes("que tengo que hacer") ||
-            normalized.includes("que hay que hacer");
+            normalized.includes("que hay que hacer") ||
+            words.some(word =>
+                intentWordMatches(word, "como") ||
+                intentWordMatches(word, "cuando")
+            );
 
         return (
             mentionsWinning &&
@@ -2159,22 +2467,40 @@
         if (
             exactPhrases.includes(
                 normalized
+            ) ||
+            exactPhrases.some(
+                phrase => phraseMatchesFuzzy(
+                    normalized,
+                    phrase
+                )
             )
         ) {
             return true;
         }
 
+        const words =
+            normalized.split(" ").filter(Boolean);
+
         const mentionsLosing =
             normalized.includes("perder") ||
             normalized.includes("pierdo") ||
-            normalized.includes("pierde");
+            normalized.includes("pierde") ||
+            words.some(word =>
+                intentWordMatches(word, "perder") ||
+                intentWordMatches(word, "pierdo") ||
+                intentWordMatches(word, "pierde")
+            );
 
         const asksHowOrWhen =
             normalized.includes("como") ||
             normalized.includes("cuando") ||
             normalized.includes("que hago") ||
             normalized.includes("que tengo que hacer") ||
-            normalized.includes("que hay que hacer");
+            normalized.includes("que hay que hacer") ||
+            words.some(word =>
+                intentWordMatches(word, "como") ||
+                intentWordMatches(word, "cuando")
+            );
 
         return (
             mentionsLosing &&
@@ -2191,6 +2517,206 @@
         return (
             normalized.includes("trampa") ||
             normalized.includes("trampear")
+        );
+    }
+
+
+    function matchesAnyExactOrFuzzy(text, phrases) {
+        const normalized = normalizeText(text);
+        return phrases.some(
+            phrase => normalized === normalizeText(phrase) || phraseMatchesFuzzy(normalized, phrase)
+        );
+    }
+
+
+    function containsAnyExactOrFuzzy(text, phrases) {
+        const normalized = normalizeText(text);
+        return phrases.some(
+            phrase => normalized.includes(normalizeText(phrase)) || containsPhraseFuzzy(normalized, phrase)
+        );
+    }
+
+
+    function isHowToRecognizeSet(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "como se si es set",
+            "como se si es un set",
+            "como se cuando es set",
+            "como me doy cuenta si es set",
+            "como me doy cuenta",
+            "como puedo saber si es set",
+            "cuando es set",
+            "cuando es un set",
+            "cuando forman set",
+            "cuando forman un set",
+            "cuando hay set"
+        ]);
+    }
+
+
+    function isWhenNotSet(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "cuando no es set",
+            "cuando no es un set",
+            "cuando no forman set",
+            "cuando no forman un set",
+            "cuando no hay set",
+            "como se cuando no es set"
+        ]);
+    }
+
+
+    function isWhatToLookAt(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "que miro",
+            "que tengo que mirar",
+            "que tengo que mirar en las cartas",
+            "en que me fijo",
+            "en que hay que fijarse",
+            "que cosas miro"
+        ]);
+    }
+
+
+    function getAskedFeature(text) {
+        const normalized = normalizeText(text);
+        const patterns = [
+            { feature: "color", words: ["color", "colores"] },
+            { feature: "forma", words: ["forma", "formas"] },
+            { feature: "relleno", words: ["relleno", "rellenos"] },
+            { feature: "cantidad", words: ["cantidad", "cantidades"] }
+        ];
+
+        const questionMarkers = [
+            "que pasa con",
+            "como funciona",
+            "y el",
+            "y la",
+            "el color",
+            "la forma",
+            "el relleno",
+            "la cantidad"
+        ];
+
+        for (const item of patterns) {
+            const hasFeature = item.words.some(word => normalized.includes(word));
+            const hasMarker = questionMarkers.some(marker => normalized.includes(marker));
+            if (hasFeature && hasMarker) return item.feature;
+        }
+        return null;
+    }
+
+
+    function isMixedFeaturesQuestion(text) {
+        return containsAnyExactOrFuzzy(text, [
+            "pueden ser algunas iguales y otras distintas",
+            "puede haber iguales y distintas",
+            "pueden ser iguales en una cosa y distintas en otra",
+            "pueden mezclarse iguales y distintas",
+            "pueden mezclarse"
+        ]);
+    }
+
+
+    function isAllSameOrDifferentQuestion(text) {
+        return containsAnyExactOrFuzzy(text, [
+            "tienen que ser todas iguales",
+            "todas tienen que ser iguales",
+            "siempre tienen que ser iguales",
+            "tienen que ser todas distintas",
+            "todas tienen que ser distintas",
+            "siempre tienen que ser distintas"
+        ]);
+    }
+
+
+    function isNumberOfCardsQuestion(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "cuantas cartas son",
+            "cuantas cartas",
+            "cuantas tengo que mirar",
+            "son tres cartas",
+            "son 3 cartas",
+            "siempre son tres cartas",
+            "siempre son 3 cartas"
+        ]);
+    }
+
+
+    function isNumberOfFeaturesQuestion(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "cuantas caracteristicas hay",
+            "cuales son las caracteristicas",
+            "que caracteristicas",
+            "cuantas caracteristicas"
+        ]);
+    }
+
+
+    function isFillDefinitionQuestion(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "que es relleno",
+            "que significa relleno",
+            "cual es el relleno",
+            "que seria relleno"
+        ]);
+    }
+
+
+    function isAllDoneQuestion(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "eso es todo",
+            "hay algo mas",
+            "falta algo",
+            "hay otra regla",
+            "es solo eso",
+            "listo",
+            "ya esta",
+            "ya esta listo"
+        ]);
+    }
+
+
+    function isWhySetQuestion(text) {
+        return containsAnyExactOrFuzzy(text, [
+            "por que es set",
+            "porque es set",
+            "por que forman set",
+            "porque forman set",
+            "por que no es set",
+            "porque no es set",
+            "por que no forman set",
+            "porque no forman set"
+        ]);
+    }
+
+
+    function isGenericIfQuestion(text) {
+        return containsAnyExactOrFuzzy(text, [
+            "que pasa si son distintas",
+            "que pasa si son iguales",
+            "y si son iguales",
+            "y si son diferentes",
+            "y si son distintas"
+        ]);
+    }
+
+
+    function isVagueWhatToDo(text) {
+        return matchesAnyExactOrFuzzy(text, [
+            "que hago",
+            "que tengo que hacer",
+            "que hay que hacer",
+            "y ahora que hago"
+        ]);
+    }
+
+
+    function hasPreviousSetContext() {
+        if (!currentSession || !Array.isArray(currentSession.turnos)) return false;
+        return currentSession.turnos.some(turn =>
+            turn.categoria_asignada &&
+            ![Category.GREETING, Category.THANKS, Category.FAREWELL, Category.OFF_TOPIC].includes(turn.categoria_asignada)
         );
     }
 
@@ -2396,6 +2922,86 @@
 
 
         if (
+            isWhenNotSet(text)
+        ) {
+            return { category: Category.WHEN_NOT_SET, greetingDetected };
+        }
+
+        if (
+            isHowToRecognizeSet(text)
+        ) {
+            return { category: Category.HOW_TO_RECOGNIZE_SET, greetingDetected };
+        }
+
+        if (
+            isFillDefinitionQuestion(text)
+        ) {
+            return { category: Category.FILL_DEFINITION, greetingDetected };
+        }
+
+        if (
+            isNumberOfCardsQuestion(text)
+        ) {
+            return { category: Category.NUMBER_OF_CARDS, greetingDetected };
+        }
+
+        if (
+            isNumberOfFeaturesQuestion(text)
+        ) {
+            return { category: Category.NUMBER_OF_FEATURES, greetingDetected };
+        }
+
+        if (
+            isWhatToLookAt(text)
+        ) {
+            return { category: Category.WHAT_TO_LOOK_AT, greetingDetected };
+        }
+
+        const askedFeature = getAskedFeature(text);
+        if (askedFeature) {
+            return { category: Category.FEATURE_SPECIFIC, greetingDetected, feature: askedFeature };
+        }
+
+        if (
+            isMixedFeaturesQuestion(text)
+        ) {
+            return { category: Category.MIXED_FEATURES, greetingDetected };
+        }
+
+        if (
+            isAllSameOrDifferentQuestion(text)
+        ) {
+            return { category: Category.ALL_SAME_OR_DIFFERENT, greetingDetected };
+        }
+
+        if (
+            isAllDoneQuestion(text)
+        ) {
+            return { category: Category.ALL_DONE, greetingDetected };
+        }
+
+        if (
+            isWhySetQuestion(text)
+        ) {
+            return { category: Category.WHY_SET, greetingDetected };
+        }
+
+        if (
+            isGenericIfQuestion(text)
+        ) {
+            return { category: Category.GENERIC_IF, greetingDetected };
+        }
+
+        if (
+            isVagueWhatToDo(text)
+        ) {
+            return {
+                category: hasPreviousSetContext() ? Category.GENERAL : Category.VAGUE_WHAT_TO_DO,
+                greetingDetected
+            };
+        }
+
+        if (
             isClarificationRequest(text)
         ) {
             return {
@@ -2457,6 +3063,30 @@
             return {
                 category:
                     specificExample,
+
+                greetingDetected
+            };
+        }
+
+
+        const asksForGeneralExample =
+            tokenListContainsAny(
+                tokens,
+                ["ejemplo","ejemplos"]
+            ) ||
+            matchesAnyExactOrFuzzy(text, [
+                "otro ejemplo",
+                "dame otro",
+                "mostrame otro",
+                "otro",
+                "tenes otro ejemplo"
+            ]);
+
+        if (asksForGeneralExample) {
+
+            return {
+                category:
+                    Category.EXAMPLE_3,
 
                 greetingDetected
             };
@@ -2680,6 +3310,45 @@
                 };
 
 
+            case Category.HOW_TO_RECOGNIZE_SET:
+                return { id: "HOW_TO_RECOGNIZE_SET", type: "html", content: HOW_TO_RECOGNIZE_SET_SCRIPT };
+
+            case Category.WHEN_NOT_SET:
+                return { id: "WHEN_NOT_SET", type: "html", content: WHEN_NOT_SET_SCRIPT };
+
+            case Category.WHAT_TO_LOOK_AT:
+                return { id: "WHAT_TO_LOOK_AT", type: "html", content: WHAT_TO_LOOK_AT_SCRIPT };
+
+            case Category.FEATURE_SPECIFIC:
+                return { id: "FEATURE_SPECIFIC", type: "text", content: getFeatureSpecificResponse(classification.feature) };
+
+            case Category.MIXED_FEATURES:
+                return { id: "MIXED_FEATURES", type: "html", content: MIXED_FEATURES_SCRIPT };
+
+            case Category.ALL_SAME_OR_DIFFERENT:
+                return { id: "ALL_SAME_OR_DIFFERENT", type: "html", content: ALL_SAME_OR_DIFFERENT_SCRIPT };
+
+            case Category.NUMBER_OF_CARDS:
+                return { id: "NUMBER_OF_CARDS", type: "text", content: NUMBER_OF_CARDS_RESPONSE };
+
+            case Category.NUMBER_OF_FEATURES:
+                return { id: "NUMBER_OF_FEATURES", type: "text", content: NUMBER_OF_FEATURES_RESPONSE };
+
+            case Category.FILL_DEFINITION:
+                return { id: "FILL_DEFINITION", type: "text", content: FILL_DEFINITION_RESPONSE };
+
+            case Category.ALL_DONE:
+                return { id: "ALL_DONE", type: "text", content: ALL_DONE_RESPONSE };
+
+            case Category.WHY_SET:
+                return { id: "WHY_SET", type: "html", content: WHY_SET_SCRIPT };
+
+            case Category.GENERIC_IF:
+                return { id: "GENERIC_IF", type: "html", content: GENERIC_IF_SCRIPT };
+
+            case Category.VAGUE_WHAT_TO_DO:
+                return { id: "VAGUE_WHAT_TO_DO", type: "text", content: VAGUE_WHAT_TO_DO_RESPONSE };
+
             case Category.RULE:
 
                 return {
@@ -2823,6 +3492,19 @@
             HOW_TO_WIN: 0,
             HOW_TO_LOSE: 0,
             CHEATING: 0,
+            HOW_TO_RECOGNIZE_SET: 0,
+            WHEN_NOT_SET: 0,
+            WHAT_TO_LOOK_AT: 0,
+            FEATURE_SPECIFIC: 0,
+            MIXED_FEATURES: 0,
+            ALL_SAME_OR_DIFFERENT: 0,
+            NUMBER_OF_CARDS: 0,
+            NUMBER_OF_FEATURES: 0,
+            FILL_DEFINITION: 0,
+            ALL_DONE: 0,
+            WHY_SET: 0,
+            GENERIC_IF: 0,
+            VAGUE_WHAT_TO_DO: 0,
             RULE: 0,
             EXAMPLE_1: 0,
             EXAMPLE_2: 0,
