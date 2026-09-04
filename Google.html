@@ -269,6 +269,26 @@ body{
     background:transparent;
 }
 
+/* =========================
+   IFRAME INSTRUCCIONES
+========================= */
+
+#instructions-screen iframe {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+}
+
+/* =========================
+   AGRADECIMIENTO
+========================= */
+
+#thanks-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 </style>
 
 </head>
@@ -488,6 +508,24 @@ body{
 
 </div>
 
+<!-- =========================
+     IFRAME INSTRUCCIONES
+========================= -->
+
+<div id="instructions-screen" class="screen hidden">
+    <iframe
+        src="https://julietagoldstein.github.io/Controlled-Information-Search-Simulator-CISS-/Instrucciones.html"
+    ></iframe>
+</div>
+
+<!-- =========================
+     AGRADECIMIENTO
+========================= -->
+
+<div id="thanks-screen" class="screen hidden">
+    <p>¡Gracias por participar!</p>
+</div>
+
 <script>
 
 /* =========================
@@ -502,6 +540,7 @@ let sponsoredWasHidden = false;
 
 let googleScreenStartTime = 0;
 let resultsScreenStartTime = 0;
+let instructionsScreenStartTime = 0;
 
 /* =========================
    START EXPERIMENT
@@ -582,16 +621,37 @@ const tiempoDecision =
 /* =========================
    OPEN RESULT
 ========================= */
-async function openResult(resultType){
+function openResult(resultType){
 
-    await saveFinalData(resultType);
+    document
+        .getElementById("results-screen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("instructions-screen")
+        .classList.remove("hidden");
+
+    instructionsScreenStartTime = Date.now();
 
     setTimeout(() => {
+        endExperiment(resultType);
+    },600000);  // 10-min timeout
+}
 
-        window.location.href =
-            "https://julietagoldstein.github.io/Controlled-Information-Search-Simulator-CISS-/Instrucciones.html";
+/* =========================
+   END EXPERIMENT
+========================= */
+async function endExperiment(resultType){
 
-    },50);
+    document
+        .querySelectorAll("div.screen")
+        .forEach(div => { div.classList.add("hidden") });
+
+    document
+        .getElementById("thanks-screen")
+        .classList.remove("hidden");
+
+    await saveFinalData(resultType);
 }
 
 /* =========================
@@ -634,13 +694,21 @@ function toggleSponsored(){
 
 async function saveFinalData(resultType){
 
+    googleScreenStartTime ||= Date.now();
+    resultsScreenStartTime ||= Date.now();
+    instructionsScreenStartTime ||= Date.now();
+
     const tiempoEscritura =
         resultsScreenStartTime -
         googleScreenStartTime;
 
     const tiempoDecision =
-        Date.now() -
+        instructionsScreenStartTime -
         resultsScreenStartTime;
+
+    const tiempoLectura =
+        Date.now() -
+        instructionsScreenStartTime;
 
     const data = {
 
@@ -657,7 +725,10 @@ async function saveFinalData(resultType){
             tiempoEscritura,
 
         tiempo_decision_ms:
-            tiempoDecision
+            tiempoDecision,
+
+        tiempo_lectura_ms:
+            tiempoLectura
     };
 
     saveLocally(data);
@@ -724,6 +795,11 @@ async function saveOnline(data){
         "entry.2029101416",
         data.tiempo_decision_ms
     );
+
+    formData.append(
+        "entry.995883888",
+        data.tiempo_lectura_ms
+    )
 
     try{
 
@@ -847,4 +923,3 @@ async function toggleFullscreen(){
 
 </body>
 </html>
-```
