@@ -861,15 +861,31 @@ document
    ADMIN BUTTON
 ========================= */
 
+let endClicks = 0;
+
+let endTimer = null;
+
 document
 .getElementById("admin-button")
 .addEventListener("click", function(){
 
-    console.log(
-        localStorage.getItem("experimentData")
-    );
+    endClicks++;
 
-    alert("Datos locales mostrados en consola");
+    clearTimeout(endTimer);
+
+    endTimer = setTimeout(() => {
+
+        endClicks = 0;
+
+    },700);
+
+    if(endClicks >= 3){
+
+        endClicks = 0;
+
+        endExperiment();
+    }
+
 });
 
 /* =========================
