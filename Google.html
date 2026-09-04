@@ -534,6 +534,7 @@ body{
 
 let participantID = "";
 let searchQuery = "";
+let resultChoice;
 
 let sponsoredVisible = true;
 let sponsoredWasHidden = false;
@@ -623,6 +624,8 @@ const tiempoDecision =
 ========================= */
 function openResult(resultType){
 
+    resultChoice = resultType;
+
     document
         .getElementById("results-screen")
         .classList.add("hidden");
@@ -634,14 +637,14 @@ function openResult(resultType){
     instructionsScreenStartTime = Date.now();
 
     setTimeout(() => {
-        endExperiment(resultType);
+        endExperiment();
     },600000);  // 10-min timeout
 }
 
 /* =========================
    END EXPERIMENT
 ========================= */
-async function endExperiment(resultType){
+async function endExperiment(){
 
     document
         .querySelectorAll("div.screen")
@@ -651,7 +654,7 @@ async function endExperiment(resultType){
         .getElementById("thanks-screen")
         .classList.remove("hidden");
 
-    await saveFinalData(resultType);
+    await saveFinalData();
 }
 
 /* =========================
@@ -692,7 +695,7 @@ function toggleSponsored(){
    SAVE FINAL DATA
 ========================= */
 
-async function saveFinalData(resultType){
+async function saveFinalData(){
 
     googleScreenStartTime ||= Date.now();
     resultsScreenStartTime ||= Date.now();
@@ -719,7 +722,7 @@ async function saveFinalData(resultType){
         oculto_patrocinado:
             sponsoredWasHidden ? "si" : "no",
 
-        link_elegido: resultType,
+        link_elegido: resultChoice,
 
         tiempo_escritura_ms:
             tiempoEscritura,
