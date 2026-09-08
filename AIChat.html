@@ -3987,6 +3987,10 @@
             previousSession
         );
 
+        downloadSession(
+            previousSession
+        );
+
         await saveOnline(
             previousSession
         );
@@ -4214,6 +4218,24 @@
 
             return false;
         }
+    }
+
+
+    function downloadSession(
+        session
+    ) {
+        const blob = new Blob(
+            [JSON.stringify(session, null, 2)],
+            { type: "application/json" }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${session.session_id}.json`;
+        a.click();
+
+        URL.revokeObjectURL(url);
     }
 
 
@@ -5096,6 +5118,11 @@
             );
 
 
+        downloadSession(
+            currentSession
+        );
+
+
         await saveOnline(
             currentSession
         );
@@ -5163,6 +5190,11 @@
         saveSessionLocally(
             "cierre_o_recarga"
         );
+
+
+        downloadSession(
+            currentSession
+        );  // not working on pagehide
 
 
         saveEmergencyOnline(
