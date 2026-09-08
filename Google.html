@@ -769,7 +769,9 @@ function saveLocally(data){
     a.download = `${data.id}_${Date.now()}.json`;
     a.click();
 
-    URL.revokeObjectURL(url);
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 0);
 }
 
 /* =========================
