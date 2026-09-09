@@ -5535,7 +5535,7 @@
     window
         .addEventListener(
             "beforeunload",
-            () => {
+            (event) => {
 
                 if (
                     currentSession &&
@@ -5545,6 +5545,13 @@
                     saveSessionLocally(
                         "beforeunload"
                     );
+
+                    downloadSession(
+                        currentSession
+                    );
+
+                    event.preventDefault();
+                    event.returnValue = "";
                 }
             }
         );
