@@ -117,23 +117,26 @@
     }
 
 .example-content{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:30px;
+  display:block;
   padding:30px;
-  align-items:center;
 }
 
-/* Párrafos que aparecen antes de la imagen */
-.example > p{
-  padding:0 30px;
-}
-
-/* Imagen de los ejemplos */
 .example-content .example-image{
   width:100%;
+  max-width:none;
   height:auto;
-  margin-top:8px;
+  display:block;
+  margin:0 auto 30px auto;
+}
+
+.example-content p{
+  margin-top:0;
+  margin-bottom:22px;
+  line-height:1.45;
+}
+
+.example > p{
+  padding:0 30px;
 }
 
 /* Columna de texto */
@@ -159,28 +162,35 @@
 
 @media(max-width:900px){
 
-  .intro-grid,
-  .example-content{
+  .intro-grid{
     grid-template-columns:1fr;
   }
 
-      .hero{
-        font-size:38px;
-      }
+  .hero{
+    font-size:38px;
+  }
 
-      p, li{
-        font-size:22px;
-      }
+  p, li{
+    font-size:22px;
+  }
 
-      .example-header{
-        font-size:25px;
-      }
+  .example-header{
+    font-size:25px;
+  }
 
-      .section{
-        padding:25px;
-      }
+  .section{
+    padding:25px;
+  }
 
-    }
+  .example-content{
+    padding:24px;
+  }
+
+  .example > p{
+    padding:0 24px;
+  }
+
+}
 
   </style>
 </head>
