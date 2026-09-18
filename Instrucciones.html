@@ -118,10 +118,10 @@
 
 .example-content{
   display:grid;
-  grid-template-columns:44% 56%;
+  grid-template-columns:1fr 1fr;
   gap:30px;
   padding:30px;
-  align-items:start;
+  align-items:center;
 }
 
 /* Párrafos que aparecen antes de la imagen */
@@ -159,37 +159,10 @@
 
 @media(max-width:900px){
 
-  .intro-grid{
+  .intro-grid,
+  .example-content{
     grid-template-columns:1fr;
   }
-
-  .example-content{
-    grid-template-columns:42% 58%;
-    gap:20px;
-    padding:24px;
-  }
-
-  .example > p{
-    padding:0 24px;
-  }
-
-  .hero{
-    font-size:38px;
-  }
-
-  p, li{
-    font-size:22px;
-  }
-
-  .example-header{
-    font-size:25px;
-  }
-
-  .section{
-    padding:25px;
-  }
-
-}
 
       .hero{
         font-size:38px;
