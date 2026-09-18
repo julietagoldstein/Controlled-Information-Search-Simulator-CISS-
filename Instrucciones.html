@@ -116,13 +116,36 @@
       font-family:'Fredoka', sans-serif;
     }
 
-    .example-content{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:30px;
-      padding:30px;
-      align-items:center;
-    }
+.example-content{
+  display:grid;
+  grid-template-columns:44% 56%;
+  gap:30px;
+  padding:30px;
+  align-items:start;
+}
+
+/* Párrafos que aparecen antes de la imagen */
+.example > p{
+  padding:0 30px;
+}
+
+/* Imagen de los ejemplos */
+.example-content .example-image{
+  width:100%;
+  height:auto;
+  margin-top:8px;
+}
+
+/* Columna de texto */
+.example-text{
+  min-width:0;
+}
+
+.example-content p{
+  margin-top:0;
+  margin-bottom:22px;
+  line-height:1.45;
+}
 
     ol{
       padding-left:28px;
@@ -134,12 +157,39 @@
       font-weight:bold;
     }
 
-    @media(max-width:900px){
+@media(max-width:900px){
 
-      .intro-grid,
-      .example-content{
-        grid-template-columns:1fr;
-      }
+  .intro-grid{
+    grid-template-columns:1fr;
+  }
+
+  .example-content{
+    grid-template-columns:42% 58%;
+    gap:20px;
+    padding:24px;
+  }
+
+  .example > p{
+    padding:0 24px;
+  }
+
+  .hero{
+    font-size:38px;
+  }
+
+  p, li{
+    font-size:22px;
+  }
+
+  .example-header{
+    font-size:25px;
+  }
+
+  .section{
+    padding:25px;
+  }
+
+}
 
       .hero{
         font-size:38px;
