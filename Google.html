@@ -542,6 +542,7 @@ let sponsoredWasHidden = false;
 let googleScreenStartTime = 0;
 let resultsScreenStartTime = 0;
 let instructionsScreenStartTime = 0;
+let endTime = 0;
 
 /* =========================
    START EXPERIMENT
@@ -569,6 +570,33 @@ function startExperiment(){
     document
         .getElementById("google-screen")
         .classList.remove("hidden");
+
+    // Before closing download data preventively and confirm
+    window.addEventListener("beforeunload", (event) => {
+        if (!endTime) {
+            const data = getData();
+            data.id += "_beforeunload";
+            saveLocally(data);
+            event.preventDefault();
+            event.returnValue = "";
+        }
+    });
+
+    // If closed upload data to Google Form
+    document.addEventListener("visibilitychange", () => {
+        if (
+            document.visibilityState === "hidden" &&
+            !endTime
+        ) {
+            const data = getData();
+            data.id += "_visibilitychange"
+            const formData = getFormData(data);
+            navigator.sendBeacon(
+                formURL,
+                formData
+            );
+        }
+    });
 
     googleScreenStartTime = Date.now();
 
@@ -654,6 +682,8 @@ async function endExperiment(){
         .getElementById("thanks-screen")
         .classList.remove("hidden");
 
+    endTime = Date.now();
+
     await saveFinalData();
 }
 
@@ -695,23 +725,22 @@ function toggleSponsored(){
    SAVE FINAL DATA
 ========================= */
 
-async function saveFinalData(){
+function getData() {
 
-    googleScreenStartTime ||= Date.now();
-    resultsScreenStartTime ||= Date.now();
-    instructionsScreenStartTime ||= Date.now();
+    const tiempoEscritura = (
+        ( resultsScreenStartTime || Date.now() ) -
+        ( googleScreenStartTime || Date.now() )
+    );
 
-    const tiempoEscritura =
-        resultsScreenStartTime -
-        googleScreenStartTime;
+    const tiempoDecision = (
+        ( instructionsScreenStartTime || Date.now() ) -
+        ( resultsScreenStartTime || Date.now() )
+    );
 
-    const tiempoDecision =
-        instructionsScreenStartTime -
-        resultsScreenStartTime;
-
-    const tiempoLectura =
-        Date.now() -
-        instructionsScreenStartTime;
+    const tiempoLectura = (
+        ( endTime || Date.now() ) -
+        ( instructionsScreenStartTime || Date.now() )
+    );
 
     const data = {
 
@@ -733,6 +762,13 @@ async function saveFinalData(){
         tiempo_lectura_ms:
             tiempoLectura
     };
+
+    return data;
+}
+
+async function saveFinalData(){
+
+    const data = getData();
 
     saveLocally(data);
 
@@ -778,10 +814,10 @@ function saveLocally(data){
    GOOGLE FORMS SAVE
 ========================= */
 
-async function saveOnline(data){
+const formURL =
+    "https://docs.google.com/forms/d/e/1FAIpQLSfWhXQuBj6mn4k3qqV1mxYsc8M0P1Q959KRTwBcq_W-nES9HA/formResponse";
 
-    const formURL =
-        "https://docs.google.com/forms/d/e/1FAIpQLSfWhXQuBj6mn4k3qqV1mxYsc8M0P1Q959KRTwBcq_W-nES9HA/formResponse";
+function getFormData(data) {
 
     const formData = new FormData();
 
@@ -818,7 +854,14 @@ async function saveOnline(data){
     formData.append(
         "entry.995883888",
         data.tiempo_lectura_ms
-    )
+    );
+
+    return formData;
+}
+
+async function saveOnline(data){
+
+    const formData = getFormData(data);
 
     try{
 
