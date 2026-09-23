@@ -2361,6 +2361,13 @@
             "no comprendi",
             "no me quedo claro",
             "no me queda claro",
+
+            "no se como",
+            "no se hacerlo",
+            "no se como hacerlo",
+            "no puedo hacerlo",
+            "no me sale",
+            
             "de nuevo",
             "denuevo",
             "explica de nuevo",
@@ -3367,8 +3374,9 @@
             isVagueWhatToDo(text)
         ) {
             return {
-                category: hasPreviousSetContext() ? Category.GENERAL : Category.VAGUE_WHAT_TO_DO,
-                greetingDetected
+                category: hasPreviousSetContext()
+                    ? Category.CLARIFICATION
+                    : Category.VAGUE_WHAT_TO_DO,
             };
         }
 
