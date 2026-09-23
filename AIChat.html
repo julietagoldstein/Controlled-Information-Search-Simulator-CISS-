@@ -1741,7 +1741,16 @@
         "aserlo": "hacerlo",
 
         "aciendo": "haciendo",
-        "asiendo": "haciendo"
+        "asiendo": "haciendo",
+        
+        "acerla": "hacerla",
+        "aserla": "hacerla",
+
+        "aciendo": "haciendo",
+        "asiendo": "haciendo",
+
+        "ago": "hago"
+};
     };
 
     const words = result.split(" ");
@@ -1831,7 +1840,11 @@
             separateKnownJoinedWords(
                 normalized
             );
-
+        
+        normalized =
+            normalizeKnownTypos(
+                normalized
+            );
 
         return normalized
             .replace(/\s+/g, " ")
