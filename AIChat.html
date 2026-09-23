@@ -1729,7 +1729,27 @@
         No cambia el texto original guardado.
     */
 
+    function normalizeKnownTypos(text) {
 
+    let result = String(text);
+
+    const replacements = {
+        "acer": "hacer",
+        "aser": "hacer",
+
+        "acerlo": "hacerlo",
+        "aserlo": "hacerlo",
+
+        "aciendo": "haciendo",
+        "asiendo": "haciendo"
+    };
+
+    const words = result.split(" ");
+
+    return words
+        .map(word => replacements[word] || word)
+        .join(" ");
+}
     function separateKnownJoinedWords(text) {
 
         let result = String(text);
