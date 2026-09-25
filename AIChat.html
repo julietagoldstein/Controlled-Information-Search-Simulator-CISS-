@@ -3024,18 +3024,19 @@
     }
 
 
-    function isWhySetQuestion(text) {
-        return containsAnyExactOrFuzzy(text, [
-            "por que es set",
-            "porque es set",
-            "por que forman set",
-            "porque forman set",
-            "por que no es set",
-            "porque no es set",
-            "por que no forman set",
-            "porque no forman set"
-        ]);
-    }
+function isWhySetQuestion(text) {
+
+    const normalized = normalizeText(text);
+
+    return (
+        /\bpor que\b/.test(normalized) ||
+        /\bporque\b/.test(normalized) ||
+        /\bporq\b/.test(normalized) ||
+        /\bpq\b/.test(normalized) ||
+        /\bxq\b/.test(normalized) ||
+        /\bx que\b/.test(normalized)
+    );
+}
 
 
     function isGenericIfQuestion(text) {
