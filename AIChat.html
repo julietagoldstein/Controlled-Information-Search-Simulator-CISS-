@@ -3552,7 +3552,42 @@ function isWhySetQuestion(text) {
             };
         }
 
+        if (
+            isCheatingQuestion(text)   
+        ) {
+            return {
+                category:
+                    Category.CHEATING,
 
+                greetingDetected
+            };
+        }
+
+if (
+    isAmbiguousGameQuestion(text)
+) {
+    return {
+        category:
+            Category.ASK_WHICH_GAME,
+
+        greetingDetected
+    };
+}
+
+
+        if (
+            previousTurnAskedWhichGame() &&
+            isExplicitSetAnswer(text)
+        ) {
+            return {
+                category:
+                    Category.GENERAL,
+
+                greetingDetected
+            };
+        }
+
+        
         if (
             isRequestToPlay(text)
         ) {
