@@ -938,6 +938,9 @@
         TWO_SAME_ONE_DIFFERENT: "TWO_SAME_ONE_DIFFERENT",
         CASE_1_EXISTS: "CASE_1_EXISTS",
         REQUEST_TO_PLAY: "REQUEST_TO_PLAY",
+        ASK_WHICH_GAME: "ASK_WHICH_GAME",
+        SHOW_IMAGE: "SHOW_IMAGE",
+        NAME: "NAME",
         HOW_TO_WIN: "HOW_TO_WIN",
         HOW_TO_LOSE: "HOW_TO_LOSE",
         CHEATING: "CHEATING",
@@ -977,7 +980,23 @@
 
     const REQUEST_TO_PLAY_RESPONSE =
         "Puedo ayudarte con las instrucciones que estamos viendo. Para formar un SET, en cada característica tienen que ser todas iguales o todas distintas.";
+    const ASK_WHICH_GAME_RESPONSE =
+        "¿A qué juego?";
+    
+    const NAME_RESPONSE =
+        "Me podés llamar Chat.";
+    
+    const SHOW_IMAGE_SCRIPT = `
+        <div class="assistant-content">
+            <p>¡Sí! Mirá:</p>
 
+            <img
+                class="set-image"
+                src="Images/intro-set.png"
+                alt="Cartas del juego SET"
+            >
+        </div>
+    `;
     const HOW_TO_WIN_SCRIPT = `
         <div class="assistant-content">
 
@@ -1752,7 +1771,12 @@
         "aciendo": "haciendo",
         "asiendo": "haciendo",
 
-        "ago": "hago"
+        "ago": "hago",
+
+        "asme": "haceme",
+        "hasme": "haceme",
+        
+        "instrucsiones": "instrucciones"
 };
 
     const words = result.split(" ");
@@ -1781,6 +1805,7 @@
         */
 
         result = result.replace(/holacomo/g, "hola como ");
+        result = result.replace(/comosejuega/g, "como se juega ");
         result = result.replace(/comojuego/g, "como juego ");
         result = result.replace(/comojugar/g, "como jugar ");
         result = result.replace(/comoaprender/g, "como aprender ");
@@ -1788,8 +1813,14 @@
         result = result.replace(/juegoal/g, "juego al ");
         result = result.replace(/jugaral/g, "jugar al ");
 
+        result = result.replace(/quierojugar/g, "quiero jugar ");
+        result = result.replace(/podemosjugar/g, "podemos jugar ");
+        result = result.replace(/podriamosjugar/g, "podriamos jugar ");
+
         result = result.replace(/alset/g, "al set");
         result = result.replace(/alzet/g, "al zet");
+        result = result.replace(/aset/g, "a set");
+        result = result.replace(/azet/g, "a zet");
 
         return result
             .replace(/\s+/g, " ")
@@ -2327,8 +2358,28 @@
             "no puedo",
             "que",
             "eh",
-            "otra vez"
-        ];
+            "otra vez",
+            "de nuevo",
+            "denuevo",
+
+            "no entendi",
+            "no entiendo",
+
+            "no lo entendi",
+            "no lo entiendo",
+
+            "sigo sin entender",
+            "sigo sin entenderlo",
+
+            "todavia no entiendo",
+            "todavia no entendi",
+
+            "aun no entiendo",
+            "aun no entendi",
+
+            "no termino de entender",
+            "no lo termino de entender"
+            ];
 
         if (
             exactPhrases.includes(
@@ -2366,7 +2417,23 @@
             "denuevo",
             "explica de nuevo",
             "explicame de nuevo",
-            "me explicas de nuevo"
+            "me explicas de nuevo",
+
+            "sigo sin entender",
+            "sigo sin entenderlo",
+            "sigo sin entender esto",
+            
+            "todavia no entiendo",
+            "todavia no lo entiendo",
+            "todavia no entendi",
+            "todavia no entendí",
+            "todavia no lo entendi",
+            "todavia no lo entendí",
+            "todavia no enteiendo",
+            "todavia no entiendo esto",
+            
+            "no lo termino de entender",
+            "no termino de entender"
         ];
 
         return containedPhrases.some(
