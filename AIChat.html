@@ -3563,21 +3563,12 @@ function isWhySetQuestion(text) {
             };
         }
 
-if (
-    isAmbiguousGameQuestion(text)
-) {
-    return {
-        category:
-            Category.ASK_WHICH_GAME,
-
-        greetingDetected
-    };
-}
-
+        if (
+            previousTurnAskedWhichGame()
+        ) {
 
         if (
-            previousTurnAskedWhichGame() &&
-            isExplicitSetAnswer(text)
+        isExplicitSetAnswer(text)
         ) {
             return {
                 category:
@@ -3587,6 +3578,25 @@ if (
             };
         }
 
+        return {
+            category:
+                Category.OFF_TOPIC,
+
+            greetingDetected
+        };
+    }
+
+
+    if (
+        isAmbiguousGameQuestion(text)
+    ) {
+        return {
+            category:
+                Category.ASK_WHICH_GAME,
+
+            greetingDetected
+        };
+    }
         
         if (
             isRequestToPlay(text)
@@ -3947,6 +3957,19 @@ if (
                         REQUEST_TO_PLAY_RESPONSE
                 };
 
+            case Category.ASK_WHICH_GAME:
+
+                return {
+                    id:
+                        "ASK_WHICH_GAME",
+
+                    type:
+                        "text",
+
+                    content:
+                        ASK_WHICH_GAME_RESPONSE
+                };
+
 
             case Category.HOW_TO_WIN:
 
@@ -4172,6 +4195,7 @@ if (
             TWO_SAME_ONE_DIFFERENT: 0,
             CASE_1_EXISTS: 0,
             REQUEST_TO_PLAY: 0,
+            ASK_WHICH_GAME: 0,
             HOW_TO_WIN: 0,
             HOW_TO_LOSE: 0,
             CHEATING: 0,
