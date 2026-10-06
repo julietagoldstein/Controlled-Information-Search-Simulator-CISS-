@@ -3611,7 +3611,16 @@ function isWhySetQuestion(text) {
                 greetingDetected
             };
         }
-        
+        if (
+            isNameQuestion(text)
+        ) {
+            return {
+                category:
+                    Category.NAME,
+
+                greetingDetected
+            };
+        }
         if (
             isRequestToPlay(text)
         ) {
@@ -3958,6 +3967,19 @@ function isWhySetQuestion(text) {
                 };
 
 
+            case Category.NAME:
+                
+                return {
+                    id:
+                        "NAME",
+
+                    type:
+                        "text",
+
+                    content:
+                        NAME_RESPONSE
+                };
+                
             case Category.REQUEST_TO_PLAY:
 
                 return {
@@ -4242,6 +4264,7 @@ function isWhySetQuestion(text) {
             MISTAKE_OR_CONFUSION: 0,
             RULE: 0,
             SHOW_IMAGE: 0,
+            NAME: 0,
             EXAMPLE_1: 0,
             EXAMPLE_2: 0,
             EXAMPLE_3: 0,
