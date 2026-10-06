@@ -2748,13 +2748,13 @@
             ];
 
 
-        return phrases.some(
-            phrase =>
-                normalized === phrase ||
-                normalized.includes(
-                    phrase
-                )
-        );
+return directPlayRequests.some(
+    phrase =>
+        normalized === phrase ||
+        normalized.includes(
+            phrase
+        )
+);
     }
 
 function isExplicitSetAnswer(text) {
