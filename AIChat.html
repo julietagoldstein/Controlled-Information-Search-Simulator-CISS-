@@ -2907,24 +2907,6 @@ function isNameQuestion(text) {
         ]
     );
 }
-    const asksChatToCreateSet =
-        (
-            normalized.includes("haceme") ||
-            normalized.includes("hacerme") ||
-            normalized.includes("dame") ||
-            normalized.includes("armame") ||
-            normalized.includes("poneme")
-        )
-
-        &&
-
-        (
-            /\bset\b/.test(normalized) ||
-            normalized.includes("desafio")
-        );
-
-    return asksChatToCreateSet;
-}
     
     function isWhatIsSetQuestion(text) {
 
