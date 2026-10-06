@@ -2378,7 +2378,10 @@
             "aun no entendi",
 
             "no termino de entender",
-            "no lo termino de entender"
+            "no lo termino de entender",
+
+            "una vez mas",
+            "una vez más"
             ];
 
         if (
@@ -3599,6 +3602,17 @@ function isWhySetQuestion(text) {
     }
         
         if (
+            isImageRequest(text)
+        ) {
+            return {
+                category:
+                    Category.SHOW_IMAGE,
+
+                greetingDetected
+            };
+        }
+        
+        if (
             isRequestToPlay(text)
         ) {
             return {
@@ -4069,6 +4083,19 @@ function isWhySetQuestion(text) {
                 };
 
 
+            case Category.SHOW_IMAGE:
+
+                return {
+                    id:
+                        "SHOW_IMAGE",
+
+                    type:
+                        "html",
+
+                    content:
+                        SHOW_IMAGE_SCRIPT
+                };
+                
             case Category.EXAMPLE_1:
 
                 return {
@@ -4214,6 +4241,7 @@ function isWhySetQuestion(text) {
             VAGUE_WHAT_TO_DO: 0,
             MISTAKE_OR_CONFUSION: 0,
             RULE: 0,
+            SHOW_IMAGE: 0,
             EXAMPLE_1: 0,
             EXAMPLE_2: 0,
             EXAMPLE_3: 0,
