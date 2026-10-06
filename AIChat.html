@@ -2676,23 +2676,77 @@
         const normalized =
             normalizeText(text);
 
-        const phrases = [
-            "podriamos probar una partida",
-            "podemos probar una partida",
-            "podemos jugar una partida",
-            "podriamos jugar una partida",
-            "quiero probar una partida",
-            "quiero jugar una partida",
-            "jugamos una partida",
-            "hacemos una partida",
-            "probamos una partida",
-            "podemos jugar",
-            "podemos probar",
-            "quiero jugar",
-            "jugamos",
-            "juguemos",
-            "probemos"
-        ];
+        /*
+            Primero evitamos confundir una pregunta
+            sobre CÓMO jugar con un pedido de jugar.
+        */
+
+
+        const asksForInstructions =
+                containsAnyExactOrFuzzy(
+                    normalized,
+                    [
+                        "como se juega",
+                        "como juego",
+                        "como jugar",
+                        "como puedo jugar",
+                        "ensenarme a jugar",
+                        "ensename a jugar",
+                        "quiero aprender a jugar",
+                        "explicame como jugar"
+                    ]
+                );
+
+    if (asksForInstructions) {
+        return false;
+    }
+        
+        const directPlayRequests = [
+                "quiero jugar",
+                "quiero jugar set",
+                "quiero jugar a set",
+                "quiero jugar al set",
+        
+                "podemos jugar",
+                "podemos jugar set",
+                "podemos jugar a set",
+                "podemos jugar al set",
+
+                "podriamos jugar",
+                "podriamos jugar set",
+                "podriamos jugar a set",
+                "podriamos jugar al set",
+        
+                "jugamos",
+                "jugamos set",
+                "jugamos a set",
+                "jugamos al set",
+        
+                "juguemos",
+        
+                "quiero probar",
+                "podemos probar",
+                "podriamos probar",
+                "probamos",
+                "probemos",
+        
+                "quiero jugar una partida",
+                "podemos jugar una partida",
+                "podriamos jugar una partida",
+        
+                "quiero probar una partida",
+                "podemos probar una partida",
+                "podriamos probar una partida",
+        
+                "jugamos una partida",
+                "hacemos una partida",
+                "probamos una partida",
+        
+                "quiero practicar",
+                "podemos practicar",
+                "podriamos practicar"
+            ];
+
 
         return phrases.some(
             phrase =>
@@ -2703,7 +2757,175 @@
         );
     }
 
+function isExplicitSetAnswer(text) {
 
+    const normalized =
+        normalizeText(text);
+
+    return [
+        "set",
+        "zet",
+
+        "a set",
+        "al set",
+        "el set",
+
+        "a zet",
+        "al zet",
+        "el zet",
+
+        "juego set",
+        "el juego set"
+    ].includes(normalized);
+}
+
+
+function previousTurnAskedWhichGame() {
+
+    if (
+        !currentSession ||
+        !Array.isArray(currentSession.turnos) ||
+        currentSession.turnos.length === 0
+    ) {
+        return false;
+    }
+
+    const previousTurn =
+        currentSession.turnos[
+            currentSession.turnos.length - 1
+        ];
+
+    return (
+        previousTurn.categoria_asignada ===
+        Category.ASK_WHICH_GAME
+    );
+}
+
+
+function isAmbiguousGameQuestion(text) {
+
+    const normalized =
+        normalizeText(text);
+
+    /*
+        Si dice SET explícitamente,
+        ya sabemos qué juego es.
+    */
+
+    if (
+        /\bset\b/.test(normalized) ||
+        /\bzet\b/.test(normalized)
+    ) {
+        return false;
+    }
+
+
+    return matchesAnyExactOrFuzzy(
+        normalized,
+        [
+            "como se juega",
+            "como juego",
+            "como jugar",
+
+            "me puedes ayudar a jugar a un juego",
+            "me podes ayudar a jugar a un juego",
+            "me ayudas a jugar a un juego",
+
+            "me puedes ayudar a jugar un juego",
+            "me podes ayudar a jugar un juego",
+            "me ayudas a jugar un juego",
+
+            "quiero aprender a jugar a un juego",
+            "quiero aprender a jugar un juego"
+        ]
+    );
+}
+
+
+function isMoreAboutThisGameRequest(text) {
+
+    return containsAnyExactOrFuzzy(
+        text,
+        [
+            "quiero que me digas mas sobre este juego",
+            "decime mas sobre este juego",
+            "dime mas sobre este juego",
+            "contame mas sobre este juego",
+            "cuentame mas sobre este juego",
+            "quiero saber mas sobre este juego",
+            "me contas mas sobre este juego",
+            "me cuentas mas sobre este juego"
+        ]
+    );
+}
+
+
+function isImageRequest(text) {
+
+    const normalized =
+        normalizeText(text);
+
+    const imageWords = [
+        "foto",
+        "fotos",
+        "imagen",
+        "imagenes",
+        "dibujo",
+        "dibujos"
+    ];
+
+    const mentionsImage =
+        imageWords.some(
+            word =>
+                normalized.includes(word)
+        );
+
+    if (!mentionsImage) {
+        return false;
+    }
+
+    const explicitlyMentionsSet =
+        /\bset\b/.test(normalized) ||
+        /\bzet\b/.test(normalized);
+
+    return (
+        explicitlyMentionsSet ||
+        hasPreviousSetContext()
+    );
+}
+
+
+function isNameQuestion(text) {
+
+    return matchesAnyExactOrFuzzy(
+        text,
+        [
+            "cual es tu nombre",
+            "como te llamas",
+            "como es tu nombre",
+            "tenes nombre"
+        ]
+    );
+}
+    const asksChatToCreateSet =
+        (
+            normalized.includes("haceme") ||
+            normalized.includes("hacerme") ||
+            normalized.includes("dame") ||
+            normalized.includes("armame") ||
+            normalized.includes("poneme")
+        )
+
+        &&
+
+        (
+            /\bset\b/.test(normalized) ||
+            normalized.includes("desafio")
+        );
+
+    return asksChatToCreateSet;
+}
+    
     function isWhatIsSetQuestion(text) {
 
         const normalized =
