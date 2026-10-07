@@ -2732,6 +2732,9 @@
                 "podriamos probar",
                 "probamos",
                 "probemos",
+
+                "haceme uno para practicar",
+                "dame uno para practicar",
         
                 "quiero jugar una partida",
                 "podemos jugar una partida",
@@ -2747,16 +2750,33 @@
         
                 "quiero practicar",
                 "podemos practicar",
-                "podriamos practicar"
+                "podriamos practicar",
+
+                "haceme un desafio",
+                "hace un desafio",
+                "dame un desafio",
+                "poneme un desafio",
+                "armame un desafio",
+
+                "quiero intentar uno",
+                "quiero probar uno"
             ];
 
 
-return directPlayRequests.some(
-    phrase =>
-        normalized === phrase ||
-        normalized.includes(
-            phrase
-        )
+return (
+    directPlayRequests.some(
+        phrase =>
+            normalized === phrase ||
+            normalized.includes(phrase)
+    )
+
+    ||
+
+    challengeRequests.some(
+        phrase =>
+            normalized === phrase ||
+            normalized.includes(phrase)
+    )
 );
     }
 
